@@ -1,6 +1,5 @@
 package main;
 
-<<<<<<< HEAD
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,8 +17,5 @@ public class mainMenu extends JPanel{
 		gameContentPane.add(button, BorderLayout.CENTER);
 		gameContentPane.setVisible(true);
 	}
-=======
-public class mainMenu {
->>>>>>> 49f09d064a31248fa35ef8795707c44f8d66633b
-
 }
+
