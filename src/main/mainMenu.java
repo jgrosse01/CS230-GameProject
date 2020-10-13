@@ -26,6 +26,7 @@ public class mainMenu extends JPanel{
 		this.add(picLabel);
 		this.setVisible(true);
 	
+		
 	
 		/*
 			try {
