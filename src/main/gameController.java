@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame; // for JFrame
 import javax.swing.JOptionPane; // messages are displayed using JOptionPane
 
+@SuppressWarnings("unused")
 class gameController {
 	private JFrame gameJFrame;
 	boolean initialized;
