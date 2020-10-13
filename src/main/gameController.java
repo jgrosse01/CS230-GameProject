@@ -17,9 +17,9 @@ public class gameController {
 	private mainMenu menu;
 	private Container mainPane;
 	
-	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private int width = (int) screenSize.getWidth();
-    private int height = (int) screenSize.getHeight();
+	private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private static int width = (int) screenSize.getWidth();
+    private static int height = (int) screenSize.getHeight();
 
 	public gameController() {
 		
@@ -42,8 +42,8 @@ public class gameController {
 	public void setContainer(Container container) { this.mainPane = container; }
 	public String getState() { return gameState; }
 	public boolean getInit() { return initialized; }
-	public int getWindowWidth() { return width; }
-	public int getWindowHeight() { return height; }
+	public static int getWindowWidth() { return width; }
+	public static int getWindowHeight() { return height; }
 
 	public static void main(String[] args) {
         gameController myController = new gameController();
