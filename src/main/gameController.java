@@ -4,45 +4,54 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.IOException;
+
 
 import javax.swing.JButton;
 import javax.swing.JFrame; // for JFrame
 import javax.swing.JOptionPane; // messages are displayed using JOptionPane
+import javax.swing.JPanel;
 
 @SuppressWarnings("unused")
-class gameController {
-	private JFrame gameJFrame;
-	boolean initialized;
-	String gameState;
-	mainMenu menu;
-	Container mainPane;
+public class gameController extends JFrame{
+	private static final long serialVersionUID = 6581184009482946096L;
 	
-	JButton button;
+	//private JFrame gameJFrame;
+	private boolean initialized;
+	private String gameState;
+	private mainMenu menu;
+	private Container mainPane;
 	
-	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    double width = screenSize.getWidth();
-    double height = screenSize.getHeight();
+	private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private static int width = (int) screenSize.getWidth();
+    private static int height = (int) screenSize.getHeight();
 
 	public gameController() {
-		
+	
 		menu = new mainMenu();
-		gameJFrame = new JFrame();
-		gameJFrame.setTitle("GEHSUGHSEOISI");
-		gameJFrame.setSize((int) width, (int) height);
-        gameJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameJFrame.setVisible(true);
+		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+		setUndecorated(true);
+		setTitle("Escape From Casa Bob");
+		setSize((int) width, (int) height);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
         
-        mainPane = gameJFrame.getContentPane();
-        gameJFrame.setBackground(Color.red);
-        //menu.setBackground(Color.red);
+        mainPane = getContentPane();
+        //IF SCREEN IS CYAN THEN WE DID SOMETHING WRONG
+        setBackground(Color.CYAN);
         mainPane.add(menu);
         mainPane.setVisible(true);
 
 	}
+	
+	public void setContainer(Container container) { this.mainPane = container; }
+	public String gameState() { return gameState; }
+	public boolean getInit() { return initialized; }
+	public static int getWindowWidth() { return width; }
+	public static int getWindowHeight() { return height; }
 
 	public static void main(String[] args) {
         gameController myController = new gameController();
-
 	}
 
 }
