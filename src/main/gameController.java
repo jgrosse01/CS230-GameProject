@@ -10,39 +10,43 @@ import javax.swing.JFrame; // for JFrame
 import javax.swing.JOptionPane; // messages are displayed using JOptionPane
 
 @SuppressWarnings("unused")
-class gameController {
+public class gameController {
 	private JFrame gameJFrame;
-	boolean initialized;
-	String gameState;
-	mainMenu menu;
-	Container mainPane;
+	private boolean initialized;
+	private String gameState;
+	private mainMenu menu;
+	private Container mainPane;
 	
-	JButton button;
-	
-	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    double width = screenSize.getWidth();
-    double height = screenSize.getHeight();
+	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private int width = (int) screenSize.getWidth();
+    private int height = (int) screenSize.getHeight();
 
 	public gameController() {
 		
 		menu = new mainMenu();
 		gameJFrame = new JFrame();
-		gameJFrame.setTitle("GEHSUGHSEOISI");
+		gameJFrame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+		gameJFrame.setTitle("Escape From Casa Bob");
 		gameJFrame.setSize((int) width, (int) height);
         gameJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameJFrame.setVisible(true);
         
         mainPane = gameJFrame.getContentPane();
-        gameJFrame.setBackground(Color.red);
-        //menu.setBackground(Color.red);
+        //IF SCREEN IS CYAN THEN WE DID SOMETHING WRONG
+        gameJFrame.setBackground(Color.CYAN);
         mainPane.add(menu);
         mainPane.setVisible(true);
 
 	}
+	
+	public void setContainer(Container container) { this.mainPane = container; }
+	public String getState() { return gameState; }
+	public boolean getInit() { return initialized; }
+	public int getWindowWidth() { return width; }
+	public int getWindowHeight() { return height; }
 
 	public static void main(String[] args) {
         gameController myController = new gameController();
-
 	}
 
 }
