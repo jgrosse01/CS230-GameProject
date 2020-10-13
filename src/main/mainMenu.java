@@ -13,31 +13,26 @@ public class mainMenu extends JPanel{
 	JPanel panel;
 	JLabel picLabel;
 	
+	JButton play;
+	JButton levelBuilder;
+	JButton exit;
+	
 	public mainMenu() {
 		panel = new JPanel();
 		picLabel = new JLabel();
 		background = new ImageIcon("src/main/bob.jpeg");
 		Image img = background.getImage();
-		System.out.println(panel.getWidth() +","+ panel.getHeight());
-		Image newImg = img.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_SMOOTH);
+		Image newImg = img.getScaledInstance(gameController.getWindowWidth(), gameController.getWindowHeight(), Image.SCALE_SMOOTH);
 		ImageIcon finalImage = new ImageIcon(newImg);
 		picLabel.setIcon(finalImage);
 		
 		this.add(picLabel);
 		this.setVisible(true);
 	
+		play = new JButton();
+		levelBuilder = new JButton();
+		exit = new JButton();
 		
-	
-		/*
-			try {
-				bi = ImageIO.read(new File("bob.jpeg"));
-				JPanel p = new mainMenu();
-				p.setPreferredSize(new Dimension(bi.getWidth(), bi.getHeight()));
-			} 
-			catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
+		//play.set
 	}
 }
