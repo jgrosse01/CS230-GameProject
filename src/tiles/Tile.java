@@ -13,7 +13,7 @@ public class Tile {
 	private int width;
 	private int height;
 	//is the tile visible
-	private boolean visible;
+	private boolean visible = false;
 	//current image
 	private BufferedImage sprite;
 	//panel tile will be on
@@ -30,6 +30,7 @@ public class Tile {
 		
 		//passed in the panel this is being added to
 		this.currentPane = pane;
+		toggleVisible();
 	}
 	
 	//Paint to screen with graphics element from content pane
