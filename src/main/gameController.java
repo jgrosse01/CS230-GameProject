@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame; // for JFrame
 import javax.swing.JOptionPane; // messages are displayed using JOptionPane
+import javax.swing.JPanel;
 
+@SuppressWarnings("unused")
 class gameController {
 	private JFrame gameJFrame;
 	boolean initialized;
@@ -24,19 +27,16 @@ class gameController {
 
 	public gameController() {
 		
-		menu = new mainMenu();
-		gameJFrame = new JFrame();
-		gameJFrame.setTitle("GEHSUGHSEOISI");
+		JFrame gameJFrame = new JFrame();
+		JPanel menu = new mainMenu();
+		gameJFrame.setTitle("Escape");
 		gameJFrame.setSize((int) width, (int) height);
         gameJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        gameJFrame.add(menu);
+       
         gameJFrame.setVisible(true);
         
-        mainPane = gameJFrame.getContentPane();
-        gameJFrame.setBackground(Color.red);
-        //menu.setBackground(Color.red);
-        mainPane.add(menu);
-        mainPane.setVisible(true);
-
 	}
 
 	public static void main(String[] args) {
