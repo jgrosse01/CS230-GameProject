@@ -30,6 +30,7 @@ public class gameController extends JFrame{
 	
 		menu = new mainMenu();
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+		setUndecorated(true);
 		setTitle("Escape From Casa Bob");
 		setSize((int) width, (int) height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
