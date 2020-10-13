@@ -10,8 +10,11 @@ import java.io.IOException;
 public class mainMenu extends JPanel{
 	private static final long serialVersionUID = 7962642755482788779L;
 	ImageIcon background;
+	
 	JPanel panel;
+	
 	JLabel picLabel;
+	JLabel picTitle;
 	
 	JButton play;
 	JButton levelBuilder;
@@ -29,6 +32,8 @@ public class mainMenu extends JPanel{
 		this.add(picLabel);
 		this.setVisible(true);
 	
+		
+		
 		play = new JButton();
 		levelBuilder = new JButton();
 		exit = new JButton();
