@@ -1,5 +1,6 @@
 package main;
 
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +38,6 @@ public class mainMenu extends JPanel{
 		play = new JButton();
 		levelBuilder = new JButton();
 		exit = new JButton();
-		
-		//play.set
 	}
+
 }
