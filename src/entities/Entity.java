@@ -62,6 +62,7 @@ public class Entity {
 		currentDir = dir;
 	}
 	
+	//draws based on direction
 	public void draw() {
 		if (visible) {
 			switch (currentDir) {
@@ -73,14 +74,17 @@ public class Entity {
 		}
 	}
 	
+	//erases entity
 	public void erase() {
 		currentPane.getGraphics().clearRect(x, y, width, height);
 	}
 	
+	//toggles whether the entity should be visible
 	public void toggleVisible() {
 		visible = !visible;
 	}
 	
+	//changes the left and right images of the entity
 	public void updateImages(BufferedImage left, BufferedImage right) throws IOException {
 		if (left.getWidth() != right.getWidth() || left.getHeight() != right.getHeight())
 			throw new java.io.IOException("Ensure image dimensions are the same");
@@ -90,9 +94,17 @@ public class Entity {
 		draw();
 	}
 	
-	//UNIMPLEMENTED
+	//UNIMPLEMENTED //Basically if hits or hit by hazard then return true, need collision checker
 	public boolean checkDie() {
 		return false;
+	}
+	
+	//Called when changing directions by control handler
+	public void toggleDir() {
+		if (currentDir == DIR_LEFT)
+			currentDir = DIR_RIGHT;
+		else
+			currentDir = DIR_LEFT;
 	}
 	
 	public int getX() { return x; }
