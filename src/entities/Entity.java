@@ -85,7 +85,7 @@ public class Entity {
 	}
 	
 	//changes the left and right images of the entity
-	public void updateImages(BufferedImage left, BufferedImage right) throws IOException {
+	public void updateSprites(BufferedImage left, BufferedImage right) throws IOException {
 		if (left.getWidth() != right.getWidth() || left.getHeight() != right.getHeight())
 			throw new java.io.IOException("Ensure image dimensions are the same");
 		this.lSprite = left;
@@ -109,6 +109,9 @@ public class Entity {
 	
 	public int getX() { return x; }
 	public int getY() { return y; }
+	public void setX(int x) { this.x = x; }
+	public void setY(int y) { this.y = y; }
+	public BufferedImage[] getSprites() { BufferedImage[] temp = {lSprite, rSprite}; return temp;  }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 }
