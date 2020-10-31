@@ -1,14 +1,10 @@
 package main;
 
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class mainMenu extends JLayeredPane implements ActionListener{
 	private static final long serialVersionUID = 7962642755482788779L;

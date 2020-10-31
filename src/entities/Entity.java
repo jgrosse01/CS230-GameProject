@@ -125,18 +125,18 @@ public class Entity {
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 
-public static void main(String[] args) {
-	JFrame frame = new JFrame();
-	JPanel panel = new JPanel();
-	JLabel label = new JLabel();
-	frame.add(panel);
-	try {
-		Player player = new Player(500, 500, lSprite, lSprite, panel);
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
+		JLabel label = new JLabel();
+		frame.add(panel);
+		try {
+			Player player = new Player(500, 500, lSprite, lSprite, panel);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		label.setIcon(icon);
 	}
-	label.setIcon(icon);
-}
 
 }

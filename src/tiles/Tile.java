@@ -18,6 +18,8 @@ public class Tile {
 	private BufferedImage sprite;
 	//panel tile will be on
 	private JPanel currentPane;
+	//determines whether tile is breakable
+	boolean breakable;
 	
 	//Constructor
 	public Tile(int x, int y, BufferedImage sprite, JPanel pane) {
@@ -30,6 +32,21 @@ public class Tile {
 		
 		//passed in the panel this is being added to
 		this.currentPane = pane;
+		breakable = false;
+		toggleVisible();
+	}
+	
+	public Tile(int x, int y, BufferedImage sprite, JPanel pane, boolean breakable) {
+		this.x = x;
+		this.y = y;
+		this.sprite = sprite;
+		//get tile width and height from image size
+		this.width = sprite.getWidth();
+		this.height = sprite.getHeight();
+		
+		//passed in the panel this is being added to
+		this.currentPane = pane;
+		this.breakable = breakable;
 		toggleVisible();
 	}
 	
@@ -53,6 +70,15 @@ public class Tile {
 		this.sprite = sprite;
 		this.erase();
 		this.draw();
+	}
+	
+	//breaks tile, erases and adds item to player inventory slot
+	public void breakTile() {
+		if (breakable /* && player inventory has slot*/) {
+			this.erase();
+			//add to player inventory slot
+		}
+			
 	}
 	
 	public int getX() { return x; }
