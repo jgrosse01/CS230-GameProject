@@ -1,9 +1,14 @@
 package entities;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class Entity {
 	public static final int DIR_LEFT = 0;
@@ -12,8 +17,8 @@ public class Entity {
 	private int x;
 	private int y;
 	//buffered images for left and right directional
-	private BufferedImage lSprite;
-	private BufferedImage rSprite;
+	private static BufferedImage lSprite;
+	private static BufferedImage rSprite;
 	//entity width and height by image width and height
 	private int width;
 	private int height;
@@ -22,6 +27,7 @@ public class Entity {
 	//current JPanel to paint to
 	private JPanel currentPane;
 	private int currentDir;
+	private Timer timer;
 	
 	/**
 	 * 
@@ -39,12 +45,16 @@ public class Entity {
 		this.x = x;
 		this.y = y;
 		//set left and right sprite image
-		this.lSprite = left;
-		this.rSprite = right;
+		//this.lSprite = left;
+		//this.rSprite = right;
+		this.lSprite = ImageIO.read(new File("sprites/Run (1)"));
+		this.rSprite = ImageIO.read(new File("sprites/leftRun (1)"));
 		this.width = lSprite.getWidth();
 		this.height = lSprite.getHeight();
 		currentDir = DIR_LEFT;
 		toggleVisible();
+		
+		
 	}
 	
 	/**
@@ -114,4 +124,19 @@ public class Entity {
 	public BufferedImage[] getSprites() { BufferedImage[] temp = {lSprite, rSprite}; return temp;  }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
+
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
+		JLabel label = new JLabel();
+		frame.add(panel);
+		try {
+			Player player = new Player(500, 500, lSprite, lSprite, panel);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		label.setIcon(icon);
+	}
+
 }
