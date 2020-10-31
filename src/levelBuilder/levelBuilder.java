@@ -152,9 +152,10 @@ public class levelBuilder extends JPanel{
 	 */
 	public static void main(String [] args) {
 		JFrame frame = new JFrame();
+		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
         frame.setTitle("Testing Frame");
         levelBuilder build = new levelBuilder(frame);
         frame.add(build);

@@ -12,6 +12,8 @@ import javax.swing.JFrame; // for JFrame
 import javax.swing.JOptionPane; // messages are displayed using JOptionPane
 import javax.swing.JPanel;
 
+import levelBuilder.levelInfo;
+
 @SuppressWarnings("unused")
 public class gameController extends JFrame{
 	private static final long serialVersionUID = 6581184009482946096L;
@@ -25,6 +27,9 @@ public class gameController extends JFrame{
 	private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static int width = (int) screenSize.getWidth();
     private static int height = (int) screenSize.getHeight();
+    
+    //maybe put into a separate jpanel to actually run the levels?
+    public levelInfo level;
 
 	public gameController() {
 	

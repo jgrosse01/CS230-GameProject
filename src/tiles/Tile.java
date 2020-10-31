@@ -1,7 +1,10 @@
 package tiles;
 
+import java.awt.MouseInfo;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+
+import levelBuilder.levelInfo;
 
 
 public class Tile {
@@ -73,12 +76,18 @@ public class Tile {
 	}
 	
 	//breaks tile, erases and adds item to player inventory slot
-	public void breakTile() {
-		if (breakable /* && player inventory has slot*/) {
+	public boolean breakTile() {
+		if (breakable) {
 			this.erase();
-			//add to player inventory slot
+			return true;
 		}
-			
+		return false;
+	}
+	
+	public void placeTile(levelInfo level) {
+		int mousex = MouseInfo.getPointerInfo().getLocation().x;
+		int mousey = MouseInfo.getPointerInfo().getLocation().y;
+		level.place(mousex, mousey, this);
 	}
 	
 	public int getX() { return x; }

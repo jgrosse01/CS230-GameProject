@@ -10,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import tiles.SpawnPoint;
+
 public class Entity {
 	public static final int DIR_LEFT = 0;
 	public static final int DIR_RIGHT = 1;
@@ -131,7 +133,7 @@ public class Entity {
 		JLabel label = new JLabel();
 		frame.add(panel);
 		try {
-			Player player = new Player(500, 500, lSprite, lSprite, panel);
+			Player player = new Player(500, 500, lSprite, lSprite, panel, new SpawnPoint(0,0,panel));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

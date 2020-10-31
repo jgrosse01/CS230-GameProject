@@ -1,18 +1,32 @@
 package levelBuilder;
 
+import tiles.Tile;
+
 public class levelInfo {
+	//pixel width and height of each tile space
+	private int tileDimension;
+	
 	/**
 	 * Commented out because we don't have these classes
 	 * at the time of writing.
 	 */
 	//public PuzzleInteractable[] allPuzzles
-	//public Tile[][] levelLayout
+	public Tile[][] levelLayout;
 	
 	/**
 	 * Will probably need to call level loader and need a filename
 	 */
 	public levelInfo() {
 		
+	}
+	
+	/**
+	 * Calculates the array location in which a tile needs to be placed and places the tile
+	 * @param x mouse x location
+	 * @param y mouse y location
+	 */
+	public void place(int x, int y, Tile tile) {
+		levelLayout[x/tileDimension][y/tileDimension] = tile;
 	}
 	
 	/**
