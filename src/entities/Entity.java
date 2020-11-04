@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
 import main.gameController;
+import tiles.SpawnPoint;
 
 public class Entity {
 	public static final int DIR_LEFT = 0;
@@ -54,7 +54,7 @@ public class Entity {
 		//this.lSprite = left;
 		//this.rSprite = right;
 		try {
-			this.rSprite = ImageIO.read(new File("fastDolphinRight.jpg"));
+			this.rSprite = ImageIO.read(new File("sprites/Run (1).png"));
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -152,9 +152,5 @@ public static void main(String[] args) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	
-	
-	
 }
-
 }

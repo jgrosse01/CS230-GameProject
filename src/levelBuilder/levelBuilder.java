@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class levelBuilder extends JPanel{
 	//JPanel wanted this
@@ -15,16 +17,30 @@ public class levelBuilder extends JPanel{
 	private ButtonGroup radioButtons; //For selecting a tile group i.e. tiles, entities, puzzles
 	private String[][] levelArray;
 	private JFrame thisFrame;
+	private Point levelLoc;
 	
 	public levelBuilder(JFrame frame) {
 		//Creating the class variables
 		tileSelect = new JPanel();
 		levelPanel = new JPanel();
+		//making level panel clickable
+		levelPanel.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				levelLoc = e.getPoint();
+			}
+		});
+		//making level panel draggable
+		levelPanel.addMouseMotionListener(new MouseAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				Point currentScreenLoc = e.getLocationOnScreen();
+				levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
+			}
+		});
 		
 		thisFrame = frame;
 		
 		this.setBackground(Color.red); //CHANGE THIS EVENTUALLY
-		this.setLayout(new BorderLayout());
+		this.setLayout(null);
 		this.setVisible(true);
 		
 		//Radio buttons for selecting tile groups
@@ -36,7 +52,7 @@ public class levelBuilder extends JPanel{
 		radioButtons.add(radioPuzzle);
 		radioButtons.add(radioEntity);
 		
-		//Buttons for selecting options
+		//Making and adding buttons
 		JButton newButton = new JButton("New Level");
 		newButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -46,10 +62,9 @@ public class levelBuilder extends JPanel{
 		JButton saveButton = new JButton("Save Level");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				makeButton();
+				saveLevel();
 			}
 		});
-		
 		
 		//combobox for selecting the tiles
 		String[] tiles = {"1", "2", "3", "4"}; //using strings for testing
@@ -60,8 +75,9 @@ public class levelBuilder extends JPanel{
 		//tileSelect.setLayout(new FlowLayout());
 		tileSelect.setBorder(BorderFactory.createTitledBorder("Tile Select"));
 		tileSelect.setVisible(true);
-		tileSelect.setBounds(0,0,thisFrame.getWidth(), (int)(thisFrame.getHeight()*.15));
+		//tileSelect.setBounds(0,0,thisFrame.getWidth(), (int)(thisFrame.getHeight()*.15));
 		this.add(tileSelect, BorderLayout.NORTH);
+		tileSelect.setBounds(0,0,frame.getWidth(),(int)(frame.getHeight()*.15));
 		//Adding combobox and buttons to the tileSelect
 		tileSelect.add(newButton);
 		tileSelect.add(saveButton);
@@ -76,11 +92,11 @@ public class levelBuilder extends JPanel{
 		//level.setLayout(new FlowLayout());
 		this.add(levelPanel, BorderLayout.CENTER);
 		levelPanel.setBackground(Color.black);
+		levelPanel.setSize(new Dimension(2000,2000));
 		
 		//Creating combo boxes for tileSelect. Needs to be integrated with
 		//all the different tiles when we have them made.
 		tileCB = new JComboBox();
-		
 	}
 	
 	//this will populate the levelArray for use in making a level.
@@ -101,19 +117,24 @@ public class levelBuilder extends JPanel{
 		
 		int response = JOptionPane.showConfirmDialog(null, panel, "Enter width and height for the level", 
 				JOptionPane.OK_CANCEL_OPTION);
-		width = Integer.parseInt(widthField.getText());
-		height = Integer.parseInt(heightField.getText());
 		if(response == JOptionPane.OK_OPTION)
 		{
+			width = Integer.parseInt(widthField.getText());
+			height = Integer.parseInt(heightField.getText());
 			levelArray = new String[width][height];
 			paintLevel(levelPanel.getGraphics());
 		}
 	}
 	
-	//Dumb method for testing delete later
-	private void makeButton()
-	{
-		levelPanel.add(new JButton("dumb"));
+	private void saveLevel() {
+		//just using this for testing now
+		//drawing on level panel to test draggable
+				for(int i = 0; i < 100; i ++)
+				{
+					JButton hey = new JButton("hello");
+					hey.setBounds(10+i*40,10+i*40,30,30);
+					levelPanel.add(hey);
+				}
 	}
 	
 	private void paintLevel(Graphics g)
@@ -131,9 +152,10 @@ public class levelBuilder extends JPanel{
 	 */
 	public static void main(String [] args) {
 		JFrame frame = new JFrame();
+		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        frame.setSize(600,600);
         frame.setTitle("Testing Frame");
         levelBuilder build = new levelBuilder(frame);
         frame.add(build);

@@ -15,7 +15,7 @@ public class testGameController {
 	
 	public testGameController() {
 		 try {
-             testSprite = ImageIO.read(new File("fastDolphinRight.jpg"));
+             testSprite = ImageIO.read(new File("sprites/Run (1).png"));
        } catch(Exception e) {       e.printStackTrace();  }
        try {
              Player player = new Player(50, 50, testSprite, testSprite, testPane);
