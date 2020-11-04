@@ -115,7 +115,7 @@ public class levelBuilder extends JPanel{
 		panel.add(widthField);
 		panel.add(new JLabel("Height: "));
 		panel.add(heightField);
-		frame.getBlockDim();
+		
 		
 		
 		int response = JOptionPane.showConfirmDialog(null, panel, "Width and height in tiles", 

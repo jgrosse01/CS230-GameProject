@@ -20,13 +20,14 @@ public class mainMenu extends JLayeredPane implements ActionListener{
 	JButton exit;
 	
 	public mainMenu() {
+		this.setLayout(null);
 		picLabel = new JLabel(); //create jlabel
 		background = new ImageIcon("src/main/bob.jpeg"); //init image
 		Image img = background.getImage(); //transform to img
 		Image newImg = img.getScaledInstance(gameController.getWindowWidth(), gameController.getWindowHeight(), Image.SCALE_SMOOTH); //create scaled version
 		ImageIcon finalImage = new ImageIcon(newImg); //transform back to image icon
 		picLabel.setIcon(finalImage); //set image to label
-		picLabel.setBounds(0, -270, background.getIconWidth(), background.getIconHeight()); //set bounds of label on the layered panel. (has to be done with layered panel.
+		picLabel.setBounds(0, 0, gameController.getWindowWidth(), gameController.getWindowHeight()); //set bounds of label on the layered panel. (has to be done with layered panel.
 		
 		this.add(picLabel, 1); //add to position 1 on the layered panel
 		
