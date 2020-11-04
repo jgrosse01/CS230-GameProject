@@ -27,6 +27,7 @@ public class gameController extends JFrame{
 	private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static int width = (int) screenSize.getWidth();
     private static int height = (int) screenSize.getHeight();
+    private static int blockDim = width/15;
     
     //maybe put into a separate jpanel to actually run the levels?
     public levelInfo level;
@@ -54,6 +55,7 @@ public class gameController extends JFrame{
 	public boolean getInit() { return initialized; }
 	public static int getWindowWidth() { return width; }
 	public static int getWindowHeight() { return height; }
+	public static int getBlockDimension() { return blockDim; }
 
 	public static void main(String[] args) {
         gameController myController = new gameController();
