@@ -1,14 +1,18 @@
 package entities;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import main.gameController;
 
 public class Entity {
 	public static final int DIR_LEFT = 0;
@@ -17,8 +21,8 @@ public class Entity {
 	private int x;
 	private int y;
 	//buffered images for left and right directional
-	private static BufferedImage lSprite;
-	private static BufferedImage rSprite;
+	private BufferedImage lSprite;
+	private BufferedImage rSprite;
 	//entity width and height by image width and height
 	private int width;
 	private int height;
@@ -29,6 +33,12 @@ public class Entity {
 	private int currentDir;
 	private Timer timer;
 	
+	static JFrame testFrame = new JFrame();
+	static JPanel testPane = new JPanel();
+	
+	//private ImageIcon leftSprite;
+	//private ImageIcon rightSprite;
+	
 	/**
 	 * 
 	 * @param x upper left corner (pixel)
@@ -38,23 +48,28 @@ public class Entity {
 	 * @param pane current pane
 	 * @throws IOException IMAGE DIMENSIONS ARE NOT THE SAME
 	 */
-	public Entity(int x, int y, BufferedImage left, BufferedImage right, JPanel pane) throws IOException {
-		if (left.getWidth() != right.getWidth() || left.getHeight() != right.getHeight())
+	public Entity(int x, int y, BufferedImage lSprite, BufferedImage rSprite, JPanel pane) throws IOException {
+		
+		//set left and right sprite image
+		//this.lSprite = left;
+		//this.rSprite = right;
+		try {
+			this.rSprite = ImageIO.read(new File("fastDolphinRight.jpg"));
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		//this.lSprite = ImageIO.read(new File("sprites/leftRun (1).png"));
+		
+		if (lSprite.getWidth() != rSprite.getWidth() || lSprite.getHeight() != rSprite.getHeight())
 			throw new java.io.IOException("Ensure image dimensions are the same");
 		//set start location
 		this.x = x;
 		this.y = y;
-		//set left and right sprite image
-		//this.lSprite = left;
-		//this.rSprite = right;
-		this.lSprite = ImageIO.read(new File("sprites/Run (1)"));
-		this.rSprite = ImageIO.read(new File("sprites/leftRun (1)"));
-		this.width = lSprite.getWidth();
-		this.height = lSprite.getHeight();
+		//this.width = lSprite.getWidth();
+		//this.height = lSprite.getHeight();
 		currentDir = DIR_LEFT;
 		toggleVisible();
-		
-		
 	}
 	
 	/**
@@ -126,17 +141,20 @@ public class Entity {
 	public int getHeight() { return height; }
 
 public static void main(String[] args) {
-	JFrame frame = new JFrame();
-	JPanel panel = new JPanel();
-	JLabel label = new JLabel();
-	frame.add(panel);
+	testFrame.add(testPane);
+	
+	//ImageIcon leftSprite = new ImageIcon(lSprite);
+	//ImageIcon rightSprite = new ImageIcon(rSprite);
+	
 	try {
-		Player player = new Player(500, 500, lSprite, lSprite, panel);
+		Player player = new Player(500, 500, lSprite, rSprite, testPane);
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	label.setIcon(icon);
+	
+	
+	
 }
 
 }

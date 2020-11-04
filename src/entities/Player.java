@@ -30,22 +30,6 @@ public class Player extends Entity implements KeyListener {
     public void setDY(int dY) { this.dy = dY; }
     
     public boolean isAirbourne() { return isAirbourne; }
-    
-    public void loadImage(String fileName)
-	{
-		if (fileName != null)
-			try
-			{
-				for (int i = 0; i<83; i++) {
-					playerImages[i] = ImageIO.read(new File("sprites/" + fileName));
-				}
-			}
-			catch (IOException e)
-			{
-				System.out.println("Image not found.");
-			}
-		
-	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
