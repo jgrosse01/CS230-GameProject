@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import tiles.*;
 
 public class levelBuilder extends JPanel{
 	//JPanel wanted this
@@ -39,7 +40,7 @@ public class levelBuilder extends JPanel{
 		
 		thisFrame = frame;
 		
-		this.setBackground(Color.red); //CHANGE THIS EVENTUALLY
+		this.setBackground(Color.black);
 		this.setLayout(null);
 		this.setVisible(true);
 		
@@ -91,8 +92,8 @@ public class levelBuilder extends JPanel{
 		//^^ but for level object
 		//level.setLayout(new FlowLayout());
 		this.add(levelPanel, BorderLayout.CENTER);
-		levelPanel.setBackground(Color.black);
-		levelPanel.setSize(new Dimension(2000,2000));
+		levelPanel.setBackground(Color.red);
+		levelPanel.setVisible(false);
 		
 		//Creating combo boxes for tileSelect. Needs to be integrated with
 		//all the different tiles when we have them made.
@@ -115,7 +116,9 @@ public class levelBuilder extends JPanel{
 		panel.add(new JLabel("Height: "));
 		panel.add(heightField);
 		
-		int response = JOptionPane.showConfirmDialog(null, panel, "Enter width and height for the level", 
+		
+		
+		int response = JOptionPane.showConfirmDialog(null, panel, "Width and height in tiles", 
 				JOptionPane.OK_CANCEL_OPTION);
 		if(response == JOptionPane.OK_OPTION)
 		{
