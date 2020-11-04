@@ -21,7 +21,7 @@ public class PuzzleTile extends Tile implements InteractableTile{
 	}
 	
 	public boolean checkMatch(int typeID, int special) {
-		if (this.specialID == special)
+		if (this.specialID != -1 && this.specialID == special)
 			return true;
 		else if (this.typeID == typeID)
 			return true;
