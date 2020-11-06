@@ -12,6 +12,7 @@ import javax.swing.JFrame; // for JFrame
 import javax.swing.JOptionPane; // messages are displayed using JOptionPane
 import javax.swing.JPanel;
 
+import levelBuilder.levelBuilder;
 import levelBuilder.levelInfo;
 
 @SuppressWarnings("unused")
@@ -21,7 +22,6 @@ public class gameController extends JFrame{
 	//private JFrame gameJFrame;
 	private boolean initialized;
 	private String gameState;
-	private mainMenu menu;
 	private Container mainPane;
 	
 	private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -34,7 +34,7 @@ public class gameController extends JFrame{
 
 	public gameController() {
 	
-		menu = new mainMenu();
+		mainMenu menu = new mainMenu(this);
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 		setUndecorated(true);
 		setTitle("Escape From Casa Bob");
@@ -59,6 +59,22 @@ public class gameController extends JFrame{
 
 	public static void main(String[] args) {
         gameController myController = new gameController();
+	}
+	
+	public void mainToBuilder() {
+		mainPane.setVisible(false);
+		mainPane.remove(0);
+		levelBuilder builder = new levelBuilder(this);
+		mainPane.add(builder);
+		mainPane.setVisible(true);
+	}
+	
+	public void builderToMain() {
+		mainPane.setVisible(false);
+		mainPane.remove(0);
+		mainMenu menu = new mainMenu(this);
+		mainPane.add(menu);
+		mainPane.setVisible(true);
 	}
 
 }

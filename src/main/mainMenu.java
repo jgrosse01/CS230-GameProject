@@ -5,8 +5,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import levelBuilder.levelBuilder;
 
-public class mainMenu extends JLayeredPane implements ActionListener{
+public class mainMenu extends JLayeredPane{
 	private static final long serialVersionUID = 7962642755482788779L;
 	ImageIcon background;
 	
@@ -19,7 +20,7 @@ public class mainMenu extends JLayeredPane implements ActionListener{
 	JButton levelBuilder;
 	JButton exit;
 	
-	public mainMenu() {
+	public mainMenu(gameController frame) {
 		this.setLayout(null);
 		picLabel = new JLabel(); //create jlabel
 		background = new ImageIcon("src/main/bob.jpeg"); //init image
@@ -32,24 +33,28 @@ public class mainMenu extends JLayeredPane implements ActionListener{
 		this.add(picLabel, 1); //add to position 1 on the layered panel
 		
 		play = new JButton("Play"); //init play button
-		levelBuilder = new JButton("Levels"); //init levels button
+		levelBuilder = new JButton("Level Builder"); //init levels button
+		levelBuilder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.mainToBuilder();
+			}
+		});
 		exit = new JButton("Exit"); //init exit button
+		exit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		
-		play.setBounds(500, 200, 50, 50); //set bounds/placement
-		levelBuilder.setBounds(500, 300, 50, 50); //set bounds/placement
-		exit.setBounds(500, 400, 50, 50); //set bounds/placement
+		play.setBounds((gameController.getWindowWidth()/2)-((int)(gameController.getWindowWidth()*.2)/2), 400, (int)(gameController.getWindowWidth()*.2),(int)(gameController.getWindowHeight()*.05)); //set bounds/placement
+		levelBuilder.setBounds((gameController.getWindowWidth()/2)-((int)(gameController.getWindowWidth()*.2)/2), 500, (int)(gameController.getWindowWidth()*.2),(int)(gameController.getWindowHeight()*.05)); //set bounds/placement
+		exit.setBounds((gameController.getWindowWidth()/2)-((int)(gameController.getWindowWidth()*.2)/2), 600, (int)(gameController.getWindowWidth()*.2),(int)(gameController.getWindowHeight()*.05)); //set bounds/placement
 		
 		this.add(play, 0); //add play button to 0 position (outermost position)
 		this.add(levelBuilder, 0); //add levels button
 		this.add(exit, 0); //add exit button
 		
 		this.setVisible(true);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		//Action Listener for buttons.
-		
 	}
 
 }

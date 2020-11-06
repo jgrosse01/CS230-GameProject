@@ -1,6 +1,8 @@
 package levelBuilder;
 
 import javax.swing.*;
+
+import main.gameController;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,13 +19,15 @@ public class levelBuilder extends JPanel{
 	private JComboBox tileCB; //For selecting specific tile in your tile group
 	private ButtonGroup radioButtons; //For selecting a tile group i.e. tiles, entities, puzzles
 	private String[][] levelArray;
-	private JFrame thisFrame;
+	private gameController thisFrame;
 	private Point levelLoc;
 	
-	public levelBuilder(JFrame frame) {
+	public levelBuilder(gameController frame) {
 		//Creating the class variables
 		tileSelect = new JPanel();
+		tileSelect.setLayout(new GridBagLayout());
 		levelPanel = new JPanel();
+		levelPanel.setLayout(null);
 		//making level panel clickable
 		levelPanel.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -53,7 +57,13 @@ public class levelBuilder extends JPanel{
 		radioButtons.add(radioPuzzle);
 		radioButtons.add(radioEntity);
 		
-		//Making and adding buttons
+		//Making and buttons and adding listeners
+		JButton exitButton = new JButton("Main Menu");
+		exitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.builderToMain();
+			}
+		});
 		JButton newButton = new JButton("New Level");
 		newButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -80,6 +90,7 @@ public class levelBuilder extends JPanel{
 		this.add(tileSelect, BorderLayout.NORTH);
 		tileSelect.setBounds(0,0,frame.getWidth(),(int)(frame.getHeight()*.15));
 		//Adding combobox and buttons to the tileSelect
+		tileSelect.add(exitButton);
 		tileSelect.add(newButton);
 		tileSelect.add(saveButton);
 		tileSelect.add(tileCB);
@@ -93,7 +104,7 @@ public class levelBuilder extends JPanel{
 		//level.setLayout(new FlowLayout());
 		this.add(levelPanel, BorderLayout.CENTER);
 		levelPanel.setBackground(Color.red);
-		levelPanel.setVisible(false);
+		levelPanel.setVisible(true);
 		
 		//Creating combo boxes for tileSelect. Needs to be integrated with
 		//all the different tiles when we have them made.
@@ -116,8 +127,6 @@ public class levelBuilder extends JPanel{
 		panel.add(new JLabel("Height: "));
 		panel.add(heightField);
 		
-		
-		
 		int response = JOptionPane.showConfirmDialog(null, panel, "Width and height in tiles", 
 				JOptionPane.OK_CANCEL_OPTION);
 		if(response == JOptionPane.OK_OPTION)
@@ -130,41 +139,28 @@ public class levelBuilder extends JPanel{
 	}
 	
 	private void saveLevel() {
-		//just using this for testing now
-		//drawing on level panel to test draggable
-				for(int i = 0; i < 100; i ++)
-				{
-					JButton hey = new JButton("hello");
-					hey.setBounds(10+i*40,10+i*40,30,30);
-					levelPanel.add(hey);
-				}
+		
 	}
 	
 	private void paintLevel(Graphics g)
 	{
+		//The 5's and 50's are arbitrary, we need to decide
+		//what size we wan't tiles to be
+		int tileSpacing = 5;
+		int tileWidth = 50;
+		levelPanel.setVisible(false);
 		int width = levelArray.length;
 		int height = levelArray[0].length;
-		g.setColor(Color.blue);
-		g.fillRect(200, 200, width, height);
+		levelPanel.setBounds(0,tileSelect.getHeight(),(tileSpacing+tileWidth)*width+tileSpacing,(tileSpacing+tileWidth)*height+tileSpacing);
+		for(int i = 0; i < height; i++) {
+			for(int j = 0; j < width; j++) {
+				JLabel label = new JLabel();
+				label.setBackground(Color.white);
+				label.setOpaque(true);
+				label.setBounds(tileSpacing+(j*(tileWidth+tileSpacing)),tileSpacing+(i*(tileWidth+tileSpacing)),tileWidth,tileWidth);
+				levelPanel.add(label);
+			}
+		}
+		levelPanel.setVisible(true);
 }
-	
-	/**
-	 * This stuff is just for testing, can be removed once the main menu
-	 * has functionality for accessing the level builder.
-	 * @param args
-	 */
-	public static void main(String [] args) {
-		JFrame frame = new JFrame();
-		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		frame.setUndecorated(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.setTitle("Testing Frame");
-        levelBuilder build = new levelBuilder(frame);
-        frame.add(build);
-        build.setSize(frame.getSize());
-        frame.revalidate();
-        frame.repaint();
-	}
-	
 }
