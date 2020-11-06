@@ -24,6 +24,16 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private SpawnPoint sp;
     //put timer and keep track in the controlling display class to set dy to -2 for time equivalent to time moving up (Super Mario Feel)
 	
+    /**
+     * 
+     * @param x starting x
+     * @param y starting y
+     * @param imageLeft left facing image
+     * @param imageRight right facing image
+     * @param pane pane to be painted to
+     * @param sp spawnpoint of player
+     * @throws IOException cannot find images
+     */
     public Player(int x, int y, BufferedImage imageLeft, BufferedImage imageRight, JPanel pane, SpawnPoint sp) throws IOException{
     	super(x,y,imageLeft,imageRight,pane);
     	this.sp = sp;

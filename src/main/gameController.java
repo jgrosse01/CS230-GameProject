@@ -38,7 +38,7 @@ public class gameController extends JFrame{
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 		setUndecorated(true);
 		setTitle("Escape From Casa Bob");
-		setSize((int) width, (int) height);
+		setSize(width, height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         
