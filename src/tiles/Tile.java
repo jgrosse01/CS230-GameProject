@@ -92,6 +92,7 @@ public class Tile {
 	
 	public int getX() { return x; }
 	public int getY() { return y; }
+	public BufferedImage getImage() {return sprite;}
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 }

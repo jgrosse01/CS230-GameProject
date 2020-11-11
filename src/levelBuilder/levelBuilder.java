@@ -1,11 +1,17 @@
 package levelBuilder;
 
 import javax.swing.*;
+
+import entities.Entity;
+import main.gameController;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
+import tiles.*;
 
 public class levelBuilder extends JPanel{
 	//JPanel wanted this
@@ -16,13 +22,28 @@ public class levelBuilder extends JPanel{
 	private JComboBox tileCB; //For selecting specific tile in your tile group
 	private ButtonGroup radioButtons; //For selecting a tile group i.e. tiles, entities, puzzles
 	private String[][] levelArray;
-	private JFrame thisFrame;
-	private Point levelLoc;
+	private gameController thisFrame;
+	private Point levelLoc; //location of level, used for dragging frame around
 	
-	public levelBuilder(JFrame frame) {
+	private Tile[] tileArray;
+	private Entity[] entityArray;
+	private Tile tileSelected;
+	private JRadioButton radioAdd;
+	private JRadioButton radioDelete;
+	
+	public levelBuilder(gameController frame) {
 		//Creating the class variables
 		tileSelect = new JPanel();
+		tileSelect.setLayout(null);
 		levelPanel = new JPanel();
+		levelPanel.setLayout(null);
+		makeTileArray();
+		
+		//Using blockdimension for consistent spacing when making buttons
+		//and frames
+		int Sp = frame.getBlockDimension();
+		int Hsp = (int)(Sp/2);
+		
 		//making level panel clickable
 		levelPanel.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -39,20 +60,16 @@ public class levelBuilder extends JPanel{
 		
 		thisFrame = frame;
 		
-		this.setBackground(Color.red); //CHANGE THIS EVENTUALLY
 		this.setLayout(null);
 		this.setVisible(true);
 		
-		//Radio buttons for selecting tile groups
-		JRadioButton radioTile = new JRadioButton("Tiles");
-		JRadioButton radioPuzzle = new JRadioButton("Puzzles");
-		JRadioButton radioEntity = new JRadioButton("Entities");
-		radioButtons = new ButtonGroup();
-		radioButtons.add(radioTile);
-		radioButtons.add(radioPuzzle);
-		radioButtons.add(radioEntity);
-		
-		//Making and adding buttons
+		//Making and buttons and adding listeners
+		JButton exitButton = new JButton("Main Menu");
+		exitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.builderToMain();
+			}
+		});
 		JButton newButton = new JButton("New Level");
 		newButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -65,38 +82,48 @@ public class levelBuilder extends JPanel{
 				saveLevel();
 			}
 		});
+		JButton loadButton = new JButton("Load Level");
 		
-		//combobox for selecting the tiles
-		String[] tiles = {"1", "2", "3", "4"}; //using strings for testing
-		tileCB = new JComboBox(tiles);
-		tileCB.setSelectedIndex(0);
+		//combobox for selecting the tiles and label for combobox
+		//the string arrays need to be manually edited when we
+		//add new tiles.
+		JLabel cbLabel = new JLabel("Tile Select");
+		tileCB = new JComboBox(tileArray);
+		
+
+		radioAdd = new JRadioButton("Add");
+		radioDelete = new JRadioButton("Delete");
+
+		radioButtons = new ButtonGroup();
+		radioButtons.add(radioAdd);
+		radioButtons.add(radioDelete);
+		radioAdd.setSelected(true);
+		
 		
 		//formatting tileSelect and then adding it to the Panel
-		//tileSelect.setLayout(new FlowLayout());
 		tileSelect.setBorder(BorderFactory.createTitledBorder("Tile Select"));
 		tileSelect.setVisible(true);
-		//tileSelect.setBounds(0,0,thisFrame.getWidth(), (int)(thisFrame.getHeight()*.15));
-		this.add(tileSelect, BorderLayout.NORTH);
+		this.add(tileSelect);
 		tileSelect.setBounds(0,0,frame.getWidth(),(int)(frame.getHeight()*.15));
-		//Adding combobox and buttons to the tileSelect
-		tileSelect.add(newButton);
-		tileSelect.add(saveButton);
-		tileSelect.add(tileCB);
-		tileSelect.add(radioTile);
-		tileSelect.add(radioPuzzle);
-		tileSelect.add(radioEntity);
-		radioTile.setSelected(true);
+		//Adding combobox and buttons to the tileSelect and making bounds
+		tileSelect.add(exitButton); exitButton.setBounds(Hsp,Hsp,Hsp*3,Hsp);
+		tileSelect.add(newButton); newButton.setBounds(Hsp*5,Hsp,Hsp*3,Hsp);
+		tileSelect.add(saveButton); saveButton.setBounds(Hsp*8,Hsp,Hsp*3,Hsp);
+		tileSelect.add(loadButton); loadButton.setBounds(Hsp*11,Hsp,Hsp*3,Hsp);
+		tileSelect.add(tileCB); tileCB.setBounds(Hsp*15,Hsp,Sp*2,Hsp);
+		tileSelect.add(cbLabel); cbLabel.setBounds((Hsp*19)+10,Hsp,Sp,Hsp);
+		tileSelect.add(radioAdd); radioAdd.setBounds(Hsp*21,Hsp,Sp,Hsp);
+		tileSelect.add(radioDelete); radioDelete.setBounds(Hsp*23,Hsp,Sp,Hsp);
 		tileCB.setVisible(true);
 		
 		//^^ but for level object
 		//level.setLayout(new FlowLayout());
 		this.add(levelPanel, BorderLayout.CENTER);
 		levelPanel.setBackground(Color.black);
-		levelPanel.setSize(new Dimension(2000,2000));
+		levelPanel.setVisible(true);
 		
 		//Creating combo boxes for tileSelect. Needs to be integrated with
 		//all the different tiles when we have them made.
-		tileCB = new JComboBox();
 	}
 	
 	//this will populate the levelArray for use in making a level.
@@ -115,7 +142,7 @@ public class levelBuilder extends JPanel{
 		panel.add(new JLabel("Height: "));
 		panel.add(heightField);
 		
-		int response = JOptionPane.showConfirmDialog(null, panel, "Enter width and height for the level", 
+		int response = JOptionPane.showConfirmDialog(null, panel, "Width and height in tiles", 
 				JOptionPane.OK_CANCEL_OPTION);
 		if(response == JOptionPane.OK_OPTION)
 		{
@@ -127,41 +154,74 @@ public class levelBuilder extends JPanel{
 	}
 	
 	private void saveLevel() {
-		//just using this for testing now
-		//drawing on level panel to test draggable
-				for(int i = 0; i < 100; i ++)
-				{
-					JButton hey = new JButton("hello");
-					hey.setBounds(10+i*40,10+i*40,30,30);
-					levelPanel.add(hey);
-				}
+		
 	}
 	
 	private void paintLevel(Graphics g)
 	{
+		int tileSpacing = 1;
+		int tileWidth = thisFrame.getBlockDimension();
+		levelPanel.setVisible(false);
 		int width = levelArray.length;
 		int height = levelArray[0].length;
-		g.setColor(Color.blue);
-		g.fillRect(200, 200, width, height);
-}
-	
-	/**
-	 * This stuff is just for testing, can be removed once the main menu
-	 * has functionality for accessing the level builder.
-	 * @param args
-	 */
-	public static void main(String [] args) {
-		JFrame frame = new JFrame();
-		frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		frame.setUndecorated(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.setTitle("Testing Frame");
-        levelBuilder build = new levelBuilder(frame);
-        frame.add(build);
-        build.setSize(frame.getSize());
-        frame.revalidate();
-        frame.repaint();
+		levelPanel.setBounds(0,tileSelect.getHeight(),(tileWidth+tileSpacing)*width+tileSpacing,(tileWidth+tileSpacing)*height+tileSpacing);
+		for(int i = 0; i < height; i++) {
+			for(int j = 0; j < width; j++) {
+				JButton tileIcon = new JButton();
+				tileIcon.setActionCommand(null);
+				tileIcon.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						tilePressed(e.getSource());
+					}
+				});
+				tileIcon.setBorderPainted(false);
+				if(levelArray[i][j]==null) {
+					tileIcon.setBackground(Color.white);
+					tileIcon.setOpaque(true);
+				}
+				tileIcon.setBounds(tileSpacing+(j*(tileWidth+tileSpacing)),tileSpacing+(i*(tileWidth+tileSpacing)),tileWidth,tileWidth);
+				levelPanel.add(tileIcon);
+			}
+		}
+		levelPanel.setVisible(true);
 	}
 	
+	//What happens when one of the tiles is pressed.
+	private void tilePressed(Object e) {
+		if(e instanceof JButton) {
+			JButton button = (JButton)e;
+			Object item = tileCB.getSelectedItem();
+			if(item instanceof Tile) {
+				Tile tile = (Tile)item;
+				if(radioAdd.isSelected()) {
+					ImageIcon icon = resizeTile(tile.getImage());
+					button.setIcon(icon);
+					button.repaint();
+					button.setActionCommand(tile.toString());
+				}
+				if(radioDelete.isSelected()) {
+					button.setIcon(null);
+					button.repaint();
+					button.setActionCommand(null);
+				}
+			}
+		}
+	}
+	
+	//Tile array for selecting tiles to place,
+	//needs to be manually updated for every new tile.
+	//we can set coords to 0 for all because we are only
+	//using these for reference.
+	private void makeTileArray() {
+		tileArray = new Tile[1];
+		tileArray[0] = new Dirt(0,0,levelPanel);
+		
+		entityArray = new Entity[0];
+	}
+	
+	private ImageIcon resizeTile(BufferedImage img) {
+		Image imgResize = img.getScaledInstance(thisFrame.getBlockDimension(), thisFrame.getBlockDimension(), Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(imgResize);
+		return icon;
+	}
 }

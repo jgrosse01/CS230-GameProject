@@ -13,7 +13,7 @@ public class Dirt extends Tile implements InteractableTile{
 	static BufferedImage dirtTexture;
 	static {
 		try { 
-			dirtTexture = ImageIO.read(new File("sprites/dirt2.png")); 
+			dirtTexture = ImageIO.read(new File("src/sprites/Dirt.png")); 
 		}
 		catch(java.io.IOException e) { 
 			e.printStackTrace();
@@ -34,4 +34,7 @@ public class Dirt extends Tile implements InteractableTile{
 		}
 	}
 	
+	public String toString() {
+		return "Dirt";
+	}
 }
