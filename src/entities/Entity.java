@@ -35,6 +35,7 @@ public class Entity {
 	
 	static JFrame testFrame = new JFrame();
 	static JPanel testPane = new JPanel();
+	static JLabel label = new JLabel();
 	
 	//private ImageIcon leftSprite;
 	//private ImageIcon rightSprite;
@@ -54,12 +55,12 @@ public class Entity {
 		//this.lSprite = left;
 		//this.rSprite = right;
 		try {
-			this.rSprite = ImageIO.read(new File("sprites/Run (1).png"));
+			this.rSprite = ImageIO.read(new File("src/sprites/Run (1).png"));
+			this.lSprite = ImageIO.read(new File("src/sprites/Run (1).png"));
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		//this.lSprite = ImageIO.read(new File("sprites/leftRun (1).png"));
 		
 		if (lSprite.getWidth() != rSprite.getWidth() || lSprite.getHeight() != rSprite.getHeight())
 			throw new java.io.IOException("Ensure image dimensions are the same");
@@ -69,7 +70,14 @@ public class Entity {
 		//this.width = lSprite.getWidth();
 		//this.height = lSprite.getHeight();
 		currentDir = DIR_LEFT;
+		
+		currentPane = pane;
+		
+		label = new JLabel(new ImageIcon(rSprite));
+		currentPane.add(label);
 		toggleVisible();
+		
+		System.out.println(label);
 	}
 	
 	/**
@@ -92,9 +100,9 @@ public class Entity {
 		if (visible) {
 			switch (currentDir) {
 				case DIR_LEFT:
-					currentPane.getGraphics().drawImage(lSprite, x, y, null);
+					  label.setIcon(new ImageIcon(rSprite));
 				case DIR_RIGHT:
-					currentPane.getGraphics().drawImage(rSprite, x, y, null);
+					  label.setIcon(new ImageIcon(lSprite));
 			}
 		}
 	}
@@ -115,7 +123,7 @@ public class Entity {
 			throw new java.io.IOException("Ensure image dimensions are the same");
 		this.lSprite = left;
 		this.rSprite = right;
-		erase();
+		//erase();
 		draw();
 	}
 	
@@ -124,6 +132,14 @@ public class Entity {
 		return false;
 	}
 	
+	public int getCurrentDir() {
+		return currentDir;
+	}
+
+	public void setCurrentDir(int currentDir) {
+		this.currentDir = currentDir;
+	}
+
 	//Called when changing directions by control handler
 	public void toggleDir() {
 		if (currentDir == DIR_LEFT)
@@ -139,18 +155,4 @@ public class Entity {
 	public BufferedImage[] getSprites() { BufferedImage[] temp = {lSprite, rSprite}; return temp;  }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
-
-public static void main(String[] args) {
-	testFrame.add(testPane);
-	
-	//ImageIcon leftSprite = new ImageIcon(lSprite);
-	//ImageIcon rightSprite = new ImageIcon(rSprite);
-	
-	try {
-		Player player = new Player(500, 500, lSprite, rSprite, testPane);
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-}
 }

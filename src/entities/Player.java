@@ -24,9 +24,18 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private SpawnPoint sp;
     //put timer and keep track in the controlling display class to set dy to -2 for time equivalent to time moving up (Super Mario Feel)
 	
+    private int currentIconNumber = 1;
+    private String currentIconType = "Run";
+    private BufferedImage currentImage;
+    private ImageIcon currentIcon;
+    
+    
     public Player(int x, int y, BufferedImage imageLeft, BufferedImage imageRight, JPanel pane, SpawnPoint sp) throws IOException{
     	super(x,y,imageLeft,imageRight,pane);
     	this.sp = sp;
+    	pane.setFocusable(true);
+    	pane.addKeyListener(this);
+    	System.out.println(pane);
     }
     
     public int getDX() { return dx; }
@@ -53,6 +62,39 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		
 	}
     
+    public void move() {
+		label.setLocation(label.getX()+dx, label.getY());
+		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
+			currentIconNumber = 0;
+			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
+			try {
+				currentImage = ImageIO.read(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentIcon = new ImageIcon(currentImage);
+			label.setIcon(currentIcon);
+		}
+		else {
+			currentIconNumber = (currentIconNumber+1) %15;
+			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
+			System.out.println(file);
+			try {
+				currentImage = ImageIO.read(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentIcon = new ImageIcon(currentImage);
+			System.out.println(currentIcon);
+			System.out.println(label.getX());
+			System.out.println(label.getY());
+			label.setIcon(currentIcon);
+		}
+		
+	}
+    
     public void respawn() {
     	
     }
@@ -63,12 +105,34 @@ public class Player extends Entity implements KeyListener, MouseListener {
 
         switch (key) {
         case (KeyEvent.VK_LEFT):
-        	dx = -2;
+        	System.out.println("LEFT MOVE");
+        	setCurrentDir(DIR_LEFT);
+        	currentIconType = "leftRun";
+        	dx = -10;
+        	dy = 0;
+        	break;
         case (KeyEvent.VK_RIGHT):
-        	dx = 2;
+        	System.out.println("RIGHT MOVE");
+        	setCurrentDir(DIR_RIGHT);
+        	currentIconType = "Run";
+        	dy = 0;
+        	dx = 10;
+        	break;
         case (KeyEvent.VK_UP):
-        	dy = 2;
+        	if (getCurrentDir() == DIR_RIGHT) {
+        		System.out.println("UP RIGHT MOVE");
+            	currentIconType = "Jump";
+            	dy = 10;
+            	break;
+        	}
+        	else {
+        		System.out.println("UP LEFT MOVE");
+            	currentIconType = "leftJump";
+            	dy = 10;
+            	break;
+        	}
         }
+        move();
 	}
 
 	@Override
@@ -77,12 +141,27 @@ public class Player extends Entity implements KeyListener, MouseListener {
 
 		switch (key) {
         case (KeyEvent.VK_LEFT):
+        	currentIconType = "leftIdle";
+        	currentIconNumber = 0;
         	dx = 0;
         case (KeyEvent.VK_RIGHT):
+        	currentIconType = "Idle";
+        	currentIconNumber = 0;
         	dx = 0;
         case (KeyEvent.VK_UP):
-        	dy = 0;
+        	if (getCurrentDir() == DIR_RIGHT)
+        	{
+        		currentIconType = "Idle";
+            	currentIconNumber = 0;
+            	dy = 0;
+        	}
+        	else {
+        		currentIconType = "leftIdle";
+            	currentIconNumber = 0;
+            	dy = 0;
+        	}
         }
+		move();
 	}
 	
 	public SpawnPoint getSpawnPoint() {

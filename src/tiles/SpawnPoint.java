@@ -15,7 +15,7 @@ public class SpawnPoint extends Tile implements InteractableTile{
 	static BufferedImage texture;
 	static {
 		try { 
-			texture = ImageIO.read(new File("sprites/NEEDIMAGES)); 
+			texture = ImageIO.read(new File("src/sprites/Run (1).png"));
 		}
 		catch(java.io.IOException e) { 
 			e.printStackTrace();
