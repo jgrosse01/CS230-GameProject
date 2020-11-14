@@ -100,9 +100,9 @@ public class Entity {
 		if (visible) {
 			switch (currentDir) {
 				case DIR_LEFT:
-					  label.setIcon(new ImageIcon(rSprite));
+					label.setIcon(new ImageIcon(rSprite));
 				case DIR_RIGHT:
-					  label.setIcon(new ImageIcon(lSprite));
+					label.setIcon(new ImageIcon(lSprite));
 			}
 		}
 	}

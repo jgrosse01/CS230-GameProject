@@ -38,7 +38,8 @@ public class Player extends Entity implements KeyListener, MouseListener {
      * @param pane pane to be painted to
      * @param sp spawnpoint of player
      * @throws IOException cannot find images
-     */
+     **/
+    
     public Player(int x, int y, BufferedImage imageLeft, BufferedImage imageRight, JPanel pane, SpawnPoint sp) throws IOException{
     	super(x,y,imageLeft,imageRight,pane);
     	this.sp = sp;
@@ -60,7 +61,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		if (fileName != null)
 			try
 			{
-				for (int i = 0; i<83; i++) {
+				for (int i = 0; i<93; i++) {
 					playerImages[i] = ImageIO.read(new File("sprites/" + fileName));
 				}
 			}
@@ -88,7 +89,6 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		else {
 			currentIconNumber = (currentIconNumber+1) %15;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
-			System.out.println(file);
 			try {
 				currentImage = ImageIO.read(file);
 			} catch (IOException e) {
@@ -96,9 +96,6 @@ public class Player extends Entity implements KeyListener, MouseListener {
 				e.printStackTrace();
 			}
 			currentIcon = new ImageIcon(currentImage);
-			System.out.println(currentIcon);
-			System.out.println(label.getX());
-			System.out.println(label.getY());
 			label.setIcon(currentIcon);
 		}
 		
@@ -117,6 +114,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	System.out.println("LEFT MOVE");
         	setCurrentDir(DIR_LEFT);
         	currentIconType = "leftRun";
+        	//label.setLocation((int) (getX()-(label.getWidth()*0.5)), getY());
         	dx = -10;
         	dy = 0;
         	break;
@@ -124,6 +122,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	System.out.println("RIGHT MOVE");
         	setCurrentDir(DIR_RIGHT);
         	currentIconType = "Run";
+        	//label.setLocation((int) (getX()+(label.getWidth()*0.5)), getY());
         	dy = 0;
         	dx = 10;
         	break;
