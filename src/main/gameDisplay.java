@@ -4,21 +4,26 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import levelBuilder.levelInfo;
 
 import entities.Player;
 import tiles.Tile;
+import java.util.Timer;
 
-public class gameDisplay extends JPanel {
+public class gameDisplay extends JPanel{
+
+	private static final long serialVersionUID = -3506813690426695567L;
 	
 	JPanel level;
 	Player player;
 	
-	public gameDisplay() {
+	private levelInfo currentLevel;
+	private int timerInterval = 17;
+
+	public gameDisplay(gameController frame) {
 		level = new JPanel();
 		level.setLayout(null);
 		level.setVisible(true);
-		
-		
 	}
 
 	public void scalePlayer() {
@@ -35,5 +40,12 @@ public class gameDisplay extends JPanel {
 	public void camera() {
 		
 	}
-
+	
+	public void run() {
+		
+	}
+	
+	private void paint() {
+		
+	}
 }
