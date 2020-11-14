@@ -16,7 +16,7 @@ public class levelInfo {
 	/**
 	 * Will probably need to call level loader and need a filename
 	 */
-	public levelInfo() {
+	public levelInfo(int w, int h, String[][] fileLoaded) {
 		
 	}
 	
