@@ -13,7 +13,7 @@ public class SpawnPoint extends Tile implements InteractableTile{
 	private boolean isCurrent;
 	private BufferedImage currentImage;
 	
-	static BufferedImage[] texture;
+	static BufferedImage[] texture = new BufferedImage[2];
 	static {
 		try { 
 			texture[0] = ImageIO.read(new File("src/sprites/Dead (1).png")); //image for active
