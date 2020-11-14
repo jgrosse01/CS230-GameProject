@@ -1,5 +1,7 @@
 package levelBuilder;
 
+import javax.swing.JPanel;
+
 import tiles.Tile;
 
 public class levelInfo {
@@ -16,7 +18,7 @@ public class levelInfo {
 	/**
 	 * Will probably need to call level loader and need a filename
 	 */
-	public levelInfo(int w, int h, String[][] fileLoaded) {
+	public levelInfo(int w, int h, JPanel pane) {
 		
 	}
 	
@@ -50,5 +52,13 @@ public class levelInfo {
 //		return flag;
 		//This is just here to avoid spitting errors right now
 		return true;
+	}
+	
+	public void setLevel(Tile[][] levelArray) {
+		levelLayout = levelArray;
+	}
+	
+	public void drawLevel() {
+		
 	}
 }
