@@ -74,6 +74,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     
     public void move() {
 		label.setLocation(label.getX()+dx, label.getY());
+		//draw();
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
 			currentIconNumber = 0;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");

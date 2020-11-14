@@ -33,10 +33,6 @@ public class gameDisplay extends JPanel{
 		imageIcon = new ImageIcon(newimg);  // transform it back
 	}
 	
-	public void loadLevel() {
-		
-	}
-	
 	public void camera() {
 		
 	}
