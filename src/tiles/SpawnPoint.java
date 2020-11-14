@@ -15,7 +15,7 @@ public class SpawnPoint extends Tile implements InteractableTile{
 	static BufferedImage texture;
 	static {
 		try { 
-			texture = ImageIO.read(new File("sprites/NEEDIMAGES")); 
+			texture = ImageIO.read(new File("src/sprites/Dead (1).png")); 
 		}
 		catch(java.io.IOException e) { 
 			e.printStackTrace();
@@ -49,4 +49,11 @@ public class SpawnPoint extends Tile implements InteractableTile{
 		player.setSpawnPoint(this);
 	}
 	
+	public boolean isCurrent() {
+		return isCurrent;
+	}
+	
+	public String toString() {
+		return "SpawnPoint";
+	}
 }
