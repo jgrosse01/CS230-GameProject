@@ -20,8 +20,8 @@ public class levelInfo {
 	/**
 	 * Will probably need to call level loader and need a filename
 	 */
-	public levelInfo(int w, int h, JPanel pane) {
-		
+	public levelInfo(Tile[][] layout, JPanel pane) {
+		this.levelLayout = layout;
 	}
 	
 	/**
