@@ -104,6 +104,17 @@ public class Player extends Entity implements KeyListener, MouseListener {
     public void respawn() {
     	
     }
+    
+    public void gravity() {
+        //max_fall = -10
+        //self.velocityY = max(self.velocityY - 1, max_fall)
+ 
+        //self.y -= self.velocityY
+    	
+    	int maxFall = -10;
+    	
+    	
+    }
 
 	@Override
 	public void keyPressed(KeyEvent e) {

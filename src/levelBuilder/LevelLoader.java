@@ -1,12 +1,21 @@
 package levelBuilder;
 
-public class LevelLoader {
+import javax.swing.JPanel;
 
-	static levelInfo level;
+import tiles.Tile;
+
+public class LevelLoader {
+	
+	Tile[][] levelArray;
+	levelInfo level;
 	
 	public static levelInfo load(String[] levelList) { 
 		
-		level = new levelInfo(width, height, fileLoaded);
+		
+	}
+	
+	public levelInfo load(String levelString, JPanel pane) { 
+		
 		return level;
 	}
 }
