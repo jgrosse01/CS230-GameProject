@@ -43,7 +43,7 @@ public class LevelLoader {
 				}
 			}
 		}
-		
+		reader.close();
 		return new levelInfo(levelArray, pane);
 		
 		} catch (IOException e){
