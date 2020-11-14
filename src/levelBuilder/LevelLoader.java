@@ -15,7 +15,6 @@ public class LevelLoader {
 		
 		//This splits first line by colon for width and height
 		Tile[][] levelArray;
-		levelInfo level;
 		int width;
 		int height;
 		String line;
@@ -72,7 +71,7 @@ public class LevelLoader {
 			splitOptions = options.split(":");
 		}
 		switch(string) {
-		case "SpawnPoint": return new SpawnPoint(x,y,pane,(options.contentEquals("true") ? true : false));
+		case "SpawnPoint": return new SpawnPoint(x,y,pane,(options.equals("true") ? true : false));
 		/*case "PuzzleItem":
 			switch(splitOptions[0]) {
 			case "Key": return new Key(x,y,pane);
