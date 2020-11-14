@@ -20,6 +20,10 @@ public class Metal extends Tile{
 	
 	public Metal(int x, int y, JPanel pane) {
 		super(x, y, texture, pane, false);
-		
+	}
+	
+	@Override
+	public String toString() {
+		return "Metal";
 	}
 }

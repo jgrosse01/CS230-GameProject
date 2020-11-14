@@ -20,7 +20,7 @@ public class levelBuilder extends JPanel{
 	private static final long serialVersionUID = 2370201629065856700L;
 	
 	private JPanel tileSelect; //For holding all the swing objects that select the tile to place
-	private JPanel levelPanel;
+	private JPanel levelPanel; //for displaying level
 	private JComboBox tileCB; //For selecting specific tile in your tile group
 	private ButtonGroup radioButtons; //For selecting a tile group i.e. tiles, entities, puzzles
 	private Tile[][] levelArray;
