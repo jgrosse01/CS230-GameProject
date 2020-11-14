@@ -1,12 +1,12 @@
 package levelBuilder;
 
 import javax.swing.JPanel;
-
+import main.gameController;
 import tiles.Tile;
 
 public class levelInfo {
 	//pixel width and height of each tile space
-	private int tileDimension;
+	private int tileDimension = gameController.getBlockDimension();
 	
 	private Tile endPoint;
 	
@@ -35,16 +35,17 @@ public class levelInfo {
 	
 	/**
 	 * Checks the allPuzzles variable and returns if
-	 * all have been solved or not
+	 * all have been solved or not. Don't know if we will use
+	 * a different win condition and not need this method.
 	 * @return
 	 */
-	public boolean didPass() {
-		//commented out because we don't have these classes/variables yet
+//	public boolean didPass() {
+//		commented out because we don't have these classes/variables yet
 //		boolean flag = true;
 //		for(int i = 0; i < allPuzzles.length; i++)
 //		{
-			/**The "isPassed" is a placeholder name
-			 * we need to check if the puzzle object has been passed */
+//			/**The "isPassed" is a placeholder name
+//			 * we need to check if the puzzle object has been passed */
 //			if(allPuzzles[i].isPassed == false)
 //			{
 //				flag = false;
@@ -52,15 +53,19 @@ public class levelInfo {
 //			}
 //		}
 //		return flag;
-		//This is just here to avoid spitting errors right now
-		return true;
-	}
+//		This is just here to avoid spitting errors right now
+//		return true;
+//	}
 	
 	public void setLevel(Tile[][] levelArray) {
 		levelLayout = levelArray;
 	}
 	
 	public void drawLevel() {
-		
+		for(int i = 0; i < levelLayout.length; i ++) {
+			for(int j = 0; j < levelLayout[0].length; j++) {
+				
+			}
+		}
 	}
 }
