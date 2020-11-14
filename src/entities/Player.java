@@ -104,6 +104,23 @@ public class Player extends Entity implements KeyListener, MouseListener {
     public void respawn() {
     	
     }
+    
+    public void gravity() {
+        //max_fall = -10
+        //self.velocityY = max(self.velocityY - 1, max_fall)
+ 
+        //self.y -= self.velocityY
+    	int terminalVelocity = -10;
+    	int gravity = -1;
+    	int verticalSpeed = 0;
+    	
+    	verticalSpeed = verticalSpeed + gravity;
+        if(verticalSpeed > terminalVelocity){
+        	verticalSpeed = terminalVelocity;
+        }
+        this.setY(this.getY() + verticalSpeed);
+    	
+    }
 
 	@Override
 	public void keyPressed(KeyEvent e) {

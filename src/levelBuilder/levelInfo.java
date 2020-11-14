@@ -8,6 +8,8 @@ public class levelInfo {
 	//pixel width and height of each tile space
 	private int tileDimension;
 	
+	private Tile endPoint;
+	
 	/**
 	 * Commented out because we don't have these classes
 	 * at the time of writing.
