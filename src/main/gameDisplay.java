@@ -33,8 +33,7 @@ public class gameDisplay extends JPanel{
 		level.setLayout(null);
 		level.setVisible(true);
 		
-		JFileChooser chooser = new JFileChooser();
-		currentLevel = LevelLoader.load(chooser.getCurrentDirectory().getAbsolutePath(),this);
+		currentLevel = LevelLoader.load(null,this);
 		gameIsReady = true;
 	}
 
