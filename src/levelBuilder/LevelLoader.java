@@ -26,7 +26,6 @@ public class LevelLoader {
 		width = Integer.parseInt(lineSplit[0]);
 		height = Integer.parseInt(lineSplit[1]);
 		levelArray = new Tile[width][height];
-		
 		//Split by spaces to get tiles
 		for (int i = 0; i < width; i++) {
 			lineSplit = reader.nextLine().split(" ");
