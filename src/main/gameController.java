@@ -8,9 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
@@ -58,10 +60,13 @@ public class gameController extends JFrame{
             // Open an audio input stream.
             //URL url = this.getClass().getClassLoader().getResource("gameover.wav");
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("music.wav"));
+            AudioFormat af = audioIn.getFormat();
             // Get a sound clip resource.
             Clip clip = AudioSystem.getClip();
             // Open audio clip and load samples from the audio input stream.
+            DataLine.Info info = new DataLine.Info(Clip.class, af);
             clip.open(audioIn);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
             clip.start();
          } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
