@@ -47,7 +47,9 @@ public class testGameController {
 	
 	public testGameController() {
 		testFrame = new JFrame();
+//		testFrame.setLayout(null);
 		testPane = new JPanel();
+//		testPane.setLayout(null);
 		sp = new SpawnPoint(50, 10, testPane);
 		//Player.loadImage();
 		try {

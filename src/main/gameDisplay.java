@@ -41,8 +41,7 @@ public class gameDisplay extends JPanel{
 	public gameDisplay(gameController frame) {
 		frame.setLayout(null);
 		this.setLayout(null);
-		this.setBackground(Color.black);
-		
+		this.setBackground(Color.gray);
 		//temp code for draggin and clicking
 		this.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {

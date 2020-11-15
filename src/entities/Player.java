@@ -1,6 +1,8 @@
 package entities;
 
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -36,6 +38,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private static BufferedImage[] leftJump;
     private static BufferedImage[] dead;
     private static BufferedImage[] leftDead;
+    private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private boolean didJump = false; //to utilize timer to set limit on jump
     private BufferedImage[] playerImages;
     private Tile inventorySlot = null;
@@ -46,6 +49,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private String currentIconType = "Run";
     private BufferedImage currentImage;
     private ImageIcon currentIcon;
+    private JPanel panel;
    
     /**
      * 
@@ -61,6 +65,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     public Player(int x, int y, BufferedImage imageLeft, BufferedImage imageRight, JPanel pane, SpawnPoint sp) throws IOException{
     	super(x,y,imageLeft,imageRight,pane);
     	this.sp = sp;
+    	panel = pane;
     	pane.setFocusable(true);
     	pane.addKeyListener(this);
     	System.out.println(pane);
@@ -112,7 +117,8 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	}
     
     public void move() {
-		label.setLocation(label.getX()+dx, label.getY()+dy);
+		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
 		//draw();
 		
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
@@ -194,6 +200,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     public void respawn() {
     	this.setX(sp.getX());
     	this.setY(sp.getY());
+    	panel.setLocation((int)(screenSize.getWidth()/2)-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-gameController.getBlockDimension());
     }
     
     public void gravity() {
