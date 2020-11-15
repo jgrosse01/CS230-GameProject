@@ -104,7 +104,6 @@ public class Player extends Entity implements KeyListener, MouseListener {
     public void move() {
 		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
-		//draw();
 		
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
 			currentIconNumber = 0;
