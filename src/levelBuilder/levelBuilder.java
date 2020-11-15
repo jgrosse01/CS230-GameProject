@@ -227,6 +227,7 @@ public class levelBuilder extends JPanel{
 					tileIcon.setOpaque(true);
 				}
 				else {
+					tileIcon.setBackground(Color.white);
 					tileIcon.setIcon(resizeTile(levelArray[j][i].getImage()));
 				}
 				tileIcon.setBounds(tileSpacing+(j*(tileWidth+tileSpacing)),tileSpacing+(i*(tileWidth+tileSpacing)),tileWidth,tileWidth);

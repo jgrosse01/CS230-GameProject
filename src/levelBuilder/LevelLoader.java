@@ -26,19 +26,18 @@ public class LevelLoader {
 		width = Integer.parseInt(lineSplit[0]);
 		height = Integer.parseInt(lineSplit[1]);
 		levelArray = new Tile[width][height];
-		
 		//Split by spaces to get tiles
-		for (int j = 0; j < width; j++) {
+		for (int i = 0; i < height; i++) {
 			lineSplit = reader.nextLine().split(" ");
-			for (int i = 0; i < height; i++) {
+			for (int j = 0; j < lineSplit.length; j++) {
 				if (lineSplit[j].contains(":")) {
 					int temp = lineSplit[j].indexOf(":");
 					String temp1 = lineSplit[j].substring(0,temp); //String with Tile name
 					String temp2 = lineSplit[j].substring(temp+1); //String with Options
-					levelArray[i][j] = stringToTile(temp1,i,j,pane,temp2);
+					levelArray[j][i] = stringToTile(temp1,i,j,pane,temp2);
 				}
 				else {
-					levelArray[i][j] = stringToTile(lineSplit[j],i,j,pane);
+					levelArray[j][i] = stringToTile(lineSplit[j],i,j,pane);
 				}
 			}
 		}
@@ -87,6 +86,6 @@ public class LevelLoader {
 	
 	public static void main(String[] args) {
 
-		System.out.println("Comment Ya Code");
+		System.out.println("Comment Ya Code, Matt... I'm lookin' at you!");
 	}
 } 
