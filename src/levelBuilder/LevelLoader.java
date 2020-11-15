@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import main.gameController;
-import main.gameDisplay;
 
 import javax.swing.JPanel;
 
@@ -64,6 +63,7 @@ public class LevelLoader {
 	
 	//stringToTile for tiles that have extra options that we need to know
 	private static Tile stringToTile(String string, int x, int y, JPanel pane, String options) {
+		@SuppressWarnings("unused")
 		String[] splitOptions = new String[3];
 		//for puzzle {name, typeID, specialID}
 		//for spawnpoint options = boolean T/F

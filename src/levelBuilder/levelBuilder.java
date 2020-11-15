@@ -1,7 +1,6 @@
 package levelBuilder;
 
 import javax.swing.*;
-import entities.Entity;
 import main.gameController;
 import java.awt.*;
 import java.awt.event.ActionEvent;
