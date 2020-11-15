@@ -14,6 +14,7 @@ import tiles.SpawnPoint;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import main.gameDisplay;
 
 import main.gameController;
 
