@@ -18,7 +18,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 
 	private int dx; //Direction x (change)
     private int dy; //Direction y (change)
-    private boolean isAirbourne = false; //to utilize timer to set limit on jump
+    private boolean didJump = false; //to utilize timer to set limit on jump
     private BufferedImage[] playerImages;
     private Tile inventorySlot = null;
     private SpawnPoint sp;
@@ -47,14 +47,6 @@ public class Player extends Entity implements KeyListener, MouseListener {
     	pane.addKeyListener(this);
     	System.out.println(pane);
     }
-    
-    public int getDX() { return dx; }
-    public int getDY() { return dy; }
-    
-    //FOR USE IN THE CONTROLLING DISPLAY CLASS WITH TIMER
-    public void setDY(int dY) { this.dy = dY; }
-    
-    public boolean isAirbourne() { return isAirbourne; }
     
     public void loadImage(String fileName)
 	{
@@ -87,7 +79,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			label.setIcon(currentIcon);
 		}
 		else {
-			currentIconNumber = (currentIconNumber+1) %15;
+			currentIconNumber = (currentIconNumber>=15) ? 0 : (currentIconNumber+1) %15;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
 			try {
 				currentImage = ImageIO.read(file);
@@ -102,14 +94,11 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	}
     
     public void respawn() {
-    	
+    	this.setX(sp.getX());
+    	this.setY(sp.getY());
     }
     
     public void gravity() {
-        //max_fall = -10
-        //self.velocityY = max(self.velocityY - 1, max_fall)
- 
-        //self.y -= self.velocityY
     	int terminalVelocity = -10;
     	int gravity = -1;
     	int verticalSpeed = 0;
@@ -208,6 +197,28 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	public void clearInventory() {
 		inventorySlot = null;
 	}
+	
+	public void invertDY() {
+		dy = -1*dy;
+	}
+	
+	public int getDX() { return dx; }
+    public int getDY() { return dy; }
+    
+    //FOR USE IN THE CONTROLLING DISPLAY CLASS WITH TIMER
+    public void setDY(int dY) { this.dy = dY; }
+	
+	public boolean didJump() {
+		return didJump;
+	}
+	
+	//sets didJump to false and allows gravity to work
+	public void smackdown() {
+		didJump = false;
+	}
+	
+	
+	
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
