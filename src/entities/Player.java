@@ -19,7 +19,14 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	private int dx; //Direction x (change)
     private int dy; //Direction y (change)
     private boolean isAirbourne = false; //to utilize timer to set limit on jump
-    private BufferedImage[] playerImages;
+    private static BufferedImage[] run;
+    private static BufferedImage[] leftRun;
+    private static BufferedImage[] idle;
+    private static BufferedImage[] leftIdle;
+    private static BufferedImage[] jump;
+    private static BufferedImage[] leftJump;
+    private static BufferedImage[] dead;
+    private static BufferedImage[] leftDead;
     private Tile inventorySlot = null;
     private SpawnPoint sp;
     //put timer and keep track in the controlling display class to set dy to -2 for time equivalent to time moving up (Super Mario Feel)
@@ -56,25 +63,45 @@ public class Player extends Entity implements KeyListener, MouseListener {
     
     public boolean isAirbourne() { return isAirbourne; }
     
-    public void loadImage(String fileName)
+    public static void loadImage()
 	{
-		if (fileName != null)
-			try
-			{
-				for (int i = 0; i<93; i++) {
-					playerImages[i] = ImageIO.read(new File("sprites/" + fileName));
-				}
+		try {
+			idle = new BufferedImage[1];
+			leftIdle = new BufferedImage[1];
+			run = new BufferedImage[16];
+			leftRun = new BufferedImage[16];
+			jump = new BufferedImage[16];
+			leftJump = new BufferedImage[16];
+			dead = new BufferedImage[16];
+			leftDead = new BufferedImage[16];
+			
+			idle[0] = ImageIO.read(new File("src/sprites/Idle (0).png"));
+			leftIdle[0] = ImageIO.read(new File("src/sprites/leftIdle (0).png"));
+			for (int i = 0; i<15; i++) {
+				run[i] = ImageIO.read(new File("src/sprites/Run ("+ (i+1) +").png"));
 			}
-			catch (IOException e)
-			{
-				System.out.println("Image not found.");
+			for (int i = 0; i<15; i++) {
+				leftRun[i] = ImageIO.read(new File("src/sprites/leftRun ("+ (i+1) +").png"));
 			}
-		
+			for (int i = 0; i<15; i++) {
+				jump[i] = ImageIO.read(new File("src/sprites/Jump ("+ (i+1) +").png"));
+			}
+			for (int i = 0; i<15; i++) {
+				leftJump[i] = ImageIO.read(new File("src/sprites/leftJump ("+ (i+1) +").png"));
+			}
+			for (int i = 0; i<15; i++) {
+				dead[i] = ImageIO.read(new File("src/sprites/Dead ("+ (i+1) +").png"));
+			}
+			for (int i = 0; i<15; i++) {
+				leftDead[i] = ImageIO.read(new File("src/sprites/leftDead ("+ (i+1) +").png"));
+			}
+		} catch (IOException e) {e.printStackTrace();}
 	}
     
     public void move() {
-		label.setLocation(label.getX()+dx, label.getY());
+		label.setLocation(label.getX()+dx, label.getY()+dy);
 		//draw();
+		
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
 			currentIconNumber = 0;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
@@ -87,6 +114,49 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			currentIcon = new ImageIcon(currentImage);
 			label.setIcon(currentIcon);
 		}
+		
+		/*
+		switch (currentIconType) {
+		case "Idle":
+			currentIcon = new ImageIcon(idle[0]);
+			label.setIcon(currentIcon);
+		case "leftIdle":
+			currentIcon = new ImageIcon(leftIdle[0]);
+			label.setIcon(currentIcon);
+		case "Run":
+			for (int i = 0; i<15; i++) {
+				currentIcon = new ImageIcon(run[i+1]);
+				label.setIcon(currentIcon);
+			}
+		case "leftRun":
+			for (int i = 0; i<15; i++) {
+				currentIcon = new ImageIcon(leftRun[i+1]);
+			}
+			label.setIcon(currentIcon);
+		case "Jump":
+			for (int i = 0; i<15; i++) {
+				currentIcon = new ImageIcon(jump[i+1]);
+			}
+			label.setIcon(currentIcon);
+		case "leftJump":
+			for (int i = 0; i<15; i++) {
+				currentIcon = new ImageIcon(leftJump[i+1]);
+			}
+			label.setIcon(currentIcon);
+		case "Dead":
+			for (int i = 0; i<15; i++) {
+				currentIcon = new ImageIcon(dead[i+1]);
+			}
+			label.setIcon(currentIcon);
+		case "leftDead":
+			for (int i = 0; i<15; i++) {
+				currentIcon = new ImageIcon(leftDead[i+1]);
+			}
+			label.setIcon(currentIcon);
+		}
+		*/
+		
+		
 		else {
 			currentIconNumber = (currentIconNumber+1) %15;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
