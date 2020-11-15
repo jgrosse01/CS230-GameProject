@@ -33,6 +33,11 @@ public class mainMenu extends JLayeredPane{
 		this.add(picLabel, 1); //add to position 1 on the layered panel
 		
 		play = new JButton("Play"); //init play button
+		play.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.mainToGame();
+			}
+		});
 		levelBuilder = new JButton("Level Builder"); //init levels button
 		levelBuilder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

@@ -76,5 +76,13 @@ public class gameController extends JFrame{
 		mainPane.add(menu);
 		mainPane.setVisible(true);
 	}
+	
+	public void mainToGame() {
+		mainPane.setVisible(false);
+		mainPane.remove(0);
+		gameDisplay game = new gameDisplay(this);
+		mainPane.add(game);
+		mainPane.setVisible(true);
+	}
 
 }

@@ -27,6 +27,8 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private static BufferedImage[] leftJump;
     private static BufferedImage[] dead;
     private static BufferedImage[] leftDead;
+    private boolean didJump = false; //to utilize timer to set limit on jump
+    private BufferedImage[] playerImages;
     private Tile inventorySlot = null;
     private SpawnPoint sp;
     //put timer and keep track in the controlling display class to set dy to -2 for time equivalent to time moving up (Super Mario Feel)
@@ -63,7 +65,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     
     public boolean isAirbourne() { return isAirbourne; }
     
-    public static void loadImage()
+    public void loadImage(String fileName)
 	{
 		try {
 			idle = new BufferedImage[1];
@@ -158,7 +160,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		
 		
 		else {
-			currentIconNumber = (currentIconNumber+1) %15;
+			currentIconNumber = (currentIconNumber>=15) ? 0 : (currentIconNumber+1) %15;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
 			try {
 				currentImage = ImageIO.read(file);
@@ -173,14 +175,11 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	}
     
     public void respawn() {
-    	
+    	this.setX(sp.getX());
+    	this.setY(sp.getY());
     }
     
     public void gravity() {
-        //max_fall = -10
-        //self.velocityY = max(self.velocityY - 1, max_fall)
- 
-        //self.y -= self.velocityY
     	int terminalVelocity = -10;
     	int gravity = -1;
     	int verticalSpeed = 0;
@@ -279,6 +278,22 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	public void clearInventory() {
 		inventorySlot = null;
 	}
+	
+	public void invertDY() {
+		dy = -1*dy;
+	}
+	
+	public boolean didJump() {
+		return didJump;
+	}
+	
+	//sets didJump to false and allows gravity to work
+	public void smackdown() {
+		didJump = false;
+	}
+	
+	
+	
 	
 	@Override
 	public void keyTyped(KeyEvent e) {

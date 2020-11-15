@@ -20,8 +20,8 @@ public class levelInfo {
 	/**
 	 * Will probably need to call level loader and need a filename
 	 */
-	public levelInfo(int w, int h, JPanel pane) {
-		
+	public levelInfo(Tile[][] layout, JPanel pane) {
+		this.levelLayout = layout;
 	}
 	
 	/**
@@ -61,11 +61,19 @@ public class levelInfo {
 		levelLayout = levelArray;
 	}
 	
+	public Tile[][] getLevel() {
+		return levelLayout;
+	}
+	
 	public void drawLevel() {
 		for(int i = 0; i < levelLayout.length; i ++) {
-			for(int j = 0; j < levelLayout[0].length; j++) {
-				
+			for(int j = 0; j < levelLayout[i].length; j++) {
+				levelLayout[i][j].draw();
 			}
 		}
+	}
+	
+	public Tile[][] getLevelLayout() {
+		return levelLayout;
 	}
 }

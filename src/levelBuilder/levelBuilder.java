@@ -92,6 +92,11 @@ public class levelBuilder extends JPanel{
 			}
 		});
 		JButton loadButton = new JButton("Load Level");
+		loadButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadLevel();
+			}
+		});
 		
 		//combobox for selecting the tiles and label for combobox
 		//the string arrays need to be manually edited when we
@@ -126,10 +131,10 @@ public class levelBuilder extends JPanel{
 		tileCB.setVisible(true);
 		
 		//^^ but for level object
-		//level.setLayout(new FlowLayout());
 		this.add(levelPanel, BorderLayout.CENTER);
 		levelPanel.setBackground(Color.black);
 		levelPanel.setVisible(true);
+
 		
 		//Creating combo boxes for tileSelect. Needs to be integrated with
 		//all the different tiles when we have them made.
@@ -166,7 +171,8 @@ public class levelBuilder extends JPanel{
 		String levelName = JOptionPane.showInputDialog("Level Name");
 		
 		File newLevel = new File(levelName + ".txt");
-		if(newLevel.createNewFile()) {
+		newLevel.delete();
+		newLevel.createNewFile();
 			FileWriter writer = new FileWriter(levelName + ".txt");
 			writer.write(Integer.toString(levelArray.length)+":"+levelArray[0].length+"\n");
 			for(int i = 0; i < levelArray[0].length; i++) {
@@ -183,9 +189,7 @@ public class levelBuilder extends JPanel{
 				writer.write("\n");
 			}
 			writer.close();
-		} else {
-			System.out.println("There is already a level with that name");
-		}
+
 	}
 	
 	private void paintLevel(Graphics g)
@@ -205,10 +209,25 @@ public class levelBuilder extends JPanel{
 						tilePressed(e.getSource());
 					}
 				});
+				tileIcon.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent e) {
+						levelLoc = tileIcon.getLocation();
+					}
+				});
+				//making level panel draggable
+				tileIcon.addMouseMotionListener(new MouseAdapter() {
+					public void mouseDragged(MouseEvent e) {
+						Point currentScreenLoc = e.getLocationOnScreen();
+						levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
+					}
+				});
 				tileIcon.setBorderPainted(false);
 				if(levelArray[j][i]==null) {
 					tileIcon.setBackground(Color.white);
 					tileIcon.setOpaque(true);
+				}
+				else {
+					tileIcon.setIcon(resizeTile(levelArray[j][i].getImage()));
 				}
 				tileIcon.setBounds(tileSpacing+(j*(tileWidth+tileSpacing)),tileSpacing+(i*(tileWidth+tileSpacing)),tileWidth,tileWidth);
 				levelPanel.add(tileIcon);
@@ -228,8 +247,10 @@ public class levelBuilder extends JPanel{
 				Tile tile = (Tile)item;
 				if(radioAdd.isSelected()) {
 					if(tile instanceof SpawnPoint) {
-						if(!isDefaultPlaced) ((SpawnPoint) tile).toggleIsCurrent();
-						isDefaultPlaced=true;
+						if(!isDefaultPlaced) {
+							((SpawnPoint) tile).toggleIsCurrent();
+							isDefaultPlaced=true;
+						}
 					}
 					levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = tile;
 					ImageIcon icon = resizeTile(tile.getImage());
@@ -260,6 +281,13 @@ public class levelBuilder extends JPanel{
 		Image imgResize = img.getScaledInstance(thisFrame.getBlockDimension(), thisFrame.getBlockDimension(), Image.SCALE_SMOOTH);
 		ImageIcon icon = new ImageIcon(imgResize);
 		return icon;
+	}
+	
+	private void loadLevel() {
+		String level = JOptionPane.showInputDialog("Name of the level you wish to load");
+		levelInfo info = LevelLoader.load(level+".txt",levelPanel);
+		levelArray = info.getLevelLayout();
+		paintLevel(levelPanel.getGraphics());
 	}
 	
 }
