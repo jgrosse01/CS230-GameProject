@@ -5,7 +5,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import levelBuilder.levelInfo;
-import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import entities.Player;
 import tiles.Tile;
