@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import entities.Player;
 import tiles.Tile;
 import java.util.Timer;
+import main.gameController;
 import levelBuilder.LevelLoader;
 
 public class gameDisplay extends JPanel{
@@ -61,7 +62,7 @@ public class gameDisplay extends JPanel{
 	public void scalePlayer() {
 		ImageIcon imageIcon = new ImageIcon("images"); // load the image to a imageIcon
 		Image image = imageIcon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(120, 240,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		Image newimg = image.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 		imageIcon = new ImageIcon(newimg);  // transform it back
 	}
 	

@@ -48,19 +48,9 @@ public class testGameController {
 	public testGameController() {
 		testFrame = new JFrame();
 		testPane = new JPanel();
-		sp = new SpawnPoint(50, 50, testPane);
-		
-		try { 
-			dirtTexture = ImageIO.read(new File("src/sprites/Dirt.png")); 
-		}
-		catch(java.io.IOException e) { 
-			e.printStackTrace();
-		}
-		
-		tile = new Tile(500, 500, dirtTexture, testPane);
-		
+		sp = new SpawnPoint(50, 10, testPane);
+		//Player.loadImage();
 		try {
-             //testSprite = ImageIO.read(new File("/fastDolphinRight.jpg"));
 			 File file = new File("src/sprites/Idle (0).png");
 			 testSprite = ImageIO.read(file);
 		} catch(Exception e) {e.printStackTrace();}
@@ -70,15 +60,13 @@ public class testGameController {
               player.draw();
         } catch (IOException e) {e.printStackTrace();} 
        
-       //testPane.setLocation(player.getX(), player.getY());
-       
        
 	}
 	
 	public void scalePlayer() {
 		ImageIcon imageIcon = new ImageIcon("images"); // load the image to a imageIcon
 		Image image = imageIcon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(120, 240,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		Image newimg = image.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 		imageIcon = new ImageIcon(newimg);  // transform it back
 	}
 	

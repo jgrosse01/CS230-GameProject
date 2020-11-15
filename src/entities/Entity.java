@@ -105,6 +105,32 @@ public class Entity {
 					label.setIcon(new ImageIcon(lSprite));
 			}
 		}
+		/*
+		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
+			currentIconNumber = 0;
+			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
+			try {
+				currentImage = ImageIO.read(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentIcon = new ImageIcon(currentImage);
+			label.setIcon(currentIcon);
+		}
+		else {
+			currentIconNumber = (currentIconNumber+1) %15;
+			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
+			try {
+				currentImage = ImageIO.read(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentIcon = new ImageIcon(currentImage);
+			label.setIcon(currentIcon);
+		}
+		*/
 	}
 	
 	//erases entity
