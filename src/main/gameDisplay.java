@@ -5,25 +5,37 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import levelBuilder.levelInfo;
+import javax.swing.JFileChooser;
 
 import entities.Player;
 import tiles.Tile;
 import java.util.Timer;
+import levelBuilder.LevelLoader;
 
 public class gameDisplay extends JPanel{
 
 	private static final long serialVersionUID = -3506813690426695567L;
 	
-	JPanel level;
-	Player player;
+	private boolean gameIsReady = false;
+	
+	private JPanel level;
+	private Player player;
+	private static Timer timer = new Timer();
+	private static int gravityTimer = 0;
+	private static final int MOVE_TIME = 17;
+	private static final int MAX_NO_GRAVITY_TIMER = 1000;
 	
 	private levelInfo currentLevel;
-	private int timerInterval = 17;
+	//private int timerInterval = 17; //Unneeded due to change in timer use
 
 	public gameDisplay(gameController frame) {
 		level = new JPanel();
 		level.setLayout(null);
 		level.setVisible(true);
+		
+		JFileChooser chooser = new JFileChooser();
+		currentLevel = LevelLoader.load(chooser.getCurrentDirectory().getAbsolutePath(),this);
+		gameIsReady = true;
 	}
 
 	public void scalePlayer() {
@@ -33,19 +45,17 @@ public class gameDisplay extends JPanel{
 		imageIcon = new ImageIcon(newimg);  // transform it back
 	}
 	
-	public void loadLevel() {
-		
-	}
-	
-	public void camera() {
-		
-	}
-	
 	public void run() {
-		
-	}
-	
-	private void paint() {
-		
+		if (gameIsReady) {
+			if (player.didJump()) {
+				player.invertDY();
+				gravityTimer += MOVE_TIME;
+			}
+			if (gravityTimer >= MAX_NO_GRAVITY_TIMER) {
+				player.invertDY();
+				player.smackdown();
+				gravityTimer = 0;
+			}
+		}
 	}
 }

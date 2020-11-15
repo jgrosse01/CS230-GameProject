@@ -61,10 +61,14 @@ public class levelInfo {
 		levelLayout = levelArray;
 	}
 	
+	public Tile[][] getLevel() {
+		return levelLayout;
+	}
+	
 	public void drawLevel() {
 		for(int i = 0; i < levelLayout.length; i ++) {
-			for(int j = 0; j < levelLayout[0].length; j++) {
-				
+			for(int j = 0; j < levelLayout[i].length; j++) {
+				levelLayout[i][j].draw();
 			}
 		}
 	}
