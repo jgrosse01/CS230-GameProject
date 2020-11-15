@@ -68,7 +68,9 @@ public class levelInfo {
 	public void drawLevel() {
 		for(int i = 0; i < levelLayout.length; i ++) {
 			for(int j = 0; j < levelLayout[i].length; j++) {
-				levelLayout[i][j].draw();
+				if (levelLayout[i][j] != null) {
+					levelLayout[i][j].draw();
+				}
 			}
 		}
 	}
