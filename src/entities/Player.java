@@ -2,6 +2,7 @@ package entities;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -46,6 +47,9 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private SpawnPoint sp;
     //put timer and keep track in the controlling display class to set dy to -2 for time equivalent to time moving up (Super Mario Feel)
 
+    //Hitbox for collision detecting
+    private Rectangle hitBox;
+    
     private int currentIconNumber = 1;
     private String currentIconType = "Run";
     private BufferedImage currentImage;
@@ -72,6 +76,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     	System.out.println(pane);
     	imageLeft = ImageIO.read(new File("src/sprites/leftIdle (0).png"));
     	imageRight = ImageIO.read(new File("src/sprites/Idle (0).png"));
+    	hitBox = new Rectangle(x,y,gameController.getBlockDimension(),gameController.getBlockDimension()*2);
     }
     
     public int getDX() { return dx; }
@@ -119,6 +124,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     
     public void move() {
 		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
 		//draw();
 		
@@ -334,7 +340,9 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		dy = 0;
 	}
 	
-	
+	public Rectangle getHitBox() {
+		return hitBox;
+	}
 	
 	
 	@Override

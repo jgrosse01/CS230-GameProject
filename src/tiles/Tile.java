@@ -1,7 +1,9 @@
 package tiles;
 
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
@@ -31,6 +33,9 @@ public class Tile {
 	private JLabel label;
 	protected boolean collideable;
 	
+	//for collision detecting
+	private Rectangle hitBox;
+	
 	//Constructor
 	public Tile(int x, int y, BufferedImage sprite, JPanel pane) {
 		collideable = true;
@@ -45,6 +50,9 @@ public class Tile {
 		this.currentPane = pane;
 		breakable = false;
 		toggleVisible();
+		
+		//constructing hitbox
+		hitBox = new Rectangle(x,y,gameController.getBlockDimension(),gameController.getBlockDimension());
 	}
 	
 	public Tile(int x, int y, BufferedImage sprite, JPanel pane, boolean breakable) {
@@ -60,6 +68,9 @@ public class Tile {
 		this.currentPane = pane;
 		this.breakable = breakable;
 		toggleVisible();
+		
+		//constructing hitbox
+		hitBox = new Rectangle(x,y,gameController.getBlockDimension(),gameController.getBlockDimension());
 	}
 	
 	//Paint to screen with graphics element from content pane
@@ -113,4 +124,7 @@ public class Tile {
 	public int getHeight() { return height; }
 	public boolean isCollideable() {return collideable;}
 	public void changeCollide(boolean option) {collideable = option;}
+	public Rectangle getHitBox() {
+		return hitBox;
+	}
 }
