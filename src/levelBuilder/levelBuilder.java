@@ -240,8 +240,10 @@ public class levelBuilder extends JPanel{
 				Tile tile = (Tile)item;
 				if(radioAdd.isSelected()) {
 					if(tile instanceof SpawnPoint) {
-						if(!isDefaultPlaced) ((SpawnPoint) tile).toggleIsCurrent();
-						isDefaultPlaced=true;
+						if(!isDefaultPlaced) {
+							((SpawnPoint) tile).toggleIsCurrent();
+							isDefaultPlaced=true;
+						}
 					}
 					levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = tile;
 					ImageIcon icon = resizeTile(tile.getImage());
