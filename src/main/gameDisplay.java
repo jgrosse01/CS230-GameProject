@@ -19,6 +19,8 @@ import entities.Player;
 import tiles.SpawnPoint;
 import tiles.Tile;
 import java.util.Timer;
+import java.util.TimerTask;
+
 import main.gameController;
 import levelBuilder.LevelLoader;
 
@@ -29,8 +31,9 @@ public class gameDisplay extends JPanel{
 	private boolean gameIsReady = false;
 	
 	private Player player;
-	private static Timer timer = new Timer();
+	private Timer timer = new Timer();
 	private static int gravityTimer = 0;
+	private Time timerThing;
 	private static final int MOVE_TIME = 17;
 	private static final int MAX_NO_GRAVITY_TIMER = 1000;
 	private Point levelLoc;
@@ -68,6 +71,8 @@ public class gameDisplay extends JPanel{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		timerThing = new Time();
+		timer.schedule(timerThing, 0, 17);
 		player.respawn();
 		player.draw();
 		gameIsReady = true;
@@ -80,20 +85,23 @@ public class gameDisplay extends JPanel{
 		imageIcon = new ImageIcon(newimg);  // transform it back
 	}
 	
-	public void run() {
-		if (gameIsReady) {
-			if (player.didJump()) {//if the player hit up arrow
-				player.canJumpFalse(); //set "canJump" to false in player
-				gravityTimer += MOVE_TIME; //add time to timer
-			}
-			if (gravityTimer >= MAX_NO_GRAVITY_TIMER) { //if 1 second has passed
-				player.invertDY(); //flip the DY direction
-				player.smackdown(); //didJump == false
-				gravityTimer = 0; //reset gravity timer
-				//"hitGround()" in player will set DY to 0 after colliding with the ground (YET TO BE CODED)
+	class Time extends TimerTask {
+		public void run() {
+			if (gameIsReady) {
+				if (player.didJump()) {//if the player hit up arrow
+					player.canJumpFalse(); //set "canJump" to false in player
+					gravityTimer += MOVE_TIME; //add time to timer
+				}
+				if (gravityTimer >= MAX_NO_GRAVITY_TIMER) { //if 1 second has passed
+					player.invertDY(); //flip the DY direction
+					player.smackdown(); //didJump == false
+					gravityTimer = 0; //reset gravity timer
+					//"hitGround()" in player will set DY to 0 after colliding with the ground (YET TO BE CODED)
+				}
 			}
 		}
 	}
+	
 	
 	public void setCurrentSpawn() {
 		Tile[][] levelLayout = currentLevel.getLevel();
