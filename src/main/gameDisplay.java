@@ -3,6 +3,7 @@ package main;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -102,6 +103,7 @@ public class gameDisplay extends JPanel{
 					player.canJumpTrue();
 				else
 					player.canJumpFalse();
+				collisionCheck();
 				player.move();
 			}
 		}
@@ -116,6 +118,90 @@ public class gameDisplay extends JPanel{
 					SpawnPoint sp = ((SpawnPoint) levelLayout[x][y]);
 					if(sp.isCurrent()) {
 						currentSpawn = sp;
+					}
+				}
+			}
+		}
+	}
+	
+	public void collisionCheck() {
+		Rectangle checkBox;
+		Tile[][] level = currentLevel.getLevel();
+		int x = player.getX();
+		int y = player.getY();
+		int dx = player.getDX();
+		int dy = player.getDY();
+		int dim = gameController.getBlockDimension();
+		int xIA = x/dim;
+		int yIA = y/dim;
+		//player going left
+		System.out.println(xIA + " " + yIA);
+		if(dx < 0) {
+			if(xIA > 0) {
+				if(level[xIA][yIA] != null) {
+					checkBox = level[xIA][yIA].getHitBox();
+					if(checkBox.intersects(player.getHitBox())) {
+						player.setCanMoveLeft(false);
+					}
+				}
+				if(level[xIA][yIA+1] != null) {
+					checkBox = level[xIA][yIA+1].getHitBox();
+					if(checkBox.intersects(player.getHitBox())) {
+						player.setCanMoveLeft(false);
+					}
+				}
+				if(yIA > 0) {
+					if(level[xIA][yIA-1] != null) {
+						checkBox = level[xIA][yIA-1].getHitBox();
+						if(checkBox.intersects(player.getHitBox())) {
+							player.setCanMoveLeft(false);
+						}
+					}
+				}
+//				if(yIA < level[0].length) {
+//					if(level[xIA][yIA+2] != null) {
+//						checkBox = level[xIA][yIA+2].getHitBox();
+//						if(checkBox.intersects(player.getHitBox())) {
+//							player.setCanMoveLeft(false);
+//						}
+//					}
+//				}
+			}
+		}
+		//player going right
+		else if(dx > 0) {
+			if(level[xIA+1][yIA] != null) {
+				checkBox = level[xIA+1][yIA].getHitBox();
+				if(checkBox.intersects(player.getHitBox())) {
+					player.setCanMoveRight(false);
+				}
+			}
+			if(level[xIA+1][yIA+1] != null) {
+				checkBox = level[xIA+1][yIA+1].getHitBox();
+				if(checkBox.intersects(player.getHitBox()) && level[xIA+1][yIA+1].isCollideable()) {
+					player.setCanMoveRight(false);
+				}
+			}
+			if(yIA > 0) {
+				if(level[xIA+1][yIA-1] != null) {
+					checkBox = level[xIA+1][yIA-1].getHitBox();
+					if(checkBox.intersects(player.getHitBox())) {
+						player.setCanMoveRight(false);
+					}
+				}
+			}
+		}
+		//player going up
+		if(dy < 0) {
+			
+		}
+		//player going down
+		else if(dy > 0) {
+			if(yIA < level[0].length-1) {
+				if(level[xIA][yIA+2] != null) {
+					checkBox = level[xIA][yIA+2].getHitBox();
+					if(checkBox.intersects(player.getHitBox())) {
+						player.setCanMoveDown(false);
 					}
 				}
 			}

@@ -38,6 +38,10 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private boolean canJump = true; //to tell the player if they can jump
     private Tile inventorySlot = null;
     private SpawnPoint sp;
+    private boolean canMoveDown = true;
+    private boolean canMoveRight = true;
+    private boolean canMoveLeft = true;
+    private boolean canMoveUp = true;
     //put timer and keep track in the controlling display class to set dy to -2 for time equivalent to time moving up (Super Mario Feel)
 
     //Hitbox for collision detecting
@@ -69,7 +73,8 @@ public class Player extends Entity implements KeyListener, MouseListener {
     	System.out.println(pane);
     	imageLeft = ImageIO.read(new File("src/sprites/leftIdle (0).png"));
     	imageRight = ImageIO.read(new File("src/sprites/Idle (0).png"));
-    	hitBox = new Rectangle(x,y,gameController.getBlockDimension(),gameController.getBlockDimension()*2);
+    	//hitBox slightly bigger than player to make collision detection easier
+    	hitBox = new Rectangle(x-1,y-1,gameController.getBlockDimension()+2,(gameController.getBlockDimension()*2)+2);
     }
     
     public void loadImage(String fileName) {
@@ -107,6 +112,10 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	}
     
     public void move() {
+    	if(dy > 0 && !canMoveDown) {setDY(0);}
+    	if(dy < 0 && !canMoveUp) {setDY(0);}
+    	if(dx != 0 && !canMoveRight) {setDX(0);}
+    	if(dx != 0 && !canMoveLeft) {setDX(0);}
 		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
@@ -137,7 +146,10 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			currentIcon = new ImageIcon(newimg);  // transform it back
 			label.setIcon(currentIcon);
 		}
-		
+		canMoveDown = true;
+		canMoveUp = true;
+		canMoveRight = true;
+		canMoveLeft = true;
 	}
     
     public void respawn() {
@@ -231,9 +243,12 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	public SpawnPoint getSpawnPoint() {return sp;}
 	public int getDX() { return dx; }
     public int getDY() { return dy; }
+    public int getX() {return label.getX();}
+    public int getY() {return label.getY();}
     public boolean isAirbourne() { return isAirbourne; }
     //FOR USE IN THE CONTROLLING DISPLAY CLASS WITH TIMER
     public void setDY(int dY) { this.dy = dY; }
+    public void setDX(int dX) {this.dx = dX;}
     public Tile getInventory() {return inventorySlot;}
 	public void setSpawnPoint(SpawnPoint sp) {this.sp = sp;}
 	public void setInventory(Tile t) {inventorySlot = t;}
@@ -249,15 +264,11 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	 * THIS IS WHERE WE ARE HANDLING COLLISIONS
 	 */
 	
-	public boolean canMoveDown() {return true;}
-	
-	
-	
-	
-	
-	
-	
-	
+	public boolean canMoveDown() {return canMoveDown;}
+	public void setCanMoveDown(boolean b) {canMoveDown = b;}
+	public void setCanMoveUp(boolean b) {canMoveUp = b;}
+	public void setCanMoveLeft(boolean b) {canMoveLeft = b;}
+	public void setCanMoveRight(boolean b) {canMoveRight = b;}
 	
 	
 	public Rectangle getHitBox() {
