@@ -33,7 +33,9 @@ public class gameDisplay extends JPanel{
 		level.setLayout(null);
 		level.setVisible(true);
 		
-		currentLevel = LevelLoader.load(null,this);
+		String levelFilename = JOptionPane.showInputDialog("Level Filename");
+		currentLevel = LevelLoader.load(levelFilename + ".txt",this);
+		currentLevel.drawLevel();
 		gameIsReady = true;
 	}
 
