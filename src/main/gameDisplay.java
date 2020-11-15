@@ -3,6 +3,7 @@ package main;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -19,7 +20,8 @@ import entities.Player;
 import tiles.SpawnPoint;
 import tiles.Tile;
 import java.util.Timer;
-import main.gameController;
+import java.util.TimerTask;
+
 import levelBuilder.LevelLoader;
 
 public class gameDisplay extends JPanel{
@@ -29,10 +31,11 @@ public class gameDisplay extends JPanel{
 	private boolean gameIsReady = false;
 	
 	private Player player;
-	private static Timer timer = new Timer();
+	private Timer timer = new Timer();
 	private static int gravityTimer = 0;
+	private Time timerThing;
 	private static final int MOVE_TIME = 17;
-	private static final int MAX_NO_GRAVITY_TIMER = 1000;
+	private static final int MAX_NO_GRAVITY_TIMER = 17000;
 	private Point levelLoc;
 	private levelInfo currentLevel;
 	private SpawnPoint currentSpawn;
@@ -41,8 +44,7 @@ public class gameDisplay extends JPanel{
 	public gameDisplay(gameController frame) {
 		frame.setLayout(null);
 		this.setLayout(null);
-		this.setBackground(Color.black);
-		
+		this.setBackground(Color.gray);
 		//temp code for draggin and clicking
 		this.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -69,6 +71,8 @@ public class gameDisplay extends JPanel{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		timerThing = new Time();
+		timer.schedule(timerThing, 0, MOVE_TIME);
 		player.respawn();
 		player.draw();
 		gameIsReady = true;
@@ -81,19 +85,30 @@ public class gameDisplay extends JPanel{
 		imageIcon = new ImageIcon(newimg);  // transform it back
 	}
 	
-	public void run() {
-		if (gameIsReady) {
-			if (player.didJump()) {
-				player.invertDY();
-				gravityTimer += MOVE_TIME;
-			}
-			if (gravityTimer >= MAX_NO_GRAVITY_TIMER) {
-				player.invertDY();
-				player.smackdown();
-				gravityTimer = 0;
+	class Time extends TimerTask {
+		public void run() {
+			if (gameIsReady) {
+				if (!player.isGravity())
+					gravityTimer += MOVE_TIME;
+				if (gravityTimer >= MAX_NO_GRAVITY_TIMER) {
+					player.smackdown();
+					gravityTimer = 0;
+				}					
+				if (player.isGravity() && player.canMoveDown()) {
+					player.setDY(10);
+				} else if (player.isGravity()) {
+					player.setDY(0);
+				}
+				if (!player.canMoveDown())
+					player.canJumpTrue();
+				else
+					player.canJumpFalse();
+				collisionCheck();
+				player.move();
 			}
 		}
 	}
+	
 	
 	public void setCurrentSpawn() {
 		Tile[][] levelLayout = currentLevel.getLevel();
@@ -103,6 +118,90 @@ public class gameDisplay extends JPanel{
 					SpawnPoint sp = ((SpawnPoint) levelLayout[x][y]);
 					if(sp.isCurrent()) {
 						currentSpawn = sp;
+					}
+				}
+			}
+		}
+	}
+	
+	public void collisionCheck() {
+		Rectangle checkBox;
+		Tile[][] level = currentLevel.getLevel();
+		int x = player.getX();
+		int y = player.getY();
+		int dx = player.getDX();
+		int dy = player.getDY();
+		int dim = gameController.getBlockDimension();
+		int xIA = x/dim;
+		int yIA = y/dim;
+		//player going left
+		System.out.println(xIA + " " + yIA);
+		if(dx < 0) {
+			if(xIA > 0) {
+				if(level[xIA][yIA] != null) {
+					checkBox = level[xIA][yIA].getHitBox();
+					if(checkBox.intersects(player.getHitBox())) {
+						player.setCanMoveLeft(false);
+					}
+				}
+				if(level[xIA][yIA+1] != null) {
+					checkBox = level[xIA][yIA+1].getHitBox();
+					if(checkBox.intersects(player.getHitBox())) {
+						player.setCanMoveLeft(false);
+					}
+				}
+				if(yIA > 0) {
+					if(level[xIA][yIA-1] != null) {
+						checkBox = level[xIA][yIA-1].getHitBox();
+						if(checkBox.intersects(player.getHitBox())) {
+							player.setCanMoveLeft(false);
+						}
+					}
+				}
+//				if(yIA < level[0].length) {
+//					if(level[xIA][yIA+2] != null) {
+//						checkBox = level[xIA][yIA+2].getHitBox();
+//						if(checkBox.intersects(player.getHitBox())) {
+//							player.setCanMoveLeft(false);
+//						}
+//					}
+//				}
+			}
+		}
+		//player going right
+		else if(dx > 0) {
+			if(level[xIA+1][yIA] != null) {
+				checkBox = level[xIA+1][yIA].getHitBox();
+				if(checkBox.intersects(player.getHitBox())) {
+					player.setCanMoveRight(false);
+				}
+			}
+			if(level[xIA+1][yIA+1] != null) {
+				checkBox = level[xIA+1][yIA+1].getHitBox();
+				if(checkBox.intersects(player.getHitBox()) && level[xIA+1][yIA+1].isCollideable()) {
+					player.setCanMoveRight(false);
+				}
+			}
+			if(yIA > 0) {
+				if(level[xIA+1][yIA-1] != null) {
+					checkBox = level[xIA+1][yIA-1].getHitBox();
+					if(checkBox.intersects(player.getHitBox())) {
+						player.setCanMoveRight(false);
+					}
+				}
+			}
+		}
+		//player going up
+		if(dy < 0) {
+			
+		}
+		//player going down
+		else if(dy > 0) {
+			if(yIA < level[0].length-1) {
+				if(level[xIA][yIA+2] != null) {
+					checkBox = level[xIA][yIA+2].getHitBox();
+					if(checkBox.intersects(player.getHitBox())) {
+						player.setCanMoveDown(false);
 					}
 				}
 			}

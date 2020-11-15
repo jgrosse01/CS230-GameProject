@@ -1,6 +1,5 @@
 package entities;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,9 +9,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Timer;
-import main.gameController;
-import tiles.SpawnPoint;
 
 public class Entity {
 	public static final int DIR_LEFT = 0;
@@ -31,7 +27,6 @@ public class Entity {
 	//current JPanel to paint to
 	private JPanel currentPane;
 	private int currentDir;
-	private Timer timer;
 	
 	static JFrame testFrame = new JFrame();
 	static JPanel testPane = new JPanel();

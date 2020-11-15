@@ -1,6 +1,9 @@
 package entities;
 
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -13,13 +16,7 @@ import tiles.Tile;
 import tiles.SpawnPoint;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
-import main.gameDisplay;
 
 import main.gameController;
 
@@ -36,16 +33,25 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private static BufferedImage[] leftJump;
     private static BufferedImage[] dead;
     private static BufferedImage[] leftDead;
-    private boolean didJump = false; //to utilize timer to set limit on jump
-    private BufferedImage[] playerImages;
+    private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private boolean isGravity = false; //to utilize timer to set limit on jump
+    private boolean canJump = true; //to tell the player if they can jump
     private Tile inventorySlot = null;
     private SpawnPoint sp;
+    private boolean canMoveDown = true;
+    private boolean canMoveRight = true;
+    private boolean canMoveLeft = true;
+    private boolean canMoveUp = true;
     //put timer and keep track in the controlling display class to set dy to -2 for time equivalent to time moving up (Super Mario Feel)
 
+    //Hitbox for collision detecting
+    private Rectangle hitBox;
+    
     private int currentIconNumber = 1;
     private String currentIconType = "Run";
     private BufferedImage currentImage;
     private ImageIcon currentIcon;
+    private JPanel panel;
    
     /**
      * 
@@ -58,26 +64,20 @@ public class Player extends Entity implements KeyListener, MouseListener {
      * @throws IOException cannot find images
      **/
     
-    public Player(int x, int y, BufferedImage imageLeft, BufferedImage imageRight, JPanel pane, SpawnPoint sp) throws IOException{
+    public Player(int x, int y, BufferedImage imageLeft, BufferedImage imageRight, JPanel pane, SpawnPoint sp) throws IOException {
     	super(x,y,imageLeft,imageRight,pane);
     	this.sp = sp;
+    	panel = pane;
     	pane.setFocusable(true);
     	pane.addKeyListener(this);
     	System.out.println(pane);
     	imageLeft = ImageIO.read(new File("src/sprites/leftIdle (0).png"));
     	imageRight = ImageIO.read(new File("src/sprites/Idle (0).png"));
+    	//hitBox slightly bigger than player to make collision detection easier
+    	hitBox = new Rectangle(x-1,y-1,gameController.getBlockDimension()+2,(gameController.getBlockDimension()*2)+2);
     }
     
-    public int getDX() { return dx; }
-    public int getDY() { return dy; }
-    
-    //FOR USE IN THE CONTROLLING DISPLAY CLASS WITH TIMER
-    public void setDY(int dY) { this.dy = dY; }
-    
-    public boolean isAirbourne() { return isAirbourne; }
-    
-    public void loadImage(String fileName)
-	{
+    public void loadImage(String fileName) {
 		try {
 			idle = new BufferedImage[1];
 			leftIdle = new BufferedImage[1];
@@ -112,8 +112,13 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	}
     
     public void move() {
-		label.setLocation(label.getX()+dx, label.getY()+dy);
-		//draw();
+    	if(dy > 0 && !canMoveDown) {setDY(0);}
+    	if(dy < 0 && !canMoveUp) {setDY(0);}
+    	if(dx != 0 && !canMoveRight) {setDX(0);}
+    	if(dx != 0 && !canMoveLeft) {setDX(0);}
+		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
 		
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
 			currentIconNumber = 0;
@@ -126,58 +131,10 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			Image newimg = img.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			currentIcon = new ImageIcon(newimg);
 			label.setIcon(currentIcon);
-		}
-		
-		/*
-		switch (currentIconType) {
-		case "Idle":
-			currentIcon = new ImageIcon(idle[0]);
-			label.setIcon(currentIcon);
-		case "leftIdle":
-			currentIcon = new ImageIcon(leftIdle[0]);
-			label.setIcon(currentIcon);
-		case "Run":
-			for (int i = 0; i<15; i++) {
-				currentIcon = new ImageIcon(run[i+1]);
-				label.setIcon(currentIcon);
-			}
-		case "leftRun":
-			for (int i = 0; i<15; i++) {
-				currentIcon = new ImageIcon(leftRun[i+1]);
-			}
-			label.setIcon(currentIcon);
-		case "Jump":
-			for (int i = 0; i<15; i++) {
-				currentIcon = new ImageIcon(jump[i+1]);
-			}
-			label.setIcon(currentIcon);
-		case "leftJump":
-			for (int i = 0; i<15; i++) {
-				currentIcon = new ImageIcon(leftJump[i+1]);
-			}
-			label.setIcon(currentIcon);
-		case "Dead":
-			for (int i = 0; i<15; i++) {
-				currentIcon = new ImageIcon(dead[i+1]);
-			}
-			label.setIcon(currentIcon);
-		case "leftDead":
-			for (int i = 0; i<15; i++) {
-				currentIcon = new ImageIcon(leftDead[i+1]);
-			}
-			label.setIcon(currentIcon);
-		}
-		*/
-		
-		
+		}		
 		else {
 			currentIconNumber = (currentIconNumber>=15) ? 0 : (currentIconNumber+1) %15;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
-			
-			//ImageIcon imageIcon = new ImageIcon("images"); // load the image to a imageIcon
-			//Image image = imageIcon.getImage(); // transform it 
-			//Image newimg = image.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			//imageIcon = new ImageIcon(newimg);  // transform it back
 			
 			try {
 				currentImage = ImageIO.read(file);
@@ -188,12 +145,16 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			currentIcon = new ImageIcon(newimg);  // transform it back
 			label.setIcon(currentIcon);
 		}
-		
+		canMoveDown = true;
+		canMoveUp = true;
+		canMoveRight = true;
+		canMoveLeft = true;
 	}
     
     public void respawn() {
     	this.setX(sp.getX());
     	this.setY(sp.getY());
+    	panel.setLocation((int)(screenSize.getWidth()/2)-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-gameController.getBlockDimension());
     }
     
     public void gravity() {
@@ -218,7 +179,6 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	System.out.println("LEFT MOVE");
         	setCurrentDir(DIR_LEFT);
         	currentIconType = "leftRun";
-        	//label.setLocation((int) (getX()-(label.getWidth()*0.5)), getY());
         	dx = -10;
         	dy = 0;
         	break;
@@ -226,25 +186,29 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	System.out.println("RIGHT MOVE");
         	setCurrentDir(DIR_RIGHT);
         	currentIconType = "Run";
-        	//label.setLocation((int) (getX()+(label.getWidth()*0.5)), getY());
         	dy = 0;
         	dx = 10;
         	break;
         case (KeyEvent.VK_UP):
-        	if (getCurrentDir() == DIR_RIGHT) {
-        		System.out.println("UP RIGHT MOVE");
-            	currentIconType = "Jump";
-            	dy = 10;
-            	break;
-        	}
-        	else {
-        		System.out.println("UP LEFT MOVE");
-            	currentIconType = "leftJump";
-            	dy = -10;
-            	break;
+        	if (canJump) {
+        		if (getCurrentDir() == DIR_RIGHT) {
+    				System.out.println("UP RIGHT MOVE");
+        			currentIconType = "Jump";
+        			isGravity = false;
+        			canJump = false;
+        			dy = -10;
+        			break;
+    			}
+    			else {
+    				System.out.println("UP LEFT MOVE");
+        			currentIconType = "leftJump";
+        			isGravity = false;
+        			canJump = false;
+        			dy = -10;
+        			break;
+    			}
         	}
         }
-        move();
 	}
 
 	@Override
@@ -265,12 +229,12 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	{
         		currentIconType = "Idle";
             	currentIconNumber = 0;
-            	dy = 0;
+            	isGravity = true;
         	}
         	else {
         		currentIconType = "leftIdle";
             	currentIconNumber = 0;
-            	dy = 0;
+            	isGravity = true;
         	}
         }
 		move();
@@ -280,40 +244,40 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		return label;
 	}
 	
-	public SpawnPoint getSpawnPoint() {
-		return sp;
-	}
-	
-	public void setSpawnPoint(SpawnPoint sp) {
-		this.sp = sp;
-	}
-	
-	public Tile getInventory() {
-		return inventorySlot;
-	}
-	
-	public void setInventory(Tile t) {
-		inventorySlot = t;
-	}
-	
-	public void clearInventory() {
-		inventorySlot = null;
-	}
-	
-	public void invertDY() {
-		dy = -1*dy;
-	}
-	
-	public boolean didJump() {
-		return didJump;
-	}
-	
+	public SpawnPoint getSpawnPoint() {return sp;}
+	public int getDX() { return dx; }
+    public int getDY() { return dy; }
+    public int getX() {return label.getX();}
+    public int getY() {return label.getY();}
+    public boolean isAirbourne() { return isAirbourne; }
+    //FOR USE IN THE CONTROLLING DISPLAY CLASS WITH TIMER
+    public void setDY(int dY) { this.dy = dY; }
+    public void setDX(int dX) {this.dx = dX;}
+    public Tile getInventory() {return inventorySlot;}
+	public void setSpawnPoint(SpawnPoint sp) {this.sp = sp;}
+	public void setInventory(Tile t) {inventorySlot = t;}
+	public void clearInventory() {inventorySlot = null;}
+	public void invertDY() {dy = -1*dy;}
+	public boolean isGravity() {return isGravity;}
 	//sets didJump to false and allows gravity to work
-	public void smackdown() {
-		didJump = false;
+	public void smackdown() {isGravity = true;}
+	public void canJumpFalse() {canJump = false;}
+	public void canJumpTrue() {canJump = true;}
+	
+	/*
+	 * THIS IS WHERE WE ARE HANDLING COLLISIONS
+	 */
+	
+	public boolean canMoveDown() {return canMoveDown;}
+	public void setCanMoveDown(boolean b) {canMoveDown = b;}
+	public void setCanMoveUp(boolean b) {canMoveUp = b;}
+	public void setCanMoveLeft(boolean b) {canMoveLeft = b;}
+	public void setCanMoveRight(boolean b) {canMoveRight = b;}
+	
+	
+	public Rectangle getHitBox() {
+		return hitBox;
 	}
-	
-	
 	
 	
 	@Override
@@ -350,6 +314,4 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		// TODO Auto-generated method stub
 		
 	}
-
-
 }
