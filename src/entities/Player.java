@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -13,6 +14,8 @@ import tiles.SpawnPoint;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import main.gameController;
 
 public class Player extends Entity implements KeyListener, MouseListener {
 
@@ -109,11 +112,11 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
 			try {
 				currentImage = ImageIO.read(file);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			currentIcon = new ImageIcon(currentImage);
+			} catch (IOException e) {e.printStackTrace();}
+			currentIcon = new ImageIcon(currentImage); //load the image to a imageIcon
+			Image img = currentIcon.getImage(); // transform it 
+			Image newimg = img.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			currentIcon = new ImageIcon(newimg);
 			label.setIcon(currentIcon);
 		}
 		
@@ -162,13 +165,19 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		else {
 			currentIconNumber = (currentIconNumber>=15) ? 0 : (currentIconNumber+1) %15;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
+			
+			//ImageIcon imageIcon = new ImageIcon("images"); // load the image to a imageIcon
+			//Image image = imageIcon.getImage(); // transform it 
+			//Image newimg = image.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			//imageIcon = new ImageIcon(newimg);  // transform it back
+			
 			try {
 				currentImage = ImageIO.read(file);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			currentIcon = new ImageIcon(currentImage);
+			} catch (IOException e) {e.printStackTrace();}
+			currentIcon = new ImageIcon(currentImage); //load the image to a imageIcon
+			Image img = currentIcon.getImage(); // transform it 
+			Image newimg = img.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			currentIcon = new ImageIcon(newimg);  // transform it back
 			label.setIcon(currentIcon);
 		}
 		
@@ -223,7 +232,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	else {
         		System.out.println("UP LEFT MOVE");
             	currentIconType = "leftJump";
-            	dy = 10;
+            	dy = -10;
             	break;
         	}
         }
