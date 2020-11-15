@@ -21,7 +21,6 @@ import tiles.Tile;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import main.gameController;
 import levelBuilder.LevelLoader;
 
 public class gameDisplay extends JPanel{
@@ -35,7 +34,7 @@ public class gameDisplay extends JPanel{
 	private static int gravityTimer = 0;
 	private Time timerThing;
 	private static final int MOVE_TIME = 17;
-	private static final int MAX_NO_GRAVITY_TIMER = 1000;
+	private static final int MAX_NO_GRAVITY_TIMER = 17000;
 	private Point levelLoc;
 	private levelInfo currentLevel;
 	private SpawnPoint currentSpawn;
@@ -72,7 +71,7 @@ public class gameDisplay extends JPanel{
 			e1.printStackTrace();
 		}
 		timerThing = new Time();
-		timer.schedule(timerThing, 0, 17);
+		timer.schedule(timerThing, 0, MOVE_TIME);
 		player.respawn();
 		player.draw();
 		gameIsReady = true;
@@ -88,16 +87,22 @@ public class gameDisplay extends JPanel{
 	class Time extends TimerTask {
 		public void run() {
 			if (gameIsReady) {
-				if (player.didJump()) {//if the player hit up arrow
-					player.canJumpFalse(); //set "canJump" to false in player
-					gravityTimer += MOVE_TIME; //add time to timer
+				if (!player.isGravity())
+					gravityTimer += MOVE_TIME;
+				if (gravityTimer >= MAX_NO_GRAVITY_TIMER) {
+					player.smackdown();
+					gravityTimer = 0;
+				}					
+				if (player.isGravity() && player.canMoveDown()) {
+					player.setDY(10);
+				} else if (player.isGravity()) {
+					player.setDY(0);
 				}
-				if (gravityTimer >= MAX_NO_GRAVITY_TIMER) { //if 1 second has passed
-					player.invertDY(); //flip the DY direction
-					player.smackdown(); //didJump == false
-					gravityTimer = 0; //reset gravity timer
-					//"hitGround()" in player will set DY to 0 after colliding with the ground (YET TO BE CODED)
-				}
+				if (!player.canMoveDown())
+					player.canJumpTrue();
+				else
+					player.canJumpFalse();
+				player.move();
 			}
 		}
 	}
