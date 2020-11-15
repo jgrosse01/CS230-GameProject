@@ -29,7 +29,7 @@ public class gameDisplay extends JPanel{
 	private boolean gameIsReady = false;
 	
 	private Player player;
-	private static Timer timer = new Timer();
+	private Timer timer = new Timer();
 	private static int gravityTimer = 0;
 	private static final int MOVE_TIME = 17;
 	private static final int MAX_NO_GRAVITY_TIMER = 1000;
@@ -71,6 +71,7 @@ public class gameDisplay extends JPanel{
 		player.respawn();
 		player.draw();
 		gameIsReady = true;
+		run();
 	}
 
 	public void scalePlayer() {
@@ -81,6 +82,7 @@ public class gameDisplay extends JPanel{
 	}
 	
 	public void run() {
+		System.out.println("Yo");
 		if (gameIsReady) {
 			if (player.didJump()) {//if the player hit up arrow
 				player.canJumpFalse(); //set "canJump" to false in player
