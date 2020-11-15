@@ -1,6 +1,10 @@
 package main;
 
+import java.awt.Color;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -19,24 +23,38 @@ public class gameDisplay extends JPanel{
 	
 	private boolean gameIsReady = false;
 	
-	private JPanel level;
 	private Player player;
 	private static Timer timer = new Timer();
 	private static int gravityTimer = 0;
 	private static final int MOVE_TIME = 17;
 	private static final int MAX_NO_GRAVITY_TIMER = 1000;
+	private Point levelLoc;
 	
 	private levelInfo currentLevel;
 	//private int timerInterval = 17; //Unneeded due to change in timer use
 
 	public gameDisplay(gameController frame) {
-		level = new JPanel();
-		level.setLayout(null);
-		level.setVisible(true);
+		frame.setLayout(null);
 		this.setLayout(null);
+		this.setBackground(Color.black);
+		
+		//temp code for draggin and clicking
+		this.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				levelLoc = e.getPoint();
+			}
+		});
+		//making level panel draggable
+		this.addMouseMotionListener(new MouseAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				Point currentScreenLoc = e.getLocationOnScreen();
+				setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
+			}
+		});
 		
 		String levelFilename = JOptionPane.showInputDialog("Level Filename");
 		currentLevel = LevelLoader.load(levelFilename + ".txt",this);
+		this.setBounds(0,0,currentLevel.getLevelLayout().length*gameController.getBlockDimension(),currentLevel.getLevelLayout()[0].length*gameController.getBlockDimension());
 		currentLevel.drawLevel();
 		gameIsReady = true;
 	}

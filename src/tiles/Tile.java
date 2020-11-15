@@ -64,11 +64,12 @@ public class Tile {
 		//draw: Image, start x, start y, no observer
 //		currentPane.getGraphics().drawImage(sprite, x, y, null);
 		label = new JLabel();
-		label.setLocation(x,y);
+		label.setBounds(x,y,gameController.getBlockDimension(),gameController.getBlockDimension());
 		currentPane.add(label);
 		Image scaleImage = sprite.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension(), Image.SCALE_SMOOTH);
 		ImageIcon finalImage = new ImageIcon(scaleImage);
 		label.setIcon(finalImage);
+		label.setVisible(true);
 	}
 	
 	//Erase from screen with graphics element from content pane

@@ -13,6 +13,11 @@ import tiles.Tile;
 import tiles.SpawnPoint;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import main.gameDisplay;
 
@@ -59,6 +64,8 @@ public class Player extends Entity implements KeyListener, MouseListener {
     	pane.setFocusable(true);
     	pane.addKeyListener(this);
     	System.out.println(pane);
+    	imageLeft = ImageIO.read(new File("src/sprites/leftIdle (0).png"));
+    	imageRight = ImageIO.read(new File("src/sprites/Idle (0).png"));
     }
     
     public int getDX() { return dx; }
