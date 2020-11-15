@@ -37,7 +37,7 @@ public class LevelLoader {
 					levelArray[i][j] = stringToTile(temp1,i,j,pane,temp2);
 				}
 				else {
-					levelArray[i][j] = stringToTile(lineSplit[j],i,j,pane);
+					levelArray[i][j] = stringToTile(lineSplit[j],i*gameController.getBlockDimension(),j*gameController.getBlockDimension(),pane);
 				}
 			}
 		}
