@@ -28,9 +28,9 @@ public class LevelLoader {
 		levelArray = new Tile[width][height];
 		
 		//Split by spaces to get tiles
-		for (int i = 0; i < width; i++) {
+		for (int j = 0; j < width; j++) {
 			lineSplit = reader.nextLine().split(" ");
-			for (int j = 0; j < height; j++) {
+			for (int i = 0; i < height; i++) {
 				if (lineSplit[j].contains(":")) {
 					int temp = lineSplit[j].indexOf(":");
 					String temp1 = lineSplit[j].substring(0,temp); //String with Tile name
