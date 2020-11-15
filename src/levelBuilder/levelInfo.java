@@ -68,4 +68,8 @@ public class levelInfo {
 			}
 		}
 	}
+	
+	public Tile[][] getLevelLayout() {
+		return levelLayout;
+	}
 }
