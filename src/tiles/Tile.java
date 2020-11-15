@@ -29,9 +29,11 @@ public class Tile {
 	//determines whether tile is breakable
 	boolean breakable;
 	private JLabel label;
+	protected boolean collideable;
 	
 	//Constructor
 	public Tile(int x, int y, BufferedImage sprite, JPanel pane) {
+		collideable = true;
 		this.x = x;
 		this.y = y;
 		this.sprite = sprite;
@@ -46,6 +48,7 @@ public class Tile {
 	}
 	
 	public Tile(int x, int y, BufferedImage sprite, JPanel pane, boolean breakable) {
+		collideable = true;
 		this.x = x;
 		this.y = y;
 		this.sprite = sprite;
@@ -108,4 +111,6 @@ public class Tile {
 	public BufferedImage getImage() {return sprite;}
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
+	public boolean isCollideable() {return collideable;}
+	public void changeCollide(boolean option) {collideable = option;}
 }

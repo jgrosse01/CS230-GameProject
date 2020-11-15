@@ -16,7 +16,7 @@ public class SpawnPoint extends Tile implements InteractableTile{
 	static BufferedImage[] texture = new BufferedImage[2];
 	static {
 		try { 
-			texture[0] = ImageIO.read(new File("src/sprites/Dead (1).png")); //image for active
+			texture[0] = ImageIO.read(new File("src/sprites/fastDolphinRight.jpg")); //image for active
 			texture[1] = ImageIO.read(new File("src/sprites/Dead (1).png")); //image for inactive
 		}
 		catch(java.io.IOException e) { 
@@ -26,6 +26,7 @@ public class SpawnPoint extends Tile implements InteractableTile{
 
 	public SpawnPoint(int x, int y,JPanel pane) {
 		super(x, y, texture[1], pane, false);
+		collideable = false;
 		currentImage = texture[1];
 		isCurrent = false;
 	}

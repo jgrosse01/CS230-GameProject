@@ -34,7 +34,7 @@ public class LevelLoader {
 					int temp = lineSplit[j].indexOf(":");
 					String temp1 = lineSplit[j].substring(0,temp); //String with Tile name
 					String temp2 = lineSplit[j].substring(temp+1); //String with Options
-					levelArray[j][i] = stringToTile(temp1,j,i,pane,temp2);
+					levelArray[j][i] = stringToTile(temp1,j*gameController.getBlockDimension(),i*gameController.getBlockDimension(),pane,temp2);
 				}
 				else {
 					levelArray[j][i] = stringToTile(lineSplit[j],j*gameController.getBlockDimension(),i*gameController.getBlockDimension(),pane);

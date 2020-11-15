@@ -75,6 +75,8 @@ public class gameController extends JFrame{
          } catch (LineUnavailableException e) {
             e.printStackTrace();
          }
+        
+        
       }
 
 	
