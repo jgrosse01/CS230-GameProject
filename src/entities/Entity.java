@@ -100,11 +100,37 @@ public class Entity {
 		if (visible) {
 			switch (currentDir) {
 				case DIR_LEFT:
-					  label.setIcon(new ImageIcon(rSprite));
+					label.setIcon(new ImageIcon(rSprite));
 				case DIR_RIGHT:
-					  label.setIcon(new ImageIcon(lSprite));
+					label.setIcon(new ImageIcon(lSprite));
 			}
 		}
+		/*
+		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
+			currentIconNumber = 0;
+			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
+			try {
+				currentImage = ImageIO.read(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentIcon = new ImageIcon(currentImage);
+			label.setIcon(currentIcon);
+		}
+		else {
+			currentIconNumber = (currentIconNumber+1) %15;
+			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
+			try {
+				currentImage = ImageIO.read(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentIcon = new ImageIcon(currentImage);
+			label.setIcon(currentIcon);
+		}
+		*/
 	}
 	
 	//erases entity

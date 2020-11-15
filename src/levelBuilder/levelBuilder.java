@@ -1,7 +1,6 @@
 package levelBuilder;
 
 import javax.swing.*;
-
 import entities.Entity;
 import main.gameController;
 import java.awt.*;
@@ -10,6 +9,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.File;
+import java.io.FileWriter;
 
 import tiles.*;
 
@@ -18,18 +20,20 @@ public class levelBuilder extends JPanel{
 	private static final long serialVersionUID = 2370201629065856700L;
 	
 	private JPanel tileSelect; //For holding all the swing objects that select the tile to place
-	private JPanel levelPanel;
+	private JPanel levelPanel; //for displaying level
 	private JComboBox tileCB; //For selecting specific tile in your tile group
 	private ButtonGroup radioButtons; //For selecting a tile group i.e. tiles, entities, puzzles
-	private String[][] levelArray;
+	private Tile[][] levelArray;
+	private levelInfo level;
 	private gameController thisFrame;
 	private Point levelLoc; //location of level, used for dragging frame around
 	
 	private Tile[] tileArray;
-	private Entity[] entityArray;
 	private Tile tileSelected;
 	private JRadioButton radioAdd;
 	private JRadioButton radioDelete;
+	
+	private boolean isDefaultPlaced = false;
 	
 	public levelBuilder(gameController frame) {
 		//Creating the class variables
@@ -79,10 +83,20 @@ public class levelBuilder extends JPanel{
 		JButton saveButton = new JButton("Save Level");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
 				saveLevel();
+				}
+				catch (IOException err) {
+					err.printStackTrace();
+				}
 			}
 		});
 		JButton loadButton = new JButton("Load Level");
+		loadButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadLevel();
+			}
+		});
 		
 		//combobox for selecting the tiles and label for combobox
 		//the string arrays need to be manually edited when we
@@ -117,10 +131,10 @@ public class levelBuilder extends JPanel{
 		tileCB.setVisible(true);
 		
 		//^^ but for level object
-		//level.setLayout(new FlowLayout());
 		this.add(levelPanel, BorderLayout.CENTER);
 		levelPanel.setBackground(Color.black);
 		levelPanel.setVisible(true);
+
 		
 		//Creating combo boxes for tileSelect. Needs to be integrated with
 		//all the different tiles when we have them made.
@@ -148,13 +162,34 @@ public class levelBuilder extends JPanel{
 		{
 			width = Integer.parseInt(widthField.getText());
 			height = Integer.parseInt(heightField.getText());
-			levelArray = new String[width][height];
+			levelArray = new Tile[width][height];
 			paintLevel(levelPanel.getGraphics());
 		}
 	}
 	
-	private void saveLevel() {
+	private void saveLevel() throws java.io.IOException{
+		String levelName = JOptionPane.showInputDialog("Level Name");
 		
+		File newLevel = new File(levelName + ".txt");
+		newLevel.delete();
+		newLevel.createNewFile();
+			FileWriter writer = new FileWriter(levelName + ".txt");
+			writer.write(Integer.toString(levelArray.length)+":"+levelArray[0].length+"\n");
+			for(int i = 0; i < levelArray[0].length; i++) {
+				for(int j = 0; j < levelArray.length; j++) {
+					if(levelArray[j][i]==null) {
+						writer.write("null ");
+					} else if (levelArray[j][i] instanceof SpawnPoint) {
+						writer.write("SpawnPoint:" + ((SpawnPoint) levelArray[j][i]).isCurrent()+" ");
+					}
+					else {
+					writer.write(levelArray[j][i].toString() + " ");
+					}
+				}
+				writer.write("\n");
+			}
+			writer.close();
+
 	}
 	
 	private void paintLevel(Graphics g)
@@ -174,10 +209,26 @@ public class levelBuilder extends JPanel{
 						tilePressed(e.getSource());
 					}
 				});
+				tileIcon.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent e) {
+						levelLoc = tileIcon.getLocation();
+					}
+				});
+				//making level panel draggable
+				tileIcon.addMouseMotionListener(new MouseAdapter() {
+					public void mouseDragged(MouseEvent e) {
+						Point currentScreenLoc = e.getLocationOnScreen();
+						levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
+					}
+				});
 				tileIcon.setBorderPainted(false);
-				if(levelArray[i][j]==null) {
+				if(levelArray[j][i]==null) {
 					tileIcon.setBackground(Color.white);
 					tileIcon.setOpaque(true);
+				}
+				else {
+					tileIcon.setBackground(Color.white);
+					tileIcon.setIcon(resizeTile(levelArray[j][i].getImage()));
 				}
 				tileIcon.setBounds(tileSpacing+(j*(tileWidth+tileSpacing)),tileSpacing+(i*(tileWidth+tileSpacing)),tileWidth,tileWidth);
 				levelPanel.add(tileIcon);
@@ -190,10 +241,19 @@ public class levelBuilder extends JPanel{
 	private void tilePressed(Object e) {
 		if(e instanceof JButton) {
 			JButton button = (JButton)e;
+			int x = button.getX();
+			int y = button.getY(); 
 			Object item = tileCB.getSelectedItem();
 			if(item instanceof Tile) {
 				Tile tile = (Tile)item;
 				if(radioAdd.isSelected()) {
+					if(tile instanceof SpawnPoint) {
+						if(!isDefaultPlaced) {
+							((SpawnPoint) tile).toggleIsCurrent();
+							isDefaultPlaced=true;
+						}
+					}
+					levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = tile;
 					ImageIcon icon = resizeTile(tile.getImage());
 					button.setIcon(icon);
 					button.repaint();
@@ -213,10 +273,9 @@ public class levelBuilder extends JPanel{
 	//we can set coords to 0 for all because we are only
 	//using these for reference.
 	private void makeTileArray() {
-		tileArray = new Tile[1];
+		tileArray = new Tile[2];
 		tileArray[0] = new Dirt(0,0,levelPanel);
-		
-		entityArray = new Entity[0];
+		tileArray[1] = new SpawnPoint(0,0,levelPanel);
 	}
 	
 	private ImageIcon resizeTile(BufferedImage img) {
@@ -224,4 +283,12 @@ public class levelBuilder extends JPanel{
 		ImageIcon icon = new ImageIcon(imgResize);
 		return icon;
 	}
+	
+	private void loadLevel() {
+		String level = JOptionPane.showInputDialog("Name of the level you wish to load");
+		levelInfo info = LevelLoader.load(level+".txt",levelPanel);
+		levelArray = info.getLevel();
+		paintLevel(levelPanel.getGraphics());
+	}
+	
 }
