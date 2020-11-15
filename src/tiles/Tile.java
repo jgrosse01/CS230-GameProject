@@ -1,6 +1,5 @@
 package tiles;
 
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Rectangle;
