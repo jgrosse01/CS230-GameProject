@@ -1,10 +1,15 @@
 package tiles;
 
+import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import levelBuilder.levelInfo;
+import main.gameController;
 
 
 public class Tile {
@@ -23,6 +28,7 @@ public class Tile {
 	private JPanel currentPane;
 	//determines whether tile is breakable
 	boolean breakable;
+	private JLabel label;
 	
 	//Constructor
 	public Tile(int x, int y, BufferedImage sprite, JPanel pane) {
@@ -56,7 +62,13 @@ public class Tile {
 	//Paint to screen with graphics element from content pane
 	public void draw() {
 		//draw: Image, start x, start y, no observer
-		currentPane.getGraphics().drawImage(sprite, x, y, null);
+//		currentPane.getGraphics().drawImage(sprite, x, y, null);
+		label = new JLabel();
+		label.setLocation(x,y);
+		currentPane.add(label);
+		Image scaleImage = sprite.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension(), Image.SCALE_SMOOTH);
+		ImageIcon finalImage = new ImageIcon(scaleImage);
+		label.setIcon(finalImage);
 	}
 	
 	//Erase from screen with graphics element from content pane

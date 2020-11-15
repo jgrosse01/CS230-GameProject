@@ -27,17 +27,17 @@ public class LevelLoader {
 		height = Integer.parseInt(lineSplit[1]);
 		levelArray = new Tile[width][height];
 		//Split by spaces to get tiles
-		for (int i = 0; i < width; i++) {
+		for (int i = 0; i < height; i++) {
 			lineSplit = reader.nextLine().split(" ");
-			for (int j = 0; j < height; j++) {
+			for (int j = 0; j < lineSplit.length; j++) {
 				if (lineSplit[j].contains(":")) {
 					int temp = lineSplit[j].indexOf(":");
 					String temp1 = lineSplit[j].substring(0,temp); //String with Tile name
 					String temp2 = lineSplit[j].substring(temp+1); //String with Options
-					levelArray[i][j] = stringToTile(temp1,i,j,pane,temp2);
+					levelArray[j][i] = stringToTile(temp1,i,j,pane,temp2);
 				}
 				else {
-					levelArray[i][j] = stringToTile(lineSplit[j],i,j,pane);
+					levelArray[j][i] = stringToTile(lineSplit[j],i,j,pane);
 				}
 			}
 		}
