@@ -5,13 +5,18 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import levelBuilder.levelInfo;
 import javax.swing.JOptionPane;
 
 import entities.Player;
+import tiles.SpawnPoint;
 import tiles.Tile;
 import java.util.Timer;
 import main.gameController;
@@ -29,8 +34,8 @@ public class gameDisplay extends JPanel{
 	private static final int MOVE_TIME = 17;
 	private static final int MAX_NO_GRAVITY_TIMER = 1000;
 	private Point levelLoc;
-	
 	private levelInfo currentLevel;
+	private SpawnPoint currentSpawn;
 	//private int timerInterval = 17; //Unneeded due to change in timer use
 
 	public gameDisplay(gameController frame) {
@@ -54,8 +59,18 @@ public class gameDisplay extends JPanel{
 		
 		String levelFilename = JOptionPane.showInputDialog("Level Filename");
 		currentLevel = LevelLoader.load(levelFilename + ".txt",this);
-		this.setBounds(0,0,currentLevel.getLevelLayout().length*gameController.getBlockDimension(),currentLevel.getLevelLayout()[0].length*gameController.getBlockDimension());
+		this.setBounds(0,0,currentLevel.getLevel().length*gameController.getBlockDimension(),currentLevel.getLevel()[0].length*gameController.getBlockDimension());
 		currentLevel.drawLevel();
+		setCurrentSpawn();
+		try {
+			BufferedImage tempSprite = ImageIO.read(new File("src/sprites/Idle (0).png"));
+			player = new Player(0,0,tempSprite,tempSprite,this,currentSpawn);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		player.respawn();
+		player.draw();
 		gameIsReady = true;
 	}
 
@@ -76,6 +91,20 @@ public class gameDisplay extends JPanel{
 				player.invertDY();
 				player.smackdown();
 				gravityTimer = 0;
+			}
+		}
+	}
+	
+	public void setCurrentSpawn() {
+		Tile[][] levelLayout = currentLevel.getLevel();
+		for(int y = 0; y < levelLayout[0].length; y++) {
+			for(int x = 0; x < levelLayout.length; x++) {
+				if(levelLayout[x][y] instanceof SpawnPoint) {
+					SpawnPoint sp = ((SpawnPoint) levelLayout[x][y]);
+					if(sp.isCurrent()) {
+						currentSpawn = sp;
+					}
+				}
 			}
 		}
 	}

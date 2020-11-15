@@ -287,7 +287,7 @@ public class levelBuilder extends JPanel{
 	private void loadLevel() {
 		String level = JOptionPane.showInputDialog("Name of the level you wish to load");
 		levelInfo info = LevelLoader.load(level+".txt",levelPanel);
-		levelArray = info.getLevelLayout();
+		levelArray = info.getLevel();
 		paintLevel(levelPanel.getGraphics());
 	}
 	
