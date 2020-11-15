@@ -4,9 +4,15 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
-
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JFrame; // for JFrame
 import javax.swing.JOptionPane; // messages are displayed using JOptionPane
@@ -47,8 +53,26 @@ public class gameController extends JFrame{
         setBackground(Color.CYAN);
         mainPane.add(menu);
         mainPane.setVisible(true);
+        
+        try {
+            // Open an audio input stream.
+            //URL url = this.getClass().getClassLoader().getResource("gameover.wav");
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("music.wav"));
+            // Get a sound clip resource.
+            Clip clip = AudioSystem.getClip();
+            // Open audio clip and load samples from the audio input stream.
+            clip.open(audioIn);
+            clip.start();
+         } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+         } catch (IOException e) {
+            e.printStackTrace();
+         } catch (LineUnavailableException e) {
+            e.printStackTrace();
+         }
+      }
 
-	}
+	
 	
 	public void setContainer(Container container) { this.mainPane = container; }
 	public String gameState() { return gameState; }
