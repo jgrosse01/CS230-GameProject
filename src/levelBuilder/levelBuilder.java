@@ -126,10 +126,10 @@ public class levelBuilder extends JPanel{
 		tileCB.setVisible(true);
 		
 		//^^ but for level object
-		//level.setLayout(new FlowLayout());
 		this.add(levelPanel, BorderLayout.CENTER);
 		levelPanel.setBackground(Color.black);
 		levelPanel.setVisible(true);
+
 		
 		//Creating combo boxes for tileSelect. Needs to be integrated with
 		//all the different tiles when we have them made.
@@ -203,6 +203,18 @@ public class levelBuilder extends JPanel{
 				tileIcon.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						tilePressed(e.getSource());
+					}
+				});
+				tileIcon.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent e) {
+						levelLoc = tileIcon.getLocation();
+					}
+				});
+				//making level panel draggable
+				tileIcon.addMouseMotionListener(new MouseAdapter() {
+					public void mouseDragged(MouseEvent e) {
+						Point currentScreenLoc = e.getLocationOnScreen();
+						levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
 					}
 				});
 				tileIcon.setBorderPainted(false);
