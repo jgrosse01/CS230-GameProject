@@ -10,76 +10,75 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 
 import tiles.*;
 
-public class levelBuilder extends JPanel{
+public class levelBuilder extends JLayeredPane{
 	//JPanel wanted this
 	private static final long serialVersionUID = 2370201629065856700L;
 	
 	private JPanel tileSelect; //For holding all the swing objects that select the tile to place
 	private JPanel levelPanel; //for displaying level
 	private JComboBox tileCB; //For selecting specific tile in your tile group
-	private ButtonGroup radioButtons; //For selecting a tile group i.e. tiles, entities, puzzles
-	private Tile[][] levelArray;
-	private levelInfo level;
-	private gameController thisFrame;
+	private Tile[][] levelArray; //array for keeping track of placed tiles
+	private gameController thisFrame; //used for keeping track of parent frame
 	private Point levelLoc; //location of level, used for dragging frame around
-	
-	private Tile[] tileArray;
-	private Tile tileSelected;
-	private JRadioButton radioAdd;
+	private Tile[] tileArray; //used for Combobox selection
+	private ButtonGroup radioButtons; //For selecting option i.e. add, delete, move
+	private JRadioButton radioAdd; //radio buttons for selection options
 	private JRadioButton radioDelete;
-	
-	private boolean isDefaultPlaced = false;
+	private JRadioButton radioMove;
+	private boolean isDefaultPlaced = false; //flag for default spawn point
 	
 	public levelBuilder(gameController frame) {
-		//Creating the class variables
+		
+		this.setLayout(null);
+		
+		//Setting background image
+		JLabel picLabel = new JLabel(); //create jlabel
+		ImageIcon background = new ImageIcon("src/main/bob.jpeg"); //init image
+		Image img = background.getImage(); //transform to img
+		Image newImg = img.getScaledInstance(gameController.getWindowWidth(), gameController.getWindowHeight(), Image.SCALE_SMOOTH); //create scaled version
+		ImageIcon finalImage = new ImageIcon(newImg); //transform back to image icon
+		picLabel.setIcon(finalImage); //set image to label
+		picLabel.setBounds(0, 0, gameController.getWindowWidth(), gameController.getWindowHeight()); //set bounds of label on the layered panel. (has to be done with layered panel.
+		this.add(picLabel, 2);
+		
+		//Creating key variables and panels
 		tileSelect = new JPanel();
 		tileSelect.setLayout(null);
 		levelPanel = new JPanel();
 		levelPanel.setLayout(null);
-		makeTileArray();
-		
-		//Using blockdimension for consistent spacing when making buttons
-		//and frames
-		int Sp = frame.getBlockDimension();
-		int Hsp = (int)(Sp/2);
-		
-		//making level panel clickable
-		levelPanel.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				levelLoc = e.getPoint();
-			}
-		});
-		//making level panel draggable
-		levelPanel.addMouseMotionListener(new MouseAdapter() {
-			public void mouseDragged(MouseEvent e) {
-				Point currentScreenLoc = e.getLocationOnScreen();
-				levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
-			}
-		});
-		
+		makeTileArray(); //populating tileArray
+		int Sp = frame.getBlockDimension(); //these are used for placing/moving buttons so that
+		int Hsp = (int)(Sp/2); 				//screen width doesn't change visuals
 		thisFrame = frame;
-		
-		this.setLayout(null);
-		this.setVisible(true);
 		
 		//Making and buttons and adding listeners
 		JButton exitButton = new JButton("Main Menu");
+		exitButton.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
+		exitButton.setFocusPainted(false);
+		exitButton.setBorder(BorderFactory.createLineBorder(Color.black,2));
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.builderToMain();
 			}
 		});
 		JButton newButton = new JButton("New Level");
+		newButton.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
+		newButton.setFocusPainted(false);
+		newButton.setBorder(BorderFactory.createLineBorder(Color.black,2));
 		newButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					makeNewLevel();
 			}		
 		});
 		JButton saveButton = new JButton("Save Level");
+		saveButton.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
+		saveButton.setFocusPainted(false);
+		saveButton.setBorder(BorderFactory.createLineBorder(Color.black,2));
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -87,13 +86,22 @@ public class levelBuilder extends JPanel{
 				}
 				catch (IOException err) {
 					err.printStackTrace();
-				}
+				} 
 			}
 		});
 		JButton loadButton = new JButton("Load Level");
+		loadButton.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
+		loadButton.setFocusPainted(false);
+		loadButton.setBorder(BorderFactory.createLineBorder(Color.black,2));
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadLevel();
+				try {
+					loadLevel();
+				} catch (FileNotFoundException err) {
+					JOptionPane.showMessageDialog(levelPanel, "There is no file of that name");
+				} catch (NullPointerException err2) {
+					//do nothing
+				}
 			}
 		});
 		
@@ -101,22 +109,33 @@ public class levelBuilder extends JPanel{
 		//the string arrays need to be manually edited when we
 		//add new tiles.
 		JLabel cbLabel = new JLabel("Tile Select");
+		cbLabel.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
 		tileCB = new JComboBox(tileArray);
-		
+		tileCB.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
+		tileCB.setBorder(BorderFactory.createLineBorder(Color.black,2));
 
 		radioAdd = new JRadioButton("Add");
+		radioAdd.setBackground(new Color((float)0.996,(float)0.992,(float)0.95));
+		radioAdd.setFocusPainted(false);
 		radioDelete = new JRadioButton("Delete");
+		radioDelete.setBackground(new Color((float)0.996,(float)0.992,(float)0.95));
+		radioDelete.setFocusPainted(false);
+		radioMove = new JRadioButton("Move");
+		radioMove.setBackground(new Color((float)0.996,(float)0.992,(float)0.95));
+		radioMove.setFocusPainted(false);
+		
 
 		radioButtons = new ButtonGroup();
 		radioButtons.add(radioAdd);
 		radioButtons.add(radioDelete);
+		radioButtons.add(radioMove);
 		radioAdd.setSelected(true);
 		
 		
 		//formatting tileSelect and then adding it to the Panel
 		tileSelect.setBorder(BorderFactory.createTitledBorder("Tile Select"));
+		tileSelect.setBackground(new Color((float)0.996,(float)0.992,(float)0.95));
 		tileSelect.setVisible(true);
-		this.add(tileSelect);
 		tileSelect.setBounds(0,0,frame.getWidth(),(int)(frame.getHeight()*.15));
 		//Adding combobox and buttons to the tileSelect and making bounds
 		tileSelect.add(exitButton); exitButton.setBounds(Hsp,Hsp,Hsp*3,Hsp);
@@ -127,16 +146,22 @@ public class levelBuilder extends JPanel{
 		tileSelect.add(cbLabel); cbLabel.setBounds((Hsp*19)+10,Hsp,Sp,Hsp);
 		tileSelect.add(radioAdd); radioAdd.setBounds(Hsp*21,Hsp,Sp,Hsp);
 		tileSelect.add(radioDelete); radioDelete.setBounds(Hsp*23,Hsp,Sp,Hsp);
+		tileSelect.add(radioMove); radioMove.setBounds(Hsp*25,Hsp,Sp,Hsp);
+		this.add(tileSelect, 0);
 		tileCB.setVisible(true);
 		
 		//^^ but for level object
-		this.add(levelPanel, BorderLayout.CENTER);
+		this.add(levelPanel, 1);
 		levelPanel.setBackground(Color.black);
 		levelPanel.setVisible(true);
-
+		//making level panel clickable
+		levelPanel.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				levelLoc = e.getPoint();
+			}
+		});
 		
-		//Creating combo boxes for tileSelect. Needs to be integrated with
-		//all the different tiles when we have them made.
+		this.setVisible(true);
 	}
 	
 	//this will populate the levelArray for use in making a level.
@@ -149,12 +174,14 @@ public class levelBuilder extends JPanel{
 		int width;
 		int height;
 		
+		//creating the panel for placing in the popup
 		JPanel panel = new JPanel();
 		panel.add(new JLabel("Width: "));
 		panel.add(widthField);
 		panel.add(new JLabel("Height: "));
 		panel.add(heightField);
 		
+		//recording and using response to the popup
 		int response = JOptionPane.showConfirmDialog(null, panel, "Width and height in tiles", 
 				JOptionPane.OK_CANCEL_OPTION);
 		if(response == JOptionPane.OK_OPTION)
@@ -162,13 +189,19 @@ public class levelBuilder extends JPanel{
 			width = Integer.parseInt(widthField.getText());
 			height = Integer.parseInt(heightField.getText());
 			levelArray = new Tile[width][height];
+			//  where the panel actually gets painted
 			paintLevel(levelPanel.getGraphics());
 		}
 	}
 	
 	private void saveLevel() throws java.io.IOException{
+		//prompting user for level name to save
 		String levelName = JOptionPane.showInputDialog("Level Name");
 		
+		/*
+		 * creates a new file object based on the name. Will overwrite if there
+		 * is already a file with the given name.
+		 */
 		File newLevel = new File(levelName + ".txt");
 		newLevel.delete();
 		newLevel.createNewFile();
@@ -191,6 +224,7 @@ public class levelBuilder extends JPanel{
 
 	}
 	
+	//Called when painting a level/loading it in
 	private void paintLevel(Graphics g)
 	{
 		int tileSpacing = 1;
@@ -201,68 +235,68 @@ public class levelBuilder extends JPanel{
 		levelPanel.setBounds(0,tileSelect.getHeight(),(tileWidth+tileSpacing)*width+tileSpacing,(tileWidth+tileSpacing)*height+tileSpacing);
 		for(int i = 0; i < height; i++) {
 			for(int j = 0; j < width; j++) {
-				JButton tileIcon = new JButton();
-				tileIcon.setActionCommand(null);
-				tileIcon.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						tilePressed(e.getSource());
-					}
-				});
+				JLabel tileIcon = new JLabel();
+				tileIcon.setEnabled(true);
 				tileIcon.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
-						levelLoc = tileIcon.getLocation();
+						if(radioMove.isSelected()) {
+							levelLoc = new Point(tileIcon.getX()+e.getX(),tileIcon.getY()+e.getY());
+						}
+						if(radioAdd.isSelected() || radioDelete.isSelected()) {
+							tilePressed(e);
+						}
 					}
 				});
 				//making level panel draggable
 				tileIcon.addMouseMotionListener(new MouseAdapter() {
 					public void mouseDragged(MouseEvent e) {
-						Point currentScreenLoc = e.getLocationOnScreen();
-						levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
+						if(radioMove.isSelected()) {
+							Point currentScreenLoc = e.getLocationOnScreen();
+							levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
+						}
 					}
 				});
-				tileIcon.setBorderPainted(false);
 				if(levelArray[j][i]==null) {
 					tileIcon.setBackground(Color.white);
-					tileIcon.setOpaque(true);
 				}
 				else {
 					tileIcon.setBackground(Color.white);
 					tileIcon.setIcon(resizeTile(levelArray[j][i].getImage()));
 				}
 				tileIcon.setBounds(tileSpacing+(j*(tileWidth+tileSpacing)),tileSpacing+(i*(tileWidth+tileSpacing)),tileWidth,tileWidth);
+				tileIcon.setOpaque(true);
+				tileIcon.repaint();
+				tileIcon.setVisible(true);
 				levelPanel.add(tileIcon);
 			}
 		}
+		levelPanel.repaint();
 		levelPanel.setVisible(true);
 	}
 	
-	//What happens when one of the tiles is pressed.
-	private void tilePressed(Object e) {
-		if(e instanceof JButton) {
-			JButton button = (JButton)e;
-			int x = button.getX();
-			int y = button.getY(); 
-			Object item = tileCB.getSelectedItem();
-			if(item instanceof Tile) {
-				Tile tile = (Tile)item;
-				if(radioAdd.isSelected()) {
-					if(tile instanceof SpawnPoint) {
-						if(!isDefaultPlaced) {
-							((SpawnPoint) tile).toggleIsCurrent();
-							isDefaultPlaced=true;
-						}
+	//What happens when one of the labels is pressed.
+	private void tilePressed(MouseEvent e) {
+		JLabel label = (JLabel) e.getSource();
+		int x = label.getX();
+		int y = label.getY(); 
+		Object item = tileCB.getSelectedItem();
+		if(item instanceof Tile) {
+			Tile tile = (Tile)item;
+			if(radioAdd.isSelected()) {
+				if(tile instanceof SpawnPoint) {
+					if(!isDefaultPlaced) {
+						((SpawnPoint) tile).toggleIsCurrent();
+						isDefaultPlaced=true;
 					}
-					levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = tile;
-					ImageIcon icon = resizeTile(tile.getImage());
-					button.setIcon(icon);
-					button.repaint();
-					button.setActionCommand(tile.toString());
 				}
-				if(radioDelete.isSelected()) {
-					button.setIcon(null);
-					button.repaint();
-					button.setActionCommand(null);
-				}
+				levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = tile;
+				ImageIcon icon = resizeTile(tile.getImage());
+				label.setIcon(icon);
+				label.repaint();
+			}
+			if(radioDelete.isSelected()) {
+				label.setIcon(null);
+				label.repaint();
 			}
 		}
 	}
@@ -283,11 +317,15 @@ public class levelBuilder extends JPanel{
 		return icon;
 	}
 	
-	private void loadLevel() {
+	private void loadLevel() throws FileNotFoundException, NullPointerException{
 		String level = JOptionPane.showInputDialog("Name of the level you wish to load");
-		levelInfo info = LevelLoader.load(level+".txt",levelPanel);
-		levelArray = info.getLevel();
-		paintLevel(levelPanel.getGraphics());
+		try {
+			levelInfo info = LevelLoader.load(level+".txt",levelPanel);
+			levelArray = info.getLevel();
+			paintLevel(levelPanel.getGraphics());
+		} finally {
+			
+		}
 	}
 	
 }

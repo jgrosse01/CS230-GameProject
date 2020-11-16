@@ -2,6 +2,8 @@ package main;
 
 
 import javax.swing.*;
+import javax.swing.border.Border;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,18 +34,27 @@ public class mainMenu extends JLayeredPane{
 		this.add(picLabel, 1); //add to position 1 on the layered panel
 		
 		play = new JButton("Play"); //init play button
+		play.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
+		play.setFocusPainted(false);
+		play.setBorder(BorderFactory.createLineBorder(Color.black,2));
 		play.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.mainToGame();
 			}
 		});
 		levelBuilder = new JButton("Level Builder"); //init levels button
+		levelBuilder.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
+		levelBuilder.setFocusPainted(false);
+		levelBuilder.setBorder(BorderFactory.createLineBorder(Color.black,2));
 		levelBuilder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.mainToBuilder();
 			}
 		});
 		exit = new JButton("Exit"); //init exit button
+		exit.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
+		exit.setFocusPainted(false);
+		exit.setBorder(BorderFactory.createLineBorder(Color.black,2));
 		exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);

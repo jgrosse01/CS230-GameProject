@@ -1,6 +1,7 @@
 package levelBuilder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import main.gameController;
@@ -11,7 +12,7 @@ import tiles.*;
 
 public class LevelLoader {
 
-	public static levelInfo load(String levelString, JPanel pane) { 
+	public static levelInfo load(String levelString, JPanel pane) throws FileNotFoundException { 
 		
 		//This splits first line by colon for width and height
 		Tile[][] levelArray;
@@ -45,9 +46,8 @@ public class LevelLoader {
 		return new levelInfo(levelArray, pane);
 		
 		} catch (IOException e){
-			e.printStackTrace();
+			throw new FileNotFoundException();
 		}
-		return null;
 	}
 	
 	//stringToTile for "normal" tiles

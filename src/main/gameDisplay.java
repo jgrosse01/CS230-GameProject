@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -59,8 +60,16 @@ public class gameDisplay extends JPanel{
 			}
 		});
 		
-		String levelFilename = JOptionPane.showInputDialog("Level Filename");
-		currentLevel = LevelLoader.load(levelFilename + ".txt",this);
+		boolean choosing = true;
+		while(choosing) {
+			String levelFilename = JOptionPane.showInputDialog("Level Filename");
+			try {
+				currentLevel = LevelLoader.load(levelFilename + ".txt",this);
+				choosing = false;
+			} catch (FileNotFoundException err) {
+				
+			}
+		}
 		this.setBounds(0,0,currentLevel.getLevel().length*gameController.getBlockDimension(),currentLevel.getLevel()[0].length*gameController.getBlockDimension());
 		currentLevel.drawLevel();
 		setCurrentSpawn();
@@ -172,7 +181,7 @@ public class gameDisplay extends JPanel{
 			player.setCanMoveLeft(false);
 		}
 		//player going right
-		if(dx > 0 && xIA > level.length) {
+		if(dx > 0 && xIA < level.length-1) {
 			if(level[xIA+1][yIA] != null) {
 				checkBox = level[xIA+1][yIA].getHitBox();
 				if(checkBox.intersects(player.getHitBox()) && level[xIA+1][yIA].isCollideable()) {
@@ -185,14 +194,14 @@ public class gameDisplay extends JPanel{
 					player.setCanMoveRight(false);
 				}
 			}
-//			if(yIA > 0) {
-//				if(level[xIA+1][yIA-1] != null) {
-//					checkBox = level[xIA+1][yIA-1].getHitBox();
-//					if(checkBox.intersects(player.getHitBox()) && level[xIA+1][yIA-1].isCollideable()) {
-//						player.setCanMoveRight(false);
-//					}
-//				}
-//			}
+			if(yIA > 0) {
+				if(level[xIA+1][yIA-1] != null) {
+					checkBox = level[xIA+1][yIA-1].getHitBox();
+					if(checkBox.intersects(player.getHitBox()) && level[xIA+1][yIA-1].isCollideable()) {
+						player.setCanMoveRight(false);
+					}
+				}
+			}
 		}
 		if(xIA == level.length-1) {
 			player.setCanMoveRight(false);
