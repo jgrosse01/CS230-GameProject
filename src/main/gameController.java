@@ -55,8 +55,6 @@ public class gameController extends JFrame{
         setBackground(Color.CYAN);
         mainPane.add(menu);
         mainPane.setVisible(true);
-        
-        
         /*
         try {
             // Open an audio input stream.

@@ -55,7 +55,8 @@ public class LevelLoader {
 		switch (string) {
 		case "Dirt": return new Dirt(x,y,pane);
 		case "Metal": return new Metal(x,y,pane);
-		case "EndPoint": return new EndPoint(x,y,pane);
+		case "Floor": return new Floor(x,y,pane);
+		case "Acid": return new Acid(x,y,pane);
 		}
 
 		return null;
@@ -72,6 +73,7 @@ public class LevelLoader {
 		}
 		switch(string) {
 		case "SpawnPoint": return new SpawnPoint(x,y,pane,(options.equals("true") ? true : false));
+		case "EndPoint": return new EndPoint(x,y,pane);
 		/*case "PuzzleItem":
 			switch(splitOptions[0]) {
 			case "Key": return new Key(x,y,pane);

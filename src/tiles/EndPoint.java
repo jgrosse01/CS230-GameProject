@@ -11,7 +11,7 @@ public class EndPoint extends Tile {
 	static BufferedImage texture;
 	static {
 		try { 
-			texture = ImageIO.read(new File("src/sprites/leftRun (9).png")); 
+			texture = ImageIO.read(new File("src/sprites/DoorOpen.png")); 
 		}
 		catch(java.io.IOException e) { 
 			e.printStackTrace();

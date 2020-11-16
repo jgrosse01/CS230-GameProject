@@ -242,6 +242,11 @@ public class Player extends Entity implements KeyListener, MouseListener {
             	isGravity = true;
         	}
         }
+		move();
+	}
+	
+	public JLabel getPlayerLabel() {
+		return label;
 	}
 	
 	public SpawnPoint getSpawnPoint() {return sp;}
