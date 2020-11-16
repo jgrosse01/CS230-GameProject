@@ -114,8 +114,8 @@ public class Player extends Entity implements KeyListener, MouseListener {
     public void move() {
     	if(dy > 0 && !canMoveDown) {setDY(0);}
     	if(dy < 0 && !canMoveUp) {setDY(0);}
-    	if(dx != 0 && !canMoveRight) {setDX(0);}
-    	if(dx != 0 && !canMoveLeft) {setDX(0);}
+    	if(dx > 0 && !canMoveRight) {setDX(0);}
+    	if(dx < 0 && !canMoveLeft) {setDX(0);}
 		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
@@ -152,9 +152,14 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	}
     
     public void respawn() {
-    	this.setX(sp.getX());
-    	this.setY(sp.getY());
-    	panel.setLocation((int)(screenSize.getWidth()/2)-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-gameController.getBlockDimension());
+    	int x = sp.getX();
+    	int y = sp.getY() - gameController.getBlockDimension();
+    	this.setX(x);
+    	this.setY(y);
+    	label.setBounds(x, y, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+    	
+    	panel.setLocation((int)(screenSize.getWidth()/2)-x-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-y-gameController.getBlockDimension());
     }
     
     public void gravity() {
