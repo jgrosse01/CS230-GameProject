@@ -272,9 +272,12 @@ public class levelBuilder extends JPanel{
 	//we can set coords to 0 for all because we are only
 	//using these for reference.
 	private void makeTileArray() {
-		tileArray = new Tile[2];
+		tileArray = new Tile[5];
 		tileArray[0] = new Dirt(0,0,levelPanel);
 		tileArray[1] = new SpawnPoint(0,0,levelPanel);
+		tileArray[2] = new Floor(0,0,levelPanel);
+		tileArray[3] = new Acid(0,0,levelPanel);
+		tileArray[4] = new EndPoint(0,0,levelPanel);
 	}
 	
 	private ImageIcon resizeTile(BufferedImage img) {
