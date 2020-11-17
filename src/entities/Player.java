@@ -74,7 +74,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     	imageLeft = ImageIO.read(new File("src/sprites/leftIdle (0).png"));
     	imageRight = ImageIO.read(new File("src/sprites/Idle (0).png"));
     	//hitBox slightly bigger than player to make collision detection easier
-    	hitBox = new Rectangle(x-1,y-1,gameController.getBlockDimension()+2,(gameController.getBlockDimension()*2)+2);
+    	hitBox = new Rectangle(x,y,gameController.getBlockDimension(),(gameController.getBlockDimension()*2));
     }
     
     public void loadImage(String fileName) {
@@ -117,7 +117,9 @@ public class Player extends Entity implements KeyListener, MouseListener {
     	if(dx > 0 && !canMoveRight) {setDX(0);}
     	if(dx < 0 && !canMoveLeft) {setDX(0);}
 		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
-		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		setX(label.getX());
+		setY(label.getY());
+		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), (gameController.getBlockDimension()*2));
 		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
 		
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
@@ -138,7 +140,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			
 			try {
 				currentImage = ImageIO.read(file);
-			} catch (IOException e) {e.printStackTrace();}
+			} catch (IOException e) {/*e.printStackTrace();*/}
 			currentIcon = new ImageIcon(currentImage); //load the image to a imageIcon
 			Image img = currentIcon.getImage(); // transform it 
 			Image newimg = img.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
@@ -278,6 +280,18 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	public void setCanMoveUp(boolean b) {canMoveUp = b;}
 	public void setCanMoveLeft(boolean b) {canMoveLeft = b;}
 	public void setCanMoveRight(boolean b) {canMoveRight = b;}
+	
+	public void setX(int x) {
+		this.x = x;
+		label.setBounds(x,label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		hitBox.setBounds(x, label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+	}
+	public void setY(int y) {
+		this.y = y;
+		label.setBounds(label.getX(),y,gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		hitBox.setBounds(label.getX(), y,gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+	}
+
 	
 	
 	public Rectangle getHitBox() {
