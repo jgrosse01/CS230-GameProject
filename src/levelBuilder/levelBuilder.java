@@ -279,6 +279,7 @@ public class levelBuilder extends JLayeredPane{
 				label.repaint();
 			}
 			if(SwingUtilities.isRightMouseButton(e)) {
+				levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = null;
 				label.setIcon(null);
 				label.repaint();
 			}

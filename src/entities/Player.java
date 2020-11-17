@@ -34,7 +34,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private static BufferedImage[] dead;
     private static BufferedImage[] leftDead;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private boolean isGravity = false; //to utilize timer to set limit on jump
+//    private boolean isGravity = false; //to utilize timer to set limit on jump
     private boolean canJump = true; //to tell the player if they can jump
     private Tile inventorySlot = null;
     private SpawnPoint sp;
@@ -113,13 +113,14 @@ public class Player extends Entity implements KeyListener, MouseListener {
     
     public void move() {
     	if(dy > 0 && !canMoveDown) {setDY(0);}
+    	if(!canMoveDown) {canJumpTrue();} else {canJumpFalse();}
     	if(dy < 0 && !canMoveUp) {setDY(0);}
     	if(dx > 0 && !canMoveRight) {setDX(0);}
     	if(dx < 0 && !canMoveLeft) {setDX(0);}
 		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
-		setX(label.getX());
-		setY(label.getY());
-		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), (gameController.getBlockDimension()*2));
+		this.x = label.getX();
+		this.y = label.getY();
+ 		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), (gameController.getBlockDimension()*2));
 		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
 		
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
@@ -201,17 +202,15 @@ public class Player extends Entity implements KeyListener, MouseListener {
         		if (getCurrentDir() == DIR_RIGHT) {
     				System.out.println("UP RIGHT MOVE");
         			currentIconType = "Jump";
-        			isGravity = false;
         			canJump = false;
-        			dy = -10;
+        			dy = -18;
         			break;
     			}
     			else {
     				System.out.println("UP LEFT MOVE");
         			currentIconType = "leftJump";
-        			isGravity = false;
         			canJump = false;
-        			dy = -10;
+        			dy = -18;
         			break;
     			}
         	}
@@ -236,12 +235,12 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	{
         		currentIconType = "Idle";
             	currentIconNumber = 0;
-            	isGravity = true;
+//            	isGravity = true;
         	}
         	else {
         		currentIconType = "leftIdle";
             	currentIconNumber = 0;
-            	isGravity = true;
+//            	isGravity = true;
         	}
         }
 		move();
@@ -265,9 +264,9 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	public void setInventory(Tile t) {inventorySlot = t;}
 	public void clearInventory() {inventorySlot = null;}
 	public void invertDY() {dy = -1*dy;}
-	public boolean isGravity() {return isGravity;}
+//	public boolean isGravity() {return isGravity;}
 	//sets didJump to false and allows gravity to work
-	public void smackdown() {isGravity = true;}
+//	public void smackdown() {isGravity = true;}
 	public void canJumpFalse() {canJump = false;}
 	public void canJumpTrue() {canJump = true;}
 	
@@ -285,11 +284,13 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		this.x = x;
 		label.setBounds(x,label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		hitBox.setBounds(x, label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		panel.setLocation((int)(screenSize.getWidth()/2)-x-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-y-gameController.getBlockDimension());
 	}
 	public void setY(int y) {
 		this.y = y;
 		label.setBounds(label.getX(),y,gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		hitBox.setBounds(label.getX(), y,gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+		panel.setLocation((int)(screenSize.getWidth()/2)-x-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-y-gameController.getBlockDimension());
 	}
 
 	
