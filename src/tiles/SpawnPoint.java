@@ -43,6 +43,10 @@ public class SpawnPoint extends Tile implements InteractableTile{
 		this.swapImage();
 	}
 	
+	public void setCurrent(boolean b) {
+		isCurrent = b;
+	}
+	
 	//Have one activated image and one unactivated image
 	public void swapImage() {
 		if (!(currentImage.equals(texture[0])))
@@ -56,6 +60,10 @@ public class SpawnPoint extends Tile implements InteractableTile{
 		player.getSpawnPoint().toggleIsCurrent();
 		this.toggleIsCurrent();
 		player.setSpawnPoint(this);
+	}
+	
+	public BufferedImage getImage() {
+		return currentImage;
 	}
 	
 	public boolean isCurrent() {

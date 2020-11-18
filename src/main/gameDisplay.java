@@ -18,6 +18,7 @@ import levelBuilder.levelInfo;
 import javax.swing.JOptionPane;
 
 import entities.Player;
+import tiles.Acid;
 import tiles.SpawnPoint;
 import tiles.Tile;
 import java.util.Timer;
@@ -166,7 +167,7 @@ public class gameDisplay extends JPanel{
 						if(player.getHitBox().intersects(level[xIA-1][yIA].getHitBox())) {
 							player.setX((xIA*dim)+dim);
 						}
-					}
+					} 
 				}
 				if(level[xIA-1][yIA+1] != null) {
 					if(level[xIA-1][yIA+1].isCollideable() && x < level[xIA-1][yIA+1].getX()+dim+10) {
@@ -174,10 +175,10 @@ public class gameDisplay extends JPanel{
 						if(player.getHitBox().intersects(level[xIA-1][yIA+1].getHitBox())) {
 							player.setX((xIA*dim)+dim);
 						}
-					}
+					} 
 				}
 				if(level[xIA-1][yIA+2] != null) {
-					if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x < level[xIA-1][yIA+2].getX()+dim+10) {
+					if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x > level[xIA-1][yIA+2].getX()+dim+10) {
 						player.setCanMoveLeft(false);
 //						if(player.getHitBox().intersects(level[xIA-1][yIA+2].getHitBox())) {
 //							player.setX((xIA*dim)+dim);
@@ -253,6 +254,12 @@ public class gameDisplay extends JPanel{
 						if(player.getHitBox().intersects(level[xIA][yIA+2].getHitBox())) {
 							player.setY(yIA*dim);
 						}
+					} else {
+						if(level[xIA][yIA+2] instanceof Acid) {
+							if(player.getHitBox().intersects(level[xIA][yIA+2].getHitBox())) {
+								player.respawn();
+							}
+						}
 					}
 				}
 				if(xIA > 0) {
@@ -261,6 +268,12 @@ public class gameDisplay extends JPanel{
 							player.setCanMoveDown(false);
 							if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
 								player.setY(yIA*dim);
+							}
+						} else {
+							if(level[xIA+1][yIA+2] instanceof Acid && x >= level[xIA+1][yIA+2].getX()-dim+20) {
+								if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
+									player.respawn();
+								}
 							}
 						}
 					}
