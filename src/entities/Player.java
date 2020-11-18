@@ -186,6 +186,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	currentIconType = "leftRun";
         	dx = -10;
         	dy = 0;
+        	canJump = true;
         	break;
         case (KeyEvent.VK_RIGHT):
         	System.out.println("RIGHT MOVE");
@@ -193,6 +194,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	currentIconType = "Run";
         	dy = 0;
         	dx = 10;
+        	canJump = true;
         	break;
         case (KeyEvent.VK_UP):
         	if (canJump) {
@@ -266,7 +268,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	public boolean isGravity() {return isGravity;}
 	//sets didJump to false and allows gravity to work
 	public void smackdown() {isGravity = true;}
-	public void canJumpFalse() {canJump = false;}
+	public void canJumpFalse() {canJump = true;}
 	public void canJumpTrue() {canJump = true;}
 	
 	/*
