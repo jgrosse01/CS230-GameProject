@@ -14,8 +14,8 @@ public class Entity {
 	public static final int DIR_LEFT = 0;
 	public static final int DIR_RIGHT = 1;
 	//integer location in pixels of top left corner
-	private int x;
-	private int y;
+	public int x;
+	public int y;
 	//buffered images for left and right directional
 	private BufferedImage lSprite;
 	private BufferedImage rSprite;

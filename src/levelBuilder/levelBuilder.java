@@ -26,11 +26,8 @@ public class levelBuilder extends JLayeredPane{
 	private gameController thisFrame; //used for keeping track of parent frame
 	private Point levelLoc; //location of level, used for dragging frame around
 	private Tile[] tileArray; //used for Combobox selection
-	private ButtonGroup radioButtons; //For selecting option i.e. add, delete, move
-	private JRadioButton radioAdd; //radio buttons for selection options
-	private JRadioButton radioDelete;
-	private JRadioButton radioMove;
 	private boolean isDefaultPlaced = false; //flag for default spawn point
+	private boolean dragging; //flag for detecting if the pane is getting dragged or not
 	
 	public levelBuilder(gameController frame) {
 		
@@ -114,23 +111,9 @@ public class levelBuilder extends JLayeredPane{
 		tileCB.setBackground(new Color((float)0.996,(float)0.992,(float)0.871));
 		tileCB.setBorder(BorderFactory.createLineBorder(Color.black,2));
 
-		radioAdd = new JRadioButton("Add");
-		radioAdd.setBackground(new Color((float)0.996,(float)0.992,(float)0.95));
-		radioAdd.setFocusPainted(false);
-		radioDelete = new JRadioButton("Delete");
-		radioDelete.setBackground(new Color((float)0.996,(float)0.992,(float)0.95));
-		radioDelete.setFocusPainted(false);
-		radioMove = new JRadioButton("Move");
-		radioMove.setBackground(new Color((float)0.996,(float)0.992,(float)0.95));
-		radioMove.setFocusPainted(false);
-		
-
-		radioButtons = new ButtonGroup();
-		radioButtons.add(radioAdd);
-		radioButtons.add(radioDelete);
-		radioButtons.add(radioMove);
-		radioAdd.setSelected(true);
-		
+		//Label for explaining controls
+		JLabel helpLabel = new JLabel("<html>Left Click: Place<br/>Right Click: Delete<br/> Drag: Move Level");
+		helpLabel.setBackground(new Color((float)0.996,(float)0.992,(float)0.95));
 		
 		//formatting tileSelect and then adding it to the Panel
 		tileSelect.setBorder(BorderFactory.createTitledBorder("Tile Select"));
@@ -144,9 +127,7 @@ public class levelBuilder extends JLayeredPane{
 		tileSelect.add(loadButton); loadButton.setBounds(Hsp*11,Hsp,Hsp*3,Hsp);
 		tileSelect.add(tileCB); tileCB.setBounds(Hsp*15,Hsp,Sp*2,Hsp);
 		tileSelect.add(cbLabel); cbLabel.setBounds((Hsp*19)+10,Hsp,Sp,Hsp);
-		tileSelect.add(radioAdd); radioAdd.setBounds(Hsp*21,Hsp,Sp,Hsp);
-		tileSelect.add(radioDelete); radioDelete.setBounds(Hsp*23,Hsp,Sp,Hsp);
-		tileSelect.add(radioMove); radioMove.setBounds(Hsp*25,Hsp,Sp,Hsp);
+		tileSelect.add(helpLabel); helpLabel.setBounds(Hsp*21,0,Sp*3,Hsp*3);
 		this.add(tileSelect, 0);
 		tileCB.setVisible(true);
 		
@@ -237,25 +218,28 @@ public class levelBuilder extends JLayeredPane{
 			for(int j = 0; j < width; j++) {
 				JLabel tileIcon = new JLabel();
 				tileIcon.setEnabled(true);
+				//for detecting a mouse click
 				tileIcon.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
-						if(radioMove.isSelected()) {
-							levelLoc = new Point(tileIcon.getX()+e.getX(),tileIcon.getY()+e.getY());
-						}
-						if(radioAdd.isSelected() || radioDelete.isSelected()) {
-							tilePressed(e);
+						dragging = false;
+						levelLoc = new Point(tileIcon.getX()+e.getX(),tileIcon.getY()+e.getY());
+					}
+					
+					public void mouseReleased(MouseEvent b) {
+						if(!dragging) {
+							tilePressed(b);
 						}
 					}
 				});
 				//making level panel draggable
 				tileIcon.addMouseMotionListener(new MouseAdapter() {
 					public void mouseDragged(MouseEvent e) {
-						if(radioMove.isSelected()) {
-							Point currentScreenLoc = e.getLocationOnScreen();
-							levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
-						}
+						dragging = true;
+						Point currentScreenLoc = e.getLocationOnScreen();
+						levelPanel.setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
 					}
 				});
+				
 				if(levelArray[j][i]==null) {
 					tileIcon.setBackground(Color.white);
 				}
@@ -282,7 +266,7 @@ public class levelBuilder extends JLayeredPane{
 		Object item = tileCB.getSelectedItem();
 		if(item instanceof Tile) {
 			Tile tile = (Tile)item;
-			if(radioAdd.isSelected()) {
+			if(SwingUtilities.isLeftMouseButton(e)) {
 				if(tile instanceof SpawnPoint) {
 					if(!isDefaultPlaced) {
 						((SpawnPoint) tile).toggleIsCurrent();
@@ -294,7 +278,8 @@ public class levelBuilder extends JLayeredPane{
 				label.setIcon(icon);
 				label.repaint();
 			}
-			if(radioDelete.isSelected()) {
+			if(SwingUtilities.isRightMouseButton(e)) {
+				levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = null;
 				label.setIcon(null);
 				label.repaint();
 			}
