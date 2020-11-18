@@ -23,6 +23,7 @@ public class Acid extends Tile {
 	//THERE IS NO NULL CHECK, WE MUST DETERMINE BEFORE HAND WHERE THE IMAGE IS
 	public Acid(int x, int y, JPanel jpane) {
 		super(x, y, acidTexture, jpane, true);
+		collideable = false;
 	}
 	
 	public String toString() {

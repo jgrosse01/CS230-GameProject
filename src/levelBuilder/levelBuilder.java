@@ -264,22 +264,35 @@ public class levelBuilder extends JLayeredPane{
 		JLabel label = (JLabel) e.getSource();
 		int x = label.getX();
 		int y = label.getY(); 
+		boolean canPlace = true;
 		Object item = tileCB.getSelectedItem();
 		if(item instanceof Tile) {
 			Tile tile = (Tile)item;
 			if(SwingUtilities.isLeftMouseButton(e)) {
 				if(tile instanceof SpawnPoint) {
 					if(!isDefaultPlaced) {
-						((SpawnPoint) tile).toggleIsCurrent();
+						((SpawnPoint) tile).setCurrent(true);
 						isDefaultPlaced=true;
+					} else {
+						canPlace = false;
 					}
 				}
-				levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = tile;
-				ImageIcon icon = resizeTile(tile.getImage());
-				label.setIcon(icon);
-				label.repaint();
+				if(canPlace) {
+					levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = tile;
+					ImageIcon icon = resizeTile(tile.getImage());
+					label.setIcon(icon);
+					label.repaint();
+				}
 			}
 			if(SwingUtilities.isRightMouseButton(e)) {
+				if(levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] != null) {
+					if(levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] instanceof SpawnPoint) {
+						SpawnPoint temp = (SpawnPoint) levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()];
+						if(temp.isCurrent()) {
+							isDefaultPlaced = false;
+						}
+					}
+				}
 				levelArray[x/thisFrame.getBlockDimension()][y/thisFrame.getBlockDimension()] = null;
 				label.setIcon(null);
 				label.repaint();
@@ -295,6 +308,7 @@ public class levelBuilder extends JLayeredPane{
 		tileArray = new Tile[8];
 		tileArray[0] = new Dirt(0,0,levelPanel);
 		tileArray[1] = new SpawnPoint(0,0,levelPanel);
+		((SpawnPoint) tileArray[1]).setCurrent(true);
 		tileArray[2] = new Floor(0,0,levelPanel);
 		tileArray[3] = new Acid(0,0,levelPanel);
 		tileArray[4] = new EndPoint(0,0,levelPanel);
@@ -312,8 +326,22 @@ public class levelBuilder extends JLayeredPane{
 	private void loadLevel() throws FileNotFoundException, NullPointerException{
 		String level = JOptionPane.showInputDialog("Name of the level you wish to load");
 		try {
-			levelInfo info = LevelLoader.load(level+".txt",levelPanel);
+			levelInfo info;
+			info = LevelLoader.load(level+".txt",levelPanel);
+			levelArray = new Tile[info.getLevel().length][info.getLevel()[0].length];
 			levelArray = info.getLevel();
+			isDefaultPlaced = false;
+			for(int x = 0; x < levelArray.length; x++) {
+				for(int y = 0; y < levelArray[0].length; y++) {
+					if(levelArray[x][y] != null) {
+						if(levelArray[x][y] instanceof SpawnPoint) {
+							if(((SpawnPoint) levelArray[x][y]).isCurrent()) {
+								isDefaultPlaced = true;
+							}
+						}
+					}
+				}
+			}
 			paintLevel(levelPanel.getGraphics());
 		} finally {
 			
