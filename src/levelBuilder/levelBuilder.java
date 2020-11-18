@@ -292,7 +292,7 @@ public class levelBuilder extends JLayeredPane{
 	//we can set coords to 0 for all because we are only
 	//using these for reference.
 	private void makeTileArray() {
-		tileArray = new Tile[7];
+		tileArray = new Tile[8];
 		tileArray[0] = new Dirt(0,0,levelPanel);
 		tileArray[1] = new SpawnPoint(0,0,levelPanel);
 		tileArray[2] = new Floor(0,0,levelPanel);
@@ -300,6 +300,7 @@ public class levelBuilder extends JLayeredPane{
 		tileArray[4] = new EndPoint(0,0,levelPanel);
 		tileArray[5] = new Box(0,0,levelPanel);
 		tileArray[6] = new Spikes(0,0,levelPanel);
+		tileArray[7] = new DownwardSpikes(0,0,levelPanel);
 	}
 	
 	private ImageIcon resizeTile(BufferedImage img) {
