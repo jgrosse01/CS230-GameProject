@@ -10,16 +10,23 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.FilenameFilter;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import levelBuilder.levelInfo;
 import javax.swing.JOptionPane;
 
 import entities.Player;
 import tiles.Acid;
+import tiles.Box;
+import tiles.Dirt;
+import tiles.EndPoint;
+import tiles.Floor;
 import tiles.SpawnPoint;
+import tiles.Spikes;
 import tiles.Tile;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -71,6 +78,8 @@ public class gameDisplay extends JPanel{
 				
 			}
 		}
+		
+		
 		this.setBounds(0,0,currentLevel.getLevel().length*gameController.getBlockDimension(),currentLevel.getLevel()[0].length*gameController.getBlockDimension());
 		currentLevel.drawLevel();
 		setCurrentSpawn();
@@ -87,6 +96,15 @@ public class gameDisplay extends JPanel{
 		player.draw();
 		gameIsReady = true;
 	}
+	
+	/*
+	private void makeLevelArray() {
+		levelArray = new levelInfo[10];
+		try {
+			level1 = LevelLoader.load("1" + ".txt",this);
+		} catch (FileNotFoundException e) {e.printStackTrace();}
+	}
+	*/
 
 	public void scalePlayer() {
 		ImageIcon imageIcon = new ImageIcon("images"); // load the image to a imageIcon

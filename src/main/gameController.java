@@ -3,6 +3,7 @@ package main;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +16,10 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame; // for JFrame
+import javax.swing.JLabel;
 import javax.swing.JOptionPane; // messages are displayed using JOptionPane
 import javax.swing.JPanel;
 
@@ -52,7 +55,20 @@ public class gameController extends JFrame{
         
         mainPane = getContentPane();
         //IF SCREEN IS CYAN THEN WE DID SOMETHING WRONG
-        setBackground(Color.CYAN);
+        setBackground(Color.BLACK);
+        //BACKGROUND IMAGE
+        /*
+        picLabel = new JLabel(); //create jlabel
+		background = new ImageIcon("src/main/bob2.jpeg"); //init image
+		Image img = background.getImage(); //transform to img
+		Image newImg = img.getScaledInstance(gameController.getWindowWidth(), gameController.getWindowHeight(), Image.SCALE_SMOOTH); //create scaled version
+		ImageIcon finalImage = new ImageIcon(newImg); //transform back to image icon
+		picLabel.setIcon(finalImage); //set image to label
+		picLabel.setBounds(0, 0, gameController.getWindowWidth(), gameController.getWindowHeight()); //set bounds of label on the layered panel. (has to be done with layered panel.
+		*/
+        
+        
+        
         mainPane.add(menu);
         mainPane.setVisible(true);
         try {

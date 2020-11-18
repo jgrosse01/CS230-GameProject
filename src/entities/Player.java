@@ -189,6 +189,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	currentIconType = "leftRun";
         	dx = -10;
         	dy = 0;
+        	canJump = true;
         	break;
         case (KeyEvent.VK_RIGHT):
         	System.out.println("RIGHT MOVE");
@@ -196,6 +197,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
         	currentIconType = "Run";
         	dy = 0;
         	dx = 10;
+        	canJump = true;
         	break;
         case (KeyEvent.VK_UP):
         	if (canJump) {
