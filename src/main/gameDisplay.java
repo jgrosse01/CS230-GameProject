@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -15,6 +17,7 @@ import java.io.FilenameFilter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import levelBuilder.levelInfo;
 import javax.swing.JOptionPane;
@@ -40,6 +43,7 @@ public class gameDisplay extends JPanel{
 	private boolean gameIsReady = false;
 	
 	private Player player;
+	private gameController frame;
 	private Timer timer = new Timer();
 	private static int gravityTimer = 0;
 	private Time timerThing;
@@ -48,105 +52,120 @@ public class gameDisplay extends JPanel{
 	private Point levelLoc;
 	private levelInfo currentLevel;
 	private SpawnPoint currentSpawn;
+	private boolean exit = false;
 	//private int timerInterval = 17; //Unneeded due to change in timer use
 
 	public gameDisplay(gameController frame) {
+		this.frame = frame;
 		frame.setLayout(null);
 		this.setLayout(null);
 		this.setBackground(Color.gray);
-		//temp code for draggin and clicking
-		this.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				levelLoc = e.getPoint();
+		this.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				int key = arg0.getKeyCode();
+				if(key == KeyEvent.VK_ESCAPE) {
+					frame.gameToMain();
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
-		//making level panel draggable
-		this.addMouseMotionListener(new MouseAdapter() {
-			public void mouseDragged(MouseEvent e) {
-				Point currentScreenLoc = e.getLocationOnScreen();
-				setLocation(currentScreenLoc.x - levelLoc.x, currentScreenLoc.y - levelLoc.y);
-			}
-		});
+
 		
-		boolean choosing = true;
-		while(choosing) {
-			String levelFilename = JOptionPane.showInputDialog("Level Filename");
+		File filePath = new File("..\\game");
+		File[] fileList = filePath.listFiles();
+		String[] fileNames = new String[fileList.length];
+		int levelCount = 0;
+		for(int i = 0; i < fileList.length; i ++) {
+			if(fileList[i].getName().length() > 4) {
+				if(fileList[i].getName().substring(fileList[i].getName().length() -4).equals(".txt")) {
+					levelCount++;
+					fileNames[i] = fileList[i].getName();
+				}
+			}
+		}
+		String[] levelNames = new String[levelCount];
+		int inc = 0;
+		for(int i = 0; i < fileNames.length; i++) {
+			if(fileNames[i] != null) {
+				levelNames[inc] = fileNames[i];
+				inc++;
+			}
+		}
+		JComboBox levelComboBox = new JComboBox(levelNames);
+		int response = JOptionPane.showConfirmDialog(null, levelComboBox, "Select a level", 
+				JOptionPane.OK_CANCEL_OPTION);
+		if(response == JOptionPane.OK_OPTION) {
 			try {
-				currentLevel = LevelLoader.load(levelFilename + ".txt",this);
-				choosing = false;
+				currentLevel = LevelLoader.load((String)levelComboBox.getSelectedItem(),this);
 			} catch (FileNotFoundException err) {
 				
 			}
+		} else {
+			exit = true;
 		}
-		
-		
-		this.setBounds(0,0,currentLevel.getLevel().length*gameController.getBlockDimension(),currentLevel.getLevel()[0].length*gameController.getBlockDimension());
-		currentLevel.drawLevel();
-		setCurrentSpawn();
-		try {
-			BufferedImage tempSprite = ImageIO.read(new File("src/sprites/Idle (0).png"));
-			player = new Player(0,0,tempSprite,tempSprite,this,currentSpawn);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		timerThing = new Time();
-		timer.schedule(timerThing, 0, MOVE_TIME);
-		player.respawn();
-		player.draw();
-		gameIsReady = true;
-	}
-	
-	/*
-	private void makeLevelArray() {
-		levelArray = new levelInfo[10];
-		try {
-			level1 = LevelLoader.load("1" + ".txt",this);
-		} catch (FileNotFoundException e) {e.printStackTrace();}
-	}
-	*/
-
-	public void scalePlayer() {
-		ImageIcon imageIcon = new ImageIcon("images"); // load the image to a imageIcon
-		Image image = imageIcon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-		imageIcon = new ImageIcon(newimg);  // transform it back
-	}
-	
-//	class Time extends TimerTask {
-//		public void run() {
-//			if (gameIsReady) {
-//				if (!player.isGravity())
-//					gravityTimer += MOVE_TIME;
-//				if (gravityTimer >= MAX_NO_GRAVITY_TIMER) {
-//					player.smackdown();
-//					gravityTimer = 0;
-//				}					
-//				if (player.isGravity() && player.canMoveDown()) {
-//					player.setDY(10);
-//				} else if (player.isGravity()) {
-//					player.setDY(0);
-//				}
-//				if (!player.canMoveDown())
-//					player.canJumpTrue();
-//				else
-//					player.canJumpFalse();
-//				collisionCheck();
-//				player.move();
-//			}
-//		}
-//	}
-	
-	class Time extends TimerTask {
-		public void run() {
-			if (gameIsReady) {
-				if(player.getDY() < 20 && player.canMoveDown()) {
-					player.setDY(player.getDY()+1);
+		if(!exit) {
+				this.setBounds(0,0,currentLevel.getLevel().length*gameController.getBlockDimension(),currentLevel.getLevel()[0].length*gameController.getBlockDimension());
+				currentLevel.drawLevel();
+				setCurrentSpawn();
+				try {
+					BufferedImage tempSprite = ImageIO.read(new File("src/sprites/Idle (0).png"));
+					player = new Player(0,0,tempSprite,tempSprite,this,currentSpawn);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-				collisionCheck();
-				player.move();
+				timerThing = new Time();
+				timer.schedule(timerThing, 0, MOVE_TIME);
+				player.respawn();
+				player.draw();
+				gameIsReady = true;
+			} else {
+				timerThing = new Time();
+				timer.schedule(timerThing, 500);
 			}
 		}
+	
+		/*
+		private void makeLevelArray() {
+			levelArray = new levelInfo[10];
+			try {
+				level1 = LevelLoader.load("1" + ".txt",this);
+			} catch (FileNotFoundException e) {e.printStackTrace();}
+		}
+		*/
+	
+		public void scalePlayer() {
+			ImageIcon imageIcon = new ImageIcon("images"); // load the image to a imageIcon
+			Image image = imageIcon.getImage(); // transform it 
+			Image newimg = image.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			imageIcon = new ImageIcon(newimg);  // transform it back
+		}
+		
+		class Time extends TimerTask {
+			public void run() {
+				if (gameIsReady) {
+					if(player.getDY() < 20 && player.canMoveDown()) {
+						player.setDY(player.getDY()+1);
+					}
+					collisionCheck();
+					player.move();
+				} else if(exit){
+					frame.gameToMain();
+				}
+			}
 	}
 	
 	

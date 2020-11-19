@@ -3,6 +3,7 @@ package main;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
@@ -54,6 +55,7 @@ public class gameController extends JFrame{
         setVisible(true);
         
         mainPane = getContentPane();
+        mainPane.setBackground(Color.WHITE);
         //IF SCREEN IS CYAN THEN WE DID SOMETHING WRONG
         setBackground(Color.BLACK);
         //BACKGROUND IMAGE
@@ -133,9 +135,10 @@ public class gameController extends JFrame{
 	
 	public void gameToMain() {
 		mainPane.setVisible(false);
-		mainPane.removeAll();
+		mainPane.remove(0);
 		mainMenu menu = new mainMenu(this);
 		mainPane.add(menu);
+		menu.setLocation(0,0);
 		mainPane.setVisible(true);
 	}
  
