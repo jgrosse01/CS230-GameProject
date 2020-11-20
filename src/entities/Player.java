@@ -206,14 +206,14 @@ public class Player extends Entity implements KeyListener, MouseListener {
     				System.out.println("UP RIGHT MOVE");
         			currentIconType = "Jump";
         			canJump = false;
-        			dy = -18;
+        			dy = -15;
         			break;
     			}
     			else {
     				System.out.println("UP LEFT MOVE");
         			currentIconType = "leftJump";
         			canJump = false;
-        			dy = -18;
+        			dy = -15;
         			break;
     			}
         	}
