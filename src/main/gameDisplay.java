@@ -84,7 +84,7 @@ public class gameDisplay extends JPanel{
 		});
 
 		
-		File filePath = new File("..\\game");
+		File filePath = new File("../game");
 		File[] fileList = filePath.listFiles();
 		String[] fileNames = new String[fileList.length];
 		int levelCount = 0;
