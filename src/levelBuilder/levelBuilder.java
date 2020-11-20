@@ -96,7 +96,7 @@ public class levelBuilder extends JLayeredPane{
 				try {
 					loadLevel();
 				} catch (FileNotFoundException err) {
-					JOptionPane.showMessageDialog(levelPanel, "There is no file of that name");
+					JOptionPane.showMessageDialog(null, "There is no file of that name");
 				} catch (NullPointerException err2) {
 					//do nothing
 				}
@@ -212,6 +212,7 @@ public class levelBuilder extends JLayeredPane{
 		int tileSpacing = 1;
 		int tileWidth = thisFrame.getBlockDimension();
 		levelPanel.setVisible(false);
+		levelPanel.removeAll();
 		int width = levelArray.length;
 		int height = levelArray[0].length;
 		levelPanel.setBounds(0,tileSelect.getHeight(),(tileWidth+tileSpacing)*width+tileSpacing,(tileWidth+tileSpacing)*height+tileSpacing);
@@ -243,14 +244,17 @@ public class levelBuilder extends JLayeredPane{
 				
 				if(levelArray[j][i]==null) {
 					tileIcon.setBackground(Color.white);
+					tileIcon.setIcon(null);
 				}
 				else {
 					tileIcon.setBackground(Color.white);
+					tileIcon.setIcon(null);
 					tileIcon.setIcon(resizeTile(levelArray[j][i].getImage()));
 				}
 				tileIcon.setBounds(tileSpacing+(j*(tileWidth+tileSpacing)),tileSpacing+(i*(tileWidth+tileSpacing)),tileWidth,tileWidth);
 				tileIcon.setOpaque(true);
 				tileIcon.repaint();
+				tileIcon.revalidate();
 				tileIcon.setVisible(true);
 				levelPanel.add(tileIcon);
 			}
@@ -324,25 +328,52 @@ public class levelBuilder extends JLayeredPane{
 	}
 	
 	private void loadLevel() throws FileNotFoundException, NullPointerException{
-		String level = JOptionPane.showInputDialog("Name of the level you wish to load");
+		File filePath = new File("..\\game");
+		if(!filePath.exists()) {
+			filePath = new File("../game");
+		}
+		File[] fileList = filePath.listFiles();
+		String[] fileNames = new String[fileList.length];
+		int levelCount = 0;
+		for(int i = 0; i < fileList.length; i ++) {
+			if(fileList[i].getName().length() > 4) {
+				if(fileList[i].getName().substring(fileList[i].getName().length() -4).equals(".txt")) {
+					levelCount++;
+					fileNames[i] = fileList[i].getName();
+				}
+			}
+		}
+		String[] levelNames = new String[levelCount];
+		int inc = 0;
+		for(int i = 0; i < fileNames.length; i++) {
+			if(fileNames[i] != null) {
+				levelNames[inc] = fileNames[i];
+				inc++;
+			}
+		}
+		JComboBox levelComboBox = new JComboBox(levelNames);
+		int response = JOptionPane.showConfirmDialog(null, levelComboBox, "Select a level", 
+				JOptionPane.OK_CANCEL_OPTION);
 		try {
-			levelInfo info;
-			info = LevelLoader.load(level+".txt",levelPanel);
-			levelArray = new Tile[info.getLevel().length][info.getLevel()[0].length];
-			levelArray = info.getLevel();
-			isDefaultPlaced = false;
-			for(int x = 0; x < levelArray.length; x++) {
-				for(int y = 0; y < levelArray[0].length; y++) {
-					if(levelArray[x][y] != null) {
-						if(levelArray[x][y] instanceof SpawnPoint) {
-							if(((SpawnPoint) levelArray[x][y]).isCurrent()) {
-								isDefaultPlaced = true;
+			if(response == JOptionPane.OK_OPTION) {
+				levelInfo info;
+				info = LevelLoader.load((String)levelComboBox.getSelectedItem(),levelPanel);
+				levelArray = new Tile[info.getLevel().length][info.getLevel()[0].length];
+				levelArray = info.getLevel();
+				isDefaultPlaced = false;
+				for(int x = 0; x < levelArray.length; x++) {
+					for(int y = 0; y < levelArray[0].length; y++) {
+						if(levelArray[x][y] != null) {
+							if(levelArray[x][y] instanceof SpawnPoint) {
+								if(((SpawnPoint) levelArray[x][y]).isCurrent()) {
+									isDefaultPlaced = true;
+								}
 							}
 						}
 					}
 				}
 			}
-			paintLevel(levelPanel.getGraphics());
+				paintLevel(levelPanel.getGraphics());
 		} finally {
 			
 		}
