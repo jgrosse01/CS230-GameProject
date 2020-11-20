@@ -1,10 +1,10 @@
 40:14
 Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor Floor 
-Floor null null null null null Floor null null null null null null null null Downward Spikes Downward Spikes Downward Spikes null null null null null null null null null null null null null null null null null null null null null Floor 
+Floor null null null null null Floor null null null null null null null null DownwardSpikes DownwardSpikes DownwardSpikes null null null null null null null null null null null null null null null null null null null null null Floor 
 Floor null null null null null Floor null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null Floor 
 Floor null SpawnPoint:true null null null Floor null EndPoint null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null Floor 
 Floor Floor Floor Floor Floor null Floor Floor Floor Floor Floor Floor Floor Floor null null null null null null null null null null null null null null null null null null null null null null null null null Floor 
-Floor null null null null null Floor null null null null null Downward Spikes Downward Spikes null null null Floor null null null Floor Floor null null null Floor Floor null null null Floor Floor null null null null null null Floor 
+Floor null null null null null Floor null null null null null DownwardSpikes DownwardSpikes null null null Floor null null null Floor Floor null null null Floor Floor null null null Floor Floor null null null null null null Floor 
 Floor null null null null null Floor null null null null null null null null null Floor Floor null null null null null null null null null null null null null null null null null null null null null Floor 
 Floor null Floor Floor Floor Floor Floor null null null null null null null null Floor Floor Floor null null null null null null null null null null null null null null null null null null null null null Floor 
 Floor null null null null null Floor null null null null null null null Floor Floor Floor Floor null null null null null null null null null null null null null null null null null null null null null Floor 

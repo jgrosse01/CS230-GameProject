@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import entities.Player;
 import levelBuilder.levelInfo;
 import main.gameController;
 
@@ -30,10 +31,13 @@ public class Tile {
 	//determines whether tile is breakable
 	boolean breakable;
 	private JLabel label;
+	
+	//collideable and "hazard", simply meaning it has an effect when touched
 	protected boolean collideable;
+	protected boolean hazard = false;
 	
 	//for collision detecting
-	private Rectangle hitBox;
+	public Rectangle hitBox;
 	
 	//Constructor
 	public Tile(int x, int y, BufferedImage sprite, JPanel pane) {
@@ -116,6 +120,8 @@ public class Tile {
 		level.place(mousex, mousey, this);
 	}
 	
+	public void hazard(Player p) {};
+	
 	public int getX() { return x; }
 	public int getY() { return y; }
 	public BufferedImage getImage() {return sprite;}
@@ -123,6 +129,7 @@ public class Tile {
 	public int getHeight() { return height; }
 	public boolean isCollideable() {return collideable;}
 	public void changeCollide(boolean option) {collideable = option;}
+	public boolean isHazard() {return hazard;}
 	public Rectangle getHitBox() {
 		return hitBox;
 	}

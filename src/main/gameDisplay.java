@@ -57,7 +57,7 @@ public class gameDisplay extends JPanel{
 
 	public gameDisplay(gameController frame) {
 		this.frame = frame;
-		frame.setLayout(null);
+		frame.getContentPane().setLayout(null);
 		this.setLayout(null);
 		this.setBackground(Color.gray);
 		this.addKeyListener(new KeyListener() {
@@ -66,6 +66,7 @@ public class gameDisplay extends JPanel{
 			public void keyPressed(KeyEvent arg0) {
 				int key = arg0.getKeyCode();
 				if(key == KeyEvent.VK_ESCAPE) {
+					timer.cancel();
 					frame.gameToMain();
 				}
 			}
@@ -83,8 +84,10 @@ public class gameDisplay extends JPanel{
 			}
 		});
 
-		
-		File filePath = new File("../game");
+		File filePath = new File("..\\game");
+		if(!filePath.exists()) {
+			filePath = new File("../game");
+		}
 		File[] fileList = filePath.listFiles();
 		String[] fileNames = new String[fileList.length];
 		int levelCount = 0;
@@ -162,7 +165,13 @@ public class gameDisplay extends JPanel{
 					}
 					collisionCheck();
 					player.move();
+					if(player.didWin()) {
+						timer.cancel();
+						JOptionPane.showMessageDialog(null, "You escaped Bob's Basement!");
+						frame.gameToMain();
+					}
 				} else if(exit){
+					timer.cancel();
 					frame.gameToMain();
 				}
 			}
@@ -193,6 +202,14 @@ public class gameDisplay extends JPanel{
 		int dim = gameController.getBlockDimension();
 		int xIA = x/dim;
 		int yIA = y/dim;
+		//upward hazard test
+		if(level[xIA][yIA] != null) {
+			if(level[xIA][yIA].isHazard()) {
+				if(player.getHitBox().intersects(level[xIA][yIA].getHitBox())) {
+					level[xIA][yIA].hazard(player);
+				}
+			}
+		}
 		//player going left
 		if(dx < 0) {
 			if((xIA == 0 && x <= 0)) {
@@ -204,6 +221,12 @@ public class gameDisplay extends JPanel{
 						if(player.getHitBox().intersects(level[xIA-1][yIA].getHitBox())) {
 							player.setX((xIA*dim)+dim);
 						}
+					} else {
+						if(level[xIA-1][yIA].isHazard()) {
+							if(player.getHitBox().intersects(level[xIA-1][yIA].getHitBox())) {
+								level[xIA-1][yIA].hazard(player);
+							}
+						}
 					} 
 				}
 				if(level[xIA-1][yIA+1] != null) {
@@ -212,14 +235,28 @@ public class gameDisplay extends JPanel{
 						if(player.getHitBox().intersects(level[xIA-1][yIA+1].getHitBox())) {
 							player.setX((xIA*dim)+dim);
 						}
+					} else {
+						if(level[xIA-1][yIA+1].isHazard()) {
+							if(player.getHitBox().intersects(level[xIA-1][yIA+1].getHitBox())) {
+								level[xIA-1][yIA+1].hazard(player);
+							}
+						}
 					} 
 				}
-				if(level[xIA-1][yIA+2] != null) {
-					if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x > level[xIA-1][yIA+2].getX()+dim+10) {
-						player.setCanMoveLeft(false);
-//						if(player.getHitBox().intersects(level[xIA-1][yIA+2].getHitBox())) {
-//							player.setX((xIA*dim)+dim);
-//						}
+				if(yIA < level[0].length-2) {
+					if(level[xIA-1][yIA+2] != null) {
+						if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x > level[xIA-1][yIA+2].getX()+dim+10) {
+							player.setCanMoveLeft(false);
+	//						if(player.getHitBox().intersects(level[xIA-1][yIA+2].getHitBox())) {
+	//							player.setX((xIA*dim)+dim);
+	//						}
+						} else {
+							if(level[xIA-1][yIA+2].isHazard()) {
+								if(player.getHitBox().intersects(level[xIA-1][yIA+2].getHitBox())) {
+									level[xIA-1][yIA+2].hazard(player);
+								}
+							}
+						}
 					}
 				}
 			}
@@ -235,6 +272,12 @@ public class gameDisplay extends JPanel{
 						if(player.getHitBox().intersects(level[xIA+1][yIA].getHitBox())) {
 							player.setX(xIA*dim);
 						}
+					} else {
+						if(level[xIA+1][yIA].isHazard()) {
+							if(player.getHitBox().intersects(level[xIA+1][yIA].getHitBox())) {
+								level[xIA+1][yIA].hazard(player);
+							}
+						}
 					}
 				}
 				if(level[xIA+1][yIA+1] != null) {
@@ -243,13 +286,27 @@ public class gameDisplay extends JPanel{
 						if(player.getHitBox().intersects(level[xIA+1][yIA+1].getHitBox())) {
 							player.setX(xIA*dim);
 						}
+					}  else {
+						if(level[xIA+1][yIA+1].isHazard()) {
+							if(player.getHitBox().intersects(level[xIA+1][yIA+1].getHitBox())) {
+								level[xIA+1][yIA+1].hazard(player);
+							}
+						}
 					}
 				}
-				if(level[xIA+1][yIA+2] != null) {
-					if(level[xIA+1][yIA+2].isCollideable() && y > level[xIA+1][yIA+2].getY()-(dim*2)+10) {
-						player.setCanMoveRight(false);
-						if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
-							player.setX(xIA*dim);
+				if(yIA < level[0].length-2) {
+					if(level[xIA+1][yIA+2] != null) {
+						if(level[xIA+1][yIA+2].isCollideable() && y > level[xIA+1][yIA+2].getY()-(dim*2)+10) {
+							player.setCanMoveRight(false);
+							if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
+								player.setX(xIA*dim);
+							}
+						} else {
+							if(level[xIA+1][yIA+2].isHazard()) {
+								if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
+									level[xIA+1][yIA+2].hazard(player);
+								}
+							}
 						}
 					}
 				}
@@ -266,6 +323,12 @@ public class gameDisplay extends JPanel{
 						if(player.getHitBox().intersects(level[xIA][yIA-1].getHitBox())) {
 							player.setY((yIA+1)*dim);
 						}
+					} else {
+						if(level[xIA][yIA-1].isHazard()) {
+							if(player.getHitBox().intersects(level[xIA][yIA-1].getHitBox())) {
+								level[xIA][yIA-1].hazard(player);
+							}
+						}
 					}
 				}
 				if(xIA > 0) {
@@ -274,6 +337,12 @@ public class gameDisplay extends JPanel{
 							player.setCanMoveUp(false);
 							if(player.getHitBox().intersects(level[xIA+1][yIA-1].getHitBox())) {
 								player.setY((yIA+1)*dim);
+							}
+						}  else {
+							if(level[xIA+1][yIA-1].isHazard() && x >= level[xIA+1][yIA-1].getX()-dim+20 && y < level[xIA+1][yIA-1].getY()+dim+5) {
+								if(player.getHitBox().intersects(level[xIA+1][yIA-1].getHitBox())) {
+									level[xIA+1][yIA-1].hazard(player);
+								}
 							}
 						}
 					}
@@ -292,9 +361,9 @@ public class gameDisplay extends JPanel{
 							player.setY(yIA*dim);
 						}
 					} else {
-						if(level[xIA][yIA+2] instanceof Acid) {
+						if(level[xIA][yIA+2].isHazard()) {
 							if(player.getHitBox().intersects(level[xIA][yIA+2].getHitBox())) {
-								player.respawn();
+								level[xIA][yIA+2].hazard(player);
 							}
 						}
 					}
@@ -307,9 +376,9 @@ public class gameDisplay extends JPanel{
 								player.setY(yIA*dim);
 							}
 						} else {
-							if(level[xIA+1][yIA+2] instanceof Acid && x >= level[xIA+1][yIA+2].getX()-dim+20) {
+							if(level[xIA+1][yIA+2].isHazard() && x >= level[xIA+1][yIA+2].getX()-dim+20) {
 								if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
-									player.respawn();
+									level[xIA+1][yIA+2].hazard(player);
 								}
 							}
 						}

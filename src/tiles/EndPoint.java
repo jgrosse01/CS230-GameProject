@@ -6,6 +6,8 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import entities.Player;
+
 public class EndPoint extends Tile {
 	
 	static BufferedImage texture;
@@ -20,10 +22,15 @@ public class EndPoint extends Tile {
 
 	public EndPoint(int x, int y, JPanel pane) {
 		super(x, y, texture, pane);
+		collideable = false;
+		hazard = true;
 	}
 	
 	public String toString() {
 		return "EndPoint";
 	}
 
+	public void hazard(Player p) {
+		p.won();
+	}
 }
