@@ -113,6 +113,7 @@ public class gameController extends JFrame{
 		mainPane.setVisible(false);
 		mainPane.remove(0);
 		levelBuilder builder = new levelBuilder(this);
+		builder.setBounds(0,0,width,height);
 		mainPane.add(builder);
 		mainPane.setVisible(true);
 	}
@@ -121,6 +122,7 @@ public class gameController extends JFrame{
 		mainPane.setVisible(false);
 		mainPane.remove(0);
 		mainMenu menu = new mainMenu(this);
+		menu.setBounds(0,0,width,height);
 		mainPane.add(menu);
 		mainPane.setVisible(true);
 	}
@@ -137,8 +139,8 @@ public class gameController extends JFrame{
 		mainPane.setVisible(false);
 		mainPane.remove(0);
 		mainMenu menu = new mainMenu(this);
+		menu.setBounds(0,0,width,height);
 		mainPane.add(menu);
-		menu.setLocation(0,0);
 		mainPane.setVisible(true);
 	}
  

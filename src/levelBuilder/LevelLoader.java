@@ -60,7 +60,7 @@ public class LevelLoader {
 		case "Acid": return new Acid(x,y,pane);
 		case "Spikes": return new Spikes(x,y,pane);
 		case "EndPoint": return new EndPoint(x,y,pane);
-		case "Downward Spikes": return new DownwardSpikes(x,y,pane);
+		case "DownwardSpikes": return new DownwardSpikes(x,y,pane);
 		}
 
 		return null;

@@ -22,6 +22,7 @@ import main.gameController;
 
 public class Player extends Entity implements KeyListener, MouseListener {
 
+	private boolean iWon = false;
 	private int dx; //Direction x (change)
     private int dy; //Direction y (change)
     private boolean isAirbourne = false; //to utilize timer to set limit on jump
@@ -282,6 +283,9 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	public void setCanMoveLeft(boolean b) {canMoveLeft = b;}
 	public void setCanMoveRight(boolean b) {canMoveRight = b;}
 	
+	public void won() {iWon = true;}
+	public boolean didWin() {return iWon;}
+ 	
 	public void setX(int x) {
 		this.x = x;
 		label.setBounds(x,label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
