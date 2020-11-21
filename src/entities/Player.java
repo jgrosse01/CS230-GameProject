@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -35,10 +36,15 @@ public class Player extends Entity implements KeyListener, MouseListener {
     private static BufferedImage[] dead;
     private static BufferedImage[] leftDead;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//    private boolean isGravity = false; //to utilize timer to set limit on jump
     private boolean canJump = true; //to tell the player if they can jump
     private Tile inventorySlot = null;
     private SpawnPoint sp;
+    
+    //private int[] xpoints = new int[3];
+    //private int[] ypoints = new int[5];
+    
+    private int playerFactor = (int)(1*gameController.getBlockDimension());
+    
     private boolean canMoveDown = true;
     private boolean canMoveRight = true;
     private boolean canMoveLeft = true;
@@ -75,7 +81,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
     	imageLeft = ImageIO.read(new File("src/sprites/leftIdle (0).png"));
     	imageRight = ImageIO.read(new File("src/sprites/Idle (0).png"));
     	//hitBox slightly bigger than player to make collision detection easier
-    	hitBox = new Rectangle(x,y,gameController.getBlockDimension(),(gameController.getBlockDimension()*2));
+    	hitBox = new Rectangle(x,y,playerFactor,(playerFactor*2));
     }
     
     public void loadImage(String fileName) {
@@ -117,24 +123,33 @@ public class Player extends Entity implements KeyListener, MouseListener {
      * Moves the Player and Checks Collisions
      */
     public void move() {
-    	if(dy > 0 && !canMoveDown) {setDY(0);}
+    	//updatePoints();
+    	//collisionCheckX();
+    	//collisionCheckY();
+    	collisionCheck();
     	if(!canMoveDown) {canJumpTrue();} else {canJumpFalse();}
+    	
+    	if(!canMoveDown && dy > 0) {setDY(0);}
     	if(!canMoveUp && dy < 0) {setDY(0);}
     	if(!canMoveRight && dx > 0) {setDX(0);}
     	if(!canMoveLeft && dx < 0) {setDX(0);}
     	
     	
+    	
+    	
     	this.setX(this.getX()+dx);
     	this.setY(this.getY()+dy);
     	
-    	System.out.println("DX " + dx + "; DY " + dy);
+    	//DEBUG System.out.println("DX " + dx + "; DY " + dy);
     	panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
+    	
     	
     	
     	canMoveDown = true;
 		canMoveUp = true;
 		canMoveRight = true;
 		canMoveLeft = true;
+		
     	
 		//updating animations
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
@@ -145,7 +160,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			} catch (IOException e) {}
 			currentIcon = new ImageIcon(currentImage); //load the image to a imageIcon
 			Image img = currentIcon.getImage(); // transform it 
-			Image newimg = img.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			Image newimg = img.getScaledInstance(playerFactor,playerFactor*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			currentIcon = new ImageIcon(newimg);
 			label.setIcon(currentIcon);
 		}		
@@ -158,7 +173,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			} catch (IOException e) {}
 			currentIcon = new ImageIcon(currentImage); //load the image to a imageIcon
 			Image img = currentIcon.getImage(); // transform it 
-			Image newimg = img.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			Image newimg = img.getScaledInstance(playerFactor,playerFactor*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			currentIcon = new ImageIcon(newimg);  // transform it back
 			label.setIcon(currentIcon);
 		}
@@ -167,13 +182,13 @@ public class Player extends Entity implements KeyListener, MouseListener {
     
     public void respawn() {
     	int x = sp.getX();
-    	int y = sp.getY() - gameController.getBlockDimension();
+    	int y = sp.getY() - playerFactor;
     	this.setX(x);
     	this.setY(y);
-    	label.setBounds(x, y, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
-		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), gameController.getBlockDimension()*2);
+    	label.setBounds(x, y, playerFactor, playerFactor*2);
+		hitBox.setBounds(label.getX(),label.getY(),playerFactor, playerFactor*2);
     	
-    	panel.setLocation((int)(screenSize.getWidth()/2)-x-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-y-gameController.getBlockDimension());
+    	panel.setLocation((int)(screenSize.getWidth()/2)-x-(int)(playerFactor/2),(int)(screenSize.getHeight()/2)-y-playerFactor);
     }
 
 	@Override
@@ -285,6 +300,69 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		panel.setLocation((int)(screenSize.getWidth()/2)-x-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-y-gameController.getBlockDimension());
 	}
 	
+	/*
+	public void collisionCheckX() {
+		Tile[][] level = ((gameDisplay) panel).getLevelLayout();
+		int dim = gameController.getBlockDimension();
+		for (int x : xpoints) {
+			Tile temp = level[(int) (x/dim)][this.getY()/dim];
+			if (temp != null && temp.getHitBox().intersects(this.getHitBox())) {
+				if (temp.isHazard())
+					this.respawn();
+				else {
+					if (x < this.getX()) {
+						canMoveLeft = false;
+					}
+					if (x > this.getX()) {
+						canMoveRight = false;
+					}
+				}
+			}
+		}
+	}
+	
+	public void collisionCheckY() {
+		Tile[][] level = ((gameDisplay) panel).getLevelLayout();
+		int dim = gameController.getBlockDimension();
+		if(this.getY()/dim >= level[0].length-2) {
+			this.setCanMoveDown(false);
+		} else {
+			for (int y : ypoints) {
+				Tile temp = level[this.getX()/dim][(int) (y/dim)];
+				if (temp != null ) {
+					if (temp.isHazard())
+						this.respawn();
+					else if (temp.isCollideable()){
+						if (y < this.getY()) {
+							canMoveUp = false;
+							System.out.println("TOP!");
+						}
+						if (y > this.getY()) {
+							canMoveDown = false;
+							System.out.println("BOTTOM!");
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void updatePoints() {
+		Rectangle hitbox = this.getHitBox();
+		int xpointInt = (int)hitbox.getWidth()/2;
+		int ypointInt = (int)hitbox.getHeight()/4;
+		
+		
+		for (int i = 0; i < xpoints.length; i++) {
+			xpoints[i] = (int) ((this.getX() + xpointInt*i) + dx);
+		}
+		
+		for (int i = 0; i < ypoints.length; i++) {
+			ypoints[i] = (int) ((this.getY() + ypointInt*i) + dy);
+		}
+		
+	}
+	*/
 	
 	public void collisionCheck() {
 		Tile[][] level = ((gameDisplay) panel).getLevelLayout();
@@ -479,7 +557,6 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			}
 		}
 	}
-
 	
 	
 	public Rectangle getHitBox() {

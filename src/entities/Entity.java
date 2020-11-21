@@ -30,7 +30,7 @@ public class Entity {
 	
 	static JFrame testFrame = new JFrame();
 	static JPanel testPane = new JPanel();
-	static JLabel label = new JLabel();
+	protected JLabel label = new JLabel();
 	
 	//private ImageIcon leftSprite;
 	//private ImageIcon rightSprite;

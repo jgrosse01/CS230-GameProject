@@ -114,6 +114,7 @@ public class gameDisplay extends JPanel{
 					BufferedImage tempSprite = ImageIO.read(new File("src/sprites/Idle (0).png"));
 					player = new Player(0,0,tempSprite,tempSprite,this,currentSpawn);
 				} catch (IOException e1) {
+					
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -128,15 +129,6 @@ public class gameDisplay extends JPanel{
 			}
 		}
 	
-		/*
-		private void makeLevelArray() {
-			levelArray = new levelInfo[10];
-			try {
-				level1 = LevelLoader.load("1" + ".txt",this);
-			} catch (FileNotFoundException e) {e.printStackTrace();}
-		}
-		*/
-	
 		public void scalePlayer() {
 			ImageIcon imageIcon = new ImageIcon("images"); // load the image to a imageIcon
 			Image image = imageIcon.getImage(); // transform it 
@@ -150,7 +142,6 @@ public class gameDisplay extends JPanel{
 					if(player.getDY() < 20 && player.canMoveDown()) {
 						player.setDY(player.getDY()+1);
 					}
-					player.collisionCheck();
 					player.move();
 					if(player.didWin()) {
 						timer.cancel();
