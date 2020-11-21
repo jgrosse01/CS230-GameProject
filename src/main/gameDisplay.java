@@ -176,7 +176,7 @@ public class gameDisplay extends JPanel{
 				}
 			}
 	}
-	
+	//"nothing"
 	
 	public void setCurrentSpawn() {
 		Tile[][] levelLayout = currentLevel.getLevel();
