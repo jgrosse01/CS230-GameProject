@@ -212,12 +212,12 @@ public class Player extends Entity implements KeyListener, MouseListener {
         		if (getCurrentDir() == DIR_RIGHT) {
     				System.out.println("UP RIGHT MOVE");
         			currentIconType = "Jump";
-        			dy = -1 * gameController.getBlockDimension()/7;
+        			dy = -1 * gameController.getBlockDimension()/6;
     			}
     			else {
     				System.out.println("UP LEFT MOVE");
         			currentIconType = "leftJump";
-        			dy = -1 * gameController.getBlockDimension()/7;
+        			dy = -1 * gameController.getBlockDimension()/6;
     			}
         	}
 		}
@@ -383,6 +383,16 @@ public class Player extends Entity implements KeyListener, MouseListener {
 				}
 			}
 		}
+		//feet hazard test
+		if(yIA < level[0].length) {
+			if(level[xIA][yIA+1] != null) {
+				if(level[xIA][yIA+1].isHazard()) {
+					if(this.getHitBox().intersects(level[xIA][yIA+1].getHitBox())) {
+						level[xIA][yIA+1].hazard(this);
+					}
+				}
+			}
+		}
 		//this going left
 		if(dx < 0) {
 			if((xIA == 0 && x <= 0)) {
@@ -418,7 +428,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 				}
 				if(yIA < level[0].length-2) {
 					if(level[xIA-1][yIA+2] != null) {
-						if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x > level[xIA-1][yIA+2].getX()+dim+10) {
+						if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x < level[xIA-1][yIA+2].getX()+dim+10) {
 							this.setCanMoveLeft(false);
 						} else {
 							if(level[xIA-1][yIA+2].isHazard()) {
@@ -538,7 +548,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 						}
 					}
 				}
-				if(xIA > 0) {
+				if(xIA < level.length-1) {
 					if(level[xIA+1][yIA+2] != null) {
 						if(level[xIA+1][yIA+2].isCollideable() && x >= level[xIA+1][yIA+2].getX()-dim+20) {
 							this.setCanMoveDown(false);

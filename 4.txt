@@ -9,7 +9,7 @@ Floor Floor Floor Floor Floor null Floor Floor Floor null null null null null nu
 Floor Floor Floor Floor Floor null Floor Floor Floor Floor null null null null null null null null null null null null Floor Floor Floor Floor Floor Floor Floor Floor 
 Floor Floor Floor Floor Floor null Floor Floor Floor Floor Floor Acid Acid Floor null null null null null null null null null null Floor Floor Floor Floor Floor Floor 
 Floor Floor Floor Floor Floor null Floor Floor Floor Floor Floor Floor Floor Floor null null Floor null null null null null null null null null Floor Floor Floor Floor 
-Floor Floor Floor Floor Floor null DownwardSpikes null null null null null null null null null Floor Box null Box Spikes null null null null null Floor Floor Floor Floor 
+Floor Floor Floor Floor Floor null DownwardSpikes null null null null null null null null null Floor Box null Box Spikes null null null null null null Floor Floor Floor 
 Floor null null null null null null null null null null null null null null null Floor Floor null Floor Floor Floor Spikes null null null null null null Floor 
 Floor null null null null null null null null null null null null null null null null null null null null Floor Floor Floor Spikes null null null null Floor 
 Floor null Floor Floor Floor Floor null Floor Floor Floor Floor Floor Floor Floor null null null null null null null null null Floor Floor Floor null null null Floor 

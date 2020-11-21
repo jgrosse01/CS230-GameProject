@@ -70,7 +70,11 @@ public class levelBuilder extends JLayeredPane{
 		newButton.setBorder(BorderFactory.createLineBorder(Color.black,2));
 		newButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
 					makeNewLevel();
+				} catch (NumberFormatException err) {
+					
+				}
 			}		
 		});
 		JButton saveButton = new JButton("Save Level");
@@ -148,8 +152,7 @@ public class levelBuilder extends JLayeredPane{
 	
 	//this will populate the levelArray for use in making a level.
 	//It is called when the "new level" button is pushed.
-	private void makeNewLevel()
-	{
+	private void makeNewLevel() throws java.lang.NumberFormatException{
 		//Creating a panel with two text fields for the popup message
 		JTextField widthField = new JTextField(3);
 		JTextField heightField = new JTextField(3);

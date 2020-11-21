@@ -1,0 +1,6 @@
+5:5
+Floor null null null Floor 
+null null null null null 
+null null null null null 
+Spikes null SpawnPoint:true null Spikes 
+Floor Floor Floor Floor Floor 
