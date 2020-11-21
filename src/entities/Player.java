@@ -373,7 +373,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		int dim = gameController.getBlockDimension();
 		int xIA = x/dim;
 		int yIA = y/dim;
-		
+		int buffer = (int)(dim/15);
 		
 		//upward hazard test
 		if(level[xIA][yIA] != null) {
@@ -399,7 +399,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 				this.setCanMoveLeft(false);
 			} else if(x > dim){
 				if(level[xIA-1][yIA] != null) {
-					if(level[xIA-1][yIA].isCollideable() && x < level[xIA-1][yIA].getX()+dim+10) {
+					if(level[xIA-1][yIA].isCollideable() && x < level[xIA-1][yIA].getX()+dim+buffer) {
 						this.setCanMoveLeft(false);
 						if(this.getHitBox().intersects(level[xIA-1][yIA].getHitBox())) {
 							this.setX((xIA*dim)+dim);
@@ -413,7 +413,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 					} 
 				}
 				if(level[xIA-1][yIA+1] != null) {
-					if(level[xIA-1][yIA+1].isCollideable() && x < level[xIA-1][yIA+1].getX()+dim+10) {
+					if(level[xIA-1][yIA+1].isCollideable() && x < level[xIA-1][yIA+1].getX()+dim+buffer) {
 						this.setCanMoveLeft(false);
 						if(this.getHitBox().intersects(level[xIA-1][yIA+1].getHitBox())) {
 							this.setX((xIA*dim)+dim);
@@ -428,7 +428,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 				}
 				if(yIA < level[0].length-2) {
 					if(level[xIA-1][yIA+2] != null) {
-						if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x < level[xIA-1][yIA+2].getX()+dim+10) {
+						if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x < level[xIA-1][yIA+2].getX()+dim+buffer) {
 							this.setCanMoveLeft(false);
 						} else {
 							if(level[xIA-1][yIA+2].isHazard()) {
@@ -476,7 +476,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 				}
 				if(yIA < level[0].length-2) {
 					if(level[xIA+1][yIA+2] != null) {
-						if(level[xIA+1][yIA+2].isCollideable() && y > level[xIA+1][yIA+2].getY()-(dim*2)+10) {
+						if(level[xIA+1][yIA+2].isCollideable() && y > level[xIA+1][yIA+2].getY()-(dim*2)+buffer) {
 							this.setCanMoveRight(false);
 							if(this.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
 								this.setX(xIA*dim);
@@ -497,7 +497,7 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			if(yIA <= 0 && y <= 0) {
 				this.setCanMoveUp(false);
 			} else if(y > dim){
-				if(level[xIA][yIA-1] != null && y <= level[xIA][yIA-1].getY()+dim+5) {
+				if(level[xIA][yIA-1] != null && y <= level[xIA][yIA-1].getY()+dim+(buffer/2)) {
 					if(level[xIA][yIA-1].isCollideable()) {
 						this.setCanMoveUp(false);
 						if(this.getHitBox().intersects(level[xIA][yIA-1].getHitBox())) {
@@ -513,13 +513,13 @@ public class Player extends Entity implements KeyListener, MouseListener {
 				}
 				if(xIA > 0) {
 					if(level[xIA+1][yIA-1] != null) {
-						if(level[xIA+1][yIA-1].isCollideable() && x >= level[xIA+1][yIA-1].getX()-dim+20 && y < level[xIA+1][yIA-1].getY()+dim+5) {
+						if(level[xIA+1][yIA-1].isCollideable() && x >= level[xIA+1][yIA-1].getX()-dim+buffer && y < level[xIA+1][yIA-1].getY()+dim+(buffer/2)) {
 							this.setCanMoveUp(false);
 							if(this.getHitBox().intersects(level[xIA+1][yIA-1].getHitBox())) {
 								this.setY((yIA+1)*dim);
 							}
 						}  else {
-							if(level[xIA+1][yIA-1].isHazard() && x >= level[xIA+1][yIA-1].getX()-dim+20 && y < level[xIA+1][yIA-1].getY()+dim+5) {
+							if(level[xIA+1][yIA-1].isHazard() && x >= level[xIA+1][yIA-1].getX()-dim+buffer && y < level[xIA+1][yIA-1].getY()+dim+(buffer/2)) {
 								if(this.getHitBox().intersects(level[xIA+1][yIA-1].getHitBox())) {
 									level[xIA+1][yIA-1].hazard(this);
 								}
@@ -550,13 +550,13 @@ public class Player extends Entity implements KeyListener, MouseListener {
 				}
 				if(xIA < level.length-1) {
 					if(level[xIA+1][yIA+2] != null) {
-						if(level[xIA+1][yIA+2].isCollideable() && x >= level[xIA+1][yIA+2].getX()-dim+20) {
+						if(level[xIA+1][yIA+2].isCollideable() && x >= level[xIA+1][yIA+2].getX()-dim+(buffer*2)) {
 							this.setCanMoveDown(false);
 							if(this.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
 								this.setY(yIA*dim);
 							}
 						} else {
-							if(level[xIA+1][yIA+2].isHazard() && x >= level[xIA+1][yIA+2].getX()-dim+20) {
+							if(level[xIA+1][yIA+2].isHazard() && x >= level[xIA+1][yIA+2].getX()-dim+(buffer*2)) {
 								if(this.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
 									level[xIA+1][yIA+2].hazard(this);
 								}
