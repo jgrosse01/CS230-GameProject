@@ -73,6 +73,8 @@ public class gameController extends JFrame{
         
         mainPane.add(menu);
         mainPane.setVisible(true);
+        
+        /*
         try {
             // Open an audio input stream.
             //URL url = this.getClass().getClassLoader().getResource("gameover.wav");
@@ -91,10 +93,9 @@ public class gameController extends JFrame{
             e.printStackTrace();
          } catch (LineUnavailableException e) {
             e.printStackTrace();
-         }
+         } */
         
-        
-      }
+    }
 
 	
 	

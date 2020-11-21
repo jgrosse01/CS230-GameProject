@@ -11,14 +11,14 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 import tiles.Tile;
 import tiles.SpawnPoint;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
 import main.gameController;
+import main.gameDisplay;
 
 public class Player extends Entity implements KeyListener, MouseListener {
 
@@ -112,24 +112,37 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		} catch (IOException e) {e.printStackTrace();}
 	}
     
+    
+    /**
+     * Moves the Player and Checks Collisions
+     */
     public void move() {
     	if(dy > 0 && !canMoveDown) {setDY(0);}
     	if(!canMoveDown) {canJumpTrue();} else {canJumpFalse();}
-    	if(dy < 0 && !canMoveUp) {setDY(0);}
-    	if(dx > 0 && !canMoveRight) {setDX(0);}
-    	if(dx < 0 && !canMoveLeft) {setDX(0);}
-		label.setBounds(label.getX()+dx, label.getY()+dy, gameController.getBlockDimension(), gameController.getBlockDimension()*2);
-		this.x = label.getX();
-		this.y = label.getY();
- 		hitBox.setBounds(label.getX(),label.getY(),gameController.getBlockDimension(), (gameController.getBlockDimension()*2));
-		panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
-		
+    	if(!canMoveUp && dy < 0) {setDY(0);}
+    	if(!canMoveRight && dx > 0) {setDX(0);}
+    	if(!canMoveLeft && dx < 0) {setDX(0);}
+    	
+    	
+    	this.setX(this.getX()+dx);
+    	this.setY(this.getY()+dy);
+    	
+    	System.out.println("DX " + dx + "; DY " + dy);
+    	panel.setLocation((panel.getX()-dx), (panel.getY()-dy));
+    	
+    	
+    	canMoveDown = true;
+		canMoveUp = true;
+		canMoveRight = true;
+		canMoveLeft = true;
+    	
+		//updating animations
 		if (currentIconType == "Idle" || currentIconType == "leftIdle") {
 			currentIconNumber = 0;
 			File file = new File("src/sprites/" + currentIconType + " " + "(" + currentIconNumber + ")" + ".png");
 			try {
 				currentImage = ImageIO.read(file);
-			} catch (IOException e) {e.printStackTrace();}
+			} catch (IOException e) {}
 			currentIcon = new ImageIcon(currentImage); //load the image to a imageIcon
 			Image img = currentIcon.getImage(); // transform it 
 			Image newimg = img.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
@@ -142,17 +155,14 @@ public class Player extends Entity implements KeyListener, MouseListener {
 			
 			try {
 				currentImage = ImageIO.read(file);
-			} catch (IOException e) {/*e.printStackTrace();*/}
+			} catch (IOException e) {}
 			currentIcon = new ImageIcon(currentImage); //load the image to a imageIcon
 			Image img = currentIcon.getImage(); // transform it 
 			Image newimg = img.getScaledInstance(gameController.getBlockDimension(), gameController.getBlockDimension()*2, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			currentIcon = new ImageIcon(newimg);  // transform it back
 			label.setIcon(currentIcon);
 		}
-		canMoveDown = true;
-		canMoveUp = true;
-		canMoveRight = true;
-		canMoveLeft = true;
+		
 	}
     
     public void respawn() {
@@ -165,94 +175,73 @@ public class Player extends Entity implements KeyListener, MouseListener {
     	
     	panel.setLocation((int)(screenSize.getWidth()/2)-x-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-y-gameController.getBlockDimension());
     }
-    
-    public void gravity() {
-    	int terminalVelocity = -10;
-    	int gravity = -1;
-    	int verticalSpeed = 0;
-    	
-    	verticalSpeed = verticalSpeed + gravity;
-        if(verticalSpeed > terminalVelocity){
-        	verticalSpeed = terminalVelocity;
-        }
-        this.setY(this.getY() + verticalSpeed);
-    	
-    }
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
-
-        switch (key) {
-        case (KeyEvent.VK_LEFT):
-        	System.out.println("LEFT MOVE");
+		
+		if(key == KeyEvent.VK_LEFT) {
+			System.out.println("LEFT MOVE");
         	setCurrentDir(DIR_LEFT);
         	currentIconType = "leftRun";
         	dx = -10;
-        	dy = 0;
-        	canJump = true;
-        	break;
-        case (KeyEvent.VK_RIGHT):
-        	System.out.println("RIGHT MOVE");
+		}
+		if (key == KeyEvent.VK_RIGHT) {
+			System.out.println("RIGHT MOVE");
         	setCurrentDir(DIR_RIGHT);
         	currentIconType = "Run";
-        	dy = 0;
         	dx = 10;
-        	canJump = true;
-        	break;
-        case (KeyEvent.VK_UP):
-        	if (canJump) {
+		}
+		if (key == KeyEvent.VK_UP) {
+			if (canJump) {
         		if (getCurrentDir() == DIR_RIGHT) {
     				System.out.println("UP RIGHT MOVE");
         			currentIconType = "Jump";
-        			canJump = false;
-        			dy = -15;
-        			break;
+        			dy = -1 * gameController.getBlockDimension()/7;
     			}
     			else {
     				System.out.println("UP LEFT MOVE");
         			currentIconType = "leftJump";
-        			canJump = false;
-        			dy = -15;
-        			break;
+        			dy = -1 * gameController.getBlockDimension()/7;
     			}
         	}
-        }
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
 
-		switch (key) {
-        case (KeyEvent.VK_LEFT):
-        	currentIconType = "leftIdle";
+		if(key == KeyEvent.VK_LEFT) {
+			currentIconType = "leftIdle";
         	currentIconNumber = 0;
         	dx = 0;
-        case (KeyEvent.VK_RIGHT):
-        	currentIconType = "Idle";
+		}
+		if (key == KeyEvent.VK_RIGHT) {
+			currentIconType = "Idle";
         	currentIconNumber = 0;
         	dx = 0;
-        case (KeyEvent.VK_UP):
-        	if (getCurrentDir() == DIR_RIGHT)
+		}
+		if (key == KeyEvent.VK_UP) {
+			if (getCurrentDir() == DIR_RIGHT)
         	{
         		currentIconType = "Idle";
             	currentIconNumber = 0;
-//            	isGravity = true;
         	}
         	else {
         		currentIconType = "leftIdle";
             	currentIconNumber = 0;
-//            	isGravity = true;
         	}
-        }
-		move();
+		}
 	}
 	
 	public JLabel getPlayerLabel() {
 		return label;
 	}
 	
+	/*-------------------------/
+	 * GETTERS AND SETTERS
+	/*------------------------*/
 	public SpawnPoint getSpawnPoint() {return sp;}
 	public int getDX() { return dx; }
     public int getDY() { return dy; }
@@ -267,16 +256,13 @@ public class Player extends Entity implements KeyListener, MouseListener {
 	public void setInventory(Tile t) {inventorySlot = t;}
 	public void clearInventory() {inventorySlot = null;}
 	public void invertDY() {dy = -1*dy;}
-//	public boolean isGravity() {return isGravity;}
-	//sets didJump to false and allows gravity to work
-//	public void smackdown() {isGravity = true;}
 	public void canJumpFalse() {canJump = false;}
 	public void canJumpTrue() {canJump = true;}
+	
 	
 	/*
 	 * THIS IS WHERE WE ARE HANDLING COLLISIONS
 	 */
-	
 	public boolean canMoveDown() {return canMoveDown;}
 	public void setCanMoveDown(boolean b) {canMoveDown = b;}
 	public void setCanMoveUp(boolean b) {canMoveUp = b;}
@@ -297,6 +283,201 @@ public class Player extends Entity implements KeyListener, MouseListener {
 		label.setBounds(label.getX(),y,gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		hitBox.setBounds(label.getX(), y,gameController.getBlockDimension(), gameController.getBlockDimension()*2);
 		panel.setLocation((int)(screenSize.getWidth()/2)-x-(int)(gameController.getBlockDimension()/2),(int)(screenSize.getHeight()/2)-y-gameController.getBlockDimension());
+	}
+	
+	
+	public void collisionCheck() {
+		Tile[][] level = ((gameDisplay) panel).getLevelLayout();
+		int x = this.getX();
+		int y = this.getY();
+		int dx = this.getDX();
+		int dy = this.getDY();
+		int dim = gameController.getBlockDimension();
+		int xIA = x/dim;
+		int yIA = y/dim;
+		
+		
+		//upward hazard test
+		if(level[xIA][yIA] != null) {
+			if(level[xIA][yIA].isHazard()) {
+				if(this.getHitBox().intersects(level[xIA][yIA].getHitBox())) {
+					level[xIA][yIA].hazard(this);
+				}
+			}
+		}
+		//this going left
+		if(dx < 0) {
+			if((xIA == 0 && x <= 0)) {
+				this.setCanMoveLeft(false);
+			} else if(x > dim){
+				if(level[xIA-1][yIA] != null) {
+					if(level[xIA-1][yIA].isCollideable() && x < level[xIA-1][yIA].getX()+dim+10) {
+						this.setCanMoveLeft(false);
+						if(this.getHitBox().intersects(level[xIA-1][yIA].getHitBox())) {
+							this.setX((xIA*dim)+dim);
+						}
+					} else {
+						if(level[xIA-1][yIA].isHazard()) {
+							if(this.getHitBox().intersects(level[xIA-1][yIA].getHitBox())) {
+								level[xIA-1][yIA].hazard(this);
+							}
+						}
+					} 
+				}
+				if(level[xIA-1][yIA+1] != null) {
+					if(level[xIA-1][yIA+1].isCollideable() && x < level[xIA-1][yIA+1].getX()+dim+10) {
+						this.setCanMoveLeft(false);
+						if(this.getHitBox().intersects(level[xIA-1][yIA+1].getHitBox())) {
+							this.setX((xIA*dim)+dim);
+						}
+					} else {
+						if(level[xIA-1][yIA+1].isHazard()) {
+							if(this.getHitBox().intersects(level[xIA-1][yIA+1].getHitBox())) {
+								level[xIA-1][yIA+1].hazard(this);
+							}
+						}
+					} 
+				}
+				if(yIA < level[0].length-2) {
+					if(level[xIA-1][yIA+2] != null) {
+						if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x > level[xIA-1][yIA+2].getX()+dim+10) {
+							this.setCanMoveLeft(false);
+						} else {
+							if(level[xIA-1][yIA+2].isHazard()) {
+								if(this.getHitBox().intersects(level[xIA-1][yIA+2].getHitBox())) {
+									level[xIA-1][yIA+2].hazard(this);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		//this going right
+		if(dx > 0) {
+			if(xIA == level.length-1) {
+				this.setCanMoveRight(false);
+			} else {
+				if(level[xIA+1][yIA] != null) {
+					if(level[xIA+1][yIA].isCollideable()) {
+						this.setCanMoveRight(false);
+						if(this.getHitBox().intersects(level[xIA+1][yIA].getHitBox())) {
+							this.setX(xIA*dim);
+						}
+					} else {
+						if(level[xIA+1][yIA].isHazard()) {
+							if(this.getHitBox().intersects(level[xIA+1][yIA].getHitBox())) {
+								level[xIA+1][yIA].hazard(this);
+							}
+						}
+					}
+				}
+				if(level[xIA+1][yIA+1] != null) {
+					if(level[xIA+1][yIA+1].isCollideable()) {
+						this.setCanMoveRight(false);
+						if(this.getHitBox().intersects(level[xIA+1][yIA+1].getHitBox())) {
+							this.setX(xIA*dim);
+						}
+					}  else {
+						if(level[xIA+1][yIA+1].isHazard()) {
+							if(this.getHitBox().intersects(level[xIA+1][yIA+1].getHitBox())) {
+								level[xIA+1][yIA+1].hazard(this);
+							}
+						}
+					}
+				}
+				if(yIA < level[0].length-2) {
+					if(level[xIA+1][yIA+2] != null) {
+						if(level[xIA+1][yIA+2].isCollideable() && y > level[xIA+1][yIA+2].getY()-(dim*2)+10) {
+							this.setCanMoveRight(false);
+							if(this.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
+								this.setX(xIA*dim);
+							}
+						} else {
+							if(level[xIA+1][yIA+2].isHazard()) {
+								if(this.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
+									level[xIA+1][yIA+2].hazard(this);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		//this going up
+		if(dy < 0) {
+			if(yIA <= 0 && y <= 0) {
+				this.setCanMoveUp(false);
+			} else if(y > dim){
+				if(level[xIA][yIA-1] != null && y <= level[xIA][yIA-1].getY()+dim+5) {
+					if(level[xIA][yIA-1].isCollideable()) {
+						this.setCanMoveUp(false);
+						if(this.getHitBox().intersects(level[xIA][yIA-1].getHitBox())) {
+							this.setY((yIA+1)*dim);
+						}
+					} else {
+						if(level[xIA][yIA-1].isHazard()) {
+							if(this.getHitBox().intersects(level[xIA][yIA-1].getHitBox())) {
+								level[xIA][yIA-1].hazard(this);
+							}
+						}
+					}
+				}
+				if(xIA > 0) {
+					if(level[xIA+1][yIA-1] != null) {
+						if(level[xIA+1][yIA-1].isCollideable() && x >= level[xIA+1][yIA-1].getX()-dim+20 && y < level[xIA+1][yIA-1].getY()+dim+5) {
+							this.setCanMoveUp(false);
+							if(this.getHitBox().intersects(level[xIA+1][yIA-1].getHitBox())) {
+								this.setY((yIA+1)*dim);
+							}
+						}  else {
+							if(level[xIA+1][yIA-1].isHazard() && x >= level[xIA+1][yIA-1].getX()-dim+20 && y < level[xIA+1][yIA-1].getY()+dim+5) {
+								if(this.getHitBox().intersects(level[xIA+1][yIA-1].getHitBox())) {
+									level[xIA+1][yIA-1].hazard(this);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		//this going down
+		if(dy > 0) {
+			if(yIA >= level[0].length-2) {
+				this.setCanMoveDown(false);
+			} else {
+				if(level[xIA][yIA+2] != null) {
+					if(level[xIA][yIA+2].isCollideable()) {
+						this.setCanMoveDown(false);
+						if(this.getHitBox().intersects(level[xIA][yIA+2].getHitBox())) {
+							this.setY(yIA*dim);
+						}
+					} else {
+						if(level[xIA][yIA+2].isHazard()) {
+							if(this.getHitBox().intersects(level[xIA][yIA+2].getHitBox())) {
+								level[xIA][yIA+2].hazard(this);
+							}
+						}
+					}
+				}
+				if(xIA > 0) {
+					if(level[xIA+1][yIA+2] != null) {
+						if(level[xIA+1][yIA+2].isCollideable() && x >= level[xIA+1][yIA+2].getX()-dim+20) {
+							this.setCanMoveDown(false);
+							if(this.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
+								this.setY(yIA*dim);
+							}
+						} else {
+							if(level[xIA+1][yIA+2].isHazard() && x >= level[xIA+1][yIA+2].getX()-dim+20) {
+								if(this.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
+									level[xIA+1][yIA+2].hazard(this);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	

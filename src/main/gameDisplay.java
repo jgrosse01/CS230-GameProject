@@ -2,39 +2,29 @@ package main;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.FilenameFilter;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import levelBuilder.levelInfo;
 import javax.swing.JOptionPane;
 
 import entities.Player;
-import tiles.Acid;
-import tiles.Box;
-import tiles.Dirt;
-import tiles.EndPoint;
-import tiles.Floor;
 import tiles.SpawnPoint;
-import tiles.Spikes;
 import tiles.Tile;
+import levelBuilder.levelInfo;
+import levelBuilder.LevelLoader;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
-import levelBuilder.LevelLoader;
+
 
 public class gameDisplay extends JPanel{
 
@@ -45,11 +35,8 @@ public class gameDisplay extends JPanel{
 	private Player player;
 	private gameController frame;
 	private Timer timer = new Timer();
-	private static int gravityTimer = 0;
 	private Time timerThing;
 	private static final int MOVE_TIME = 17;
-	private static final int MAX_NO_GRAVITY_TIMER = 17000;
-	private Point levelLoc;
 	private levelInfo currentLevel;
 	private SpawnPoint currentSpawn;
 	private boolean exit = false;
@@ -107,7 +94,7 @@ public class gameDisplay extends JPanel{
 				inc++;
 			}
 		}
-		JComboBox levelComboBox = new JComboBox(levelNames);
+		JComboBox<String> levelComboBox = new JComboBox<String>(levelNames);
 		int response = JOptionPane.showConfirmDialog(null, levelComboBox, "Select a level", 
 				JOptionPane.OK_CANCEL_OPTION);
 		if(response == JOptionPane.OK_OPTION) {
@@ -163,7 +150,7 @@ public class gameDisplay extends JPanel{
 					if(player.getDY() < 20 && player.canMoveDown()) {
 						player.setDY(player.getDY()+1);
 					}
-					collisionCheck();
+					player.collisionCheck();
 					player.move();
 					if(player.didWin()) {
 						timer.cancel();
@@ -175,216 +162,30 @@ public class gameDisplay extends JPanel{
 					frame.gameToMain();
 				}
 			}
-	}
-	//"nothing"
+		}
 	
-	public void setCurrentSpawn() {
-		Tile[][] levelLayout = currentLevel.getLevel();
-		for(int y = 0; y < levelLayout[0].length; y++) {
-			for(int x = 0; x < levelLayout.length; x++) {
-				if(levelLayout[x][y] instanceof SpawnPoint) {
-					SpawnPoint sp = ((SpawnPoint) levelLayout[x][y]);
-					if(sp.isCurrent()) {
-						currentSpawn = sp;
+		public void setCurrentSpawn() {
+			Tile[][] levelLayout = currentLevel.getLevel();
+			for(int y = 0; y < levelLayout[0].length; y++) {
+				for(int x = 0; x < levelLayout.length; x++) {
+					if(levelLayout[x][y] instanceof SpawnPoint) {
+						SpawnPoint sp = ((SpawnPoint) levelLayout[x][y]);
+						if(sp.isCurrent()) {
+							currentSpawn = sp;
+						}
 					}
 				}
 			}
 		}
-	}
 	
-	public void collisionCheck() {
-		Rectangle checkBox;
-		Tile[][] level = currentLevel.getLevel();
-		int x = player.getX();
-		int y = player.getY();
-		int dx = player.getDX();
-		int dy = player.getDY();
-		int dim = gameController.getBlockDimension();
-		int xIA = x/dim;
-		int yIA = y/dim;
-		//upward hazard test
-		if(level[xIA][yIA] != null) {
-			if(level[xIA][yIA].isHazard()) {
-				if(player.getHitBox().intersects(level[xIA][yIA].getHitBox())) {
-					level[xIA][yIA].hazard(player);
+		public Tile[][] getLevelLayout() {
+			Tile[][] temp1 = currentLevel.getLevel();
+			Tile[][] temp2 = new Tile[temp1.length][temp1[0].length];
+			for (int i = 0; i < temp1.length; i ++) {
+				for (int j = 0; j < temp1[i].length; j ++) {
+					temp2[i][j] = temp1[i][j];
 				}
 			}
+			return temp2;
 		}
-		//player going left
-		if(dx < 0) {
-			if((xIA == 0 && x <= 0)) {
-				player.setCanMoveLeft(false);
-			} else if(x > dim){
-				if(level[xIA-1][yIA] != null) {
-					if(level[xIA-1][yIA].isCollideable() && x < level[xIA-1][yIA].getX()+dim+10) {
-						player.setCanMoveLeft(false);
-						if(player.getHitBox().intersects(level[xIA-1][yIA].getHitBox())) {
-							player.setX((xIA*dim)+dim);
-						}
-					} else {
-						if(level[xIA-1][yIA].isHazard()) {
-							if(player.getHitBox().intersects(level[xIA-1][yIA].getHitBox())) {
-								level[xIA-1][yIA].hazard(player);
-							}
-						}
-					} 
-				}
-				if(level[xIA-1][yIA+1] != null) {
-					if(level[xIA-1][yIA+1].isCollideable() && x < level[xIA-1][yIA+1].getX()+dim+10) {
-						player.setCanMoveLeft(false);
-						if(player.getHitBox().intersects(level[xIA-1][yIA+1].getHitBox())) {
-							player.setX((xIA*dim)+dim);
-						}
-					} else {
-						if(level[xIA-1][yIA+1].isHazard()) {
-							if(player.getHitBox().intersects(level[xIA-1][yIA+1].getHitBox())) {
-								level[xIA-1][yIA+1].hazard(player);
-							}
-						}
-					} 
-				}
-				if(yIA < level[0].length-2) {
-					if(level[xIA-1][yIA+2] != null) {
-						if(level[xIA-1][yIA+2].isCollideable() && y > level[xIA-1][yIA+2].getY()-(dim*2) && x > level[xIA-1][yIA+2].getX()+dim+10) {
-							player.setCanMoveLeft(false);
-	//						if(player.getHitBox().intersects(level[xIA-1][yIA+2].getHitBox())) {
-	//							player.setX((xIA*dim)+dim);
-	//						}
-						} else {
-							if(level[xIA-1][yIA+2].isHazard()) {
-								if(player.getHitBox().intersects(level[xIA-1][yIA+2].getHitBox())) {
-									level[xIA-1][yIA+2].hazard(player);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		//player going right
-		if(dx > 0) {
-			if(xIA == level.length-1) {
-				player.setCanMoveRight(false);
-			} else {
-				if(level[xIA+1][yIA] != null) {
-					if(level[xIA+1][yIA].isCollideable()) {
-						player.setCanMoveRight(false);
-						if(player.getHitBox().intersects(level[xIA+1][yIA].getHitBox())) {
-							player.setX(xIA*dim);
-						}
-					} else {
-						if(level[xIA+1][yIA].isHazard()) {
-							if(player.getHitBox().intersects(level[xIA+1][yIA].getHitBox())) {
-								level[xIA+1][yIA].hazard(player);
-							}
-						}
-					}
-				}
-				if(level[xIA+1][yIA+1] != null) {
-					if(level[xIA+1][yIA+1].isCollideable()) {
-						player.setCanMoveRight(false);
-						if(player.getHitBox().intersects(level[xIA+1][yIA+1].getHitBox())) {
-							player.setX(xIA*dim);
-						}
-					}  else {
-						if(level[xIA+1][yIA+1].isHazard()) {
-							if(player.getHitBox().intersects(level[xIA+1][yIA+1].getHitBox())) {
-								level[xIA+1][yIA+1].hazard(player);
-							}
-						}
-					}
-				}
-				if(yIA < level[0].length-2) {
-					if(level[xIA+1][yIA+2] != null) {
-						if(level[xIA+1][yIA+2].isCollideable() && y > level[xIA+1][yIA+2].getY()-(dim*2)+10) {
-							player.setCanMoveRight(false);
-							if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
-								player.setX(xIA*dim);
-							}
-						} else {
-							if(level[xIA+1][yIA+2].isHazard()) {
-								if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
-									level[xIA+1][yIA+2].hazard(player);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		//player going up
-		if(dy < 0) {
-			if(yIA <= 0 && y <= 0) {
-				player.setCanMoveUp(false);
-			} else if(y > dim){
-				if(level[xIA][yIA-1] != null && y <= level[xIA][yIA-1].getY()+dim+5) {
-					if(level[xIA][yIA-1].isCollideable()) {
-						player.setCanMoveUp(false);
-						if(player.getHitBox().intersects(level[xIA][yIA-1].getHitBox())) {
-							player.setY((yIA+1)*dim);
-						}
-					} else {
-						if(level[xIA][yIA-1].isHazard()) {
-							if(player.getHitBox().intersects(level[xIA][yIA-1].getHitBox())) {
-								level[xIA][yIA-1].hazard(player);
-							}
-						}
-					}
-				}
-				if(xIA > 0) {
-					if(level[xIA+1][yIA-1] != null) {
-						if(level[xIA+1][yIA-1].isCollideable() && x >= level[xIA+1][yIA-1].getX()-dim+20 && y < level[xIA+1][yIA-1].getY()+dim+5) {
-							player.setCanMoveUp(false);
-							if(player.getHitBox().intersects(level[xIA+1][yIA-1].getHitBox())) {
-								player.setY((yIA+1)*dim);
-							}
-						}  else {
-							if(level[xIA+1][yIA-1].isHazard() && x >= level[xIA+1][yIA-1].getX()-dim+20 && y < level[xIA+1][yIA-1].getY()+dim+5) {
-								if(player.getHitBox().intersects(level[xIA+1][yIA-1].getHitBox())) {
-									level[xIA+1][yIA-1].hazard(player);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		//player going down
-		if(dy > 0) {
-			if(yIA >= level[0].length-2) {
-				player.setCanMoveDown(false);
-			} else {
-				if(level[xIA][yIA+2] != null) {
-					if(level[xIA][yIA+2].isCollideable()) {
-						player.setCanMoveDown(false);
-						if(player.getHitBox().intersects(level[xIA][yIA+2].getHitBox())) {
-							player.setY(yIA*dim);
-						}
-					} else {
-						if(level[xIA][yIA+2].isHazard()) {
-							if(player.getHitBox().intersects(level[xIA][yIA+2].getHitBox())) {
-								level[xIA][yIA+2].hazard(player);
-							}
-						}
-					}
-				}
-				if(xIA > 0) {
-					if(level[xIA+1][yIA+2] != null) {
-						if(level[xIA+1][yIA+2].isCollideable() && x >= level[xIA+1][yIA+2].getX()-dim+20) {
-							player.setCanMoveDown(false);
-							if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
-								player.setY(yIA*dim);
-							}
-						} else {
-							if(level[xIA+1][yIA+2].isHazard() && x >= level[xIA+1][yIA+2].getX()-dim+20) {
-								if(player.getHitBox().intersects(level[xIA+1][yIA+2].getHitBox())) {
-									level[xIA+1][yIA+2].hazard(player);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 }
