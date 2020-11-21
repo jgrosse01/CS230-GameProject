@@ -148,11 +148,6 @@ public class Entity {
 		draw();
 	}
 	
-	//UNIMPLEMENTED //Basically if hits or hit by hazard then return true, need collision checker
-	public boolean checkDie() {
-		return false;
-	}
-	
 	public int getCurrentDir() {
 		return currentDir;
 	}

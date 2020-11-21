@@ -29,7 +29,7 @@ public class Tile {
 	//panel tile will be on
 	private JPanel currentPane;
 	//determines whether tile is breakable
-	boolean breakable;
+	private boolean breakable;
 	private JLabel label;
 	
 	//collideable and "hazard", simply meaning it has an effect when touched
@@ -47,7 +47,7 @@ public class Tile {
 		this.sprite = sprite;
 		//get tile width and height from image size
 		this.width = sprite.getWidth();
-		this.height = sprite.getHeight();
+		this.height = sprite.getHeight( );
 		
 		//passed in the panel this is being added to
 		this.currentPane = pane;

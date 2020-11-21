@@ -10,16 +10,13 @@ import java.awt.event.ActionListener;
 
 public class mainMenu extends JLayeredPane{
 	private static final long serialVersionUID = 7962642755482788779L;
-	ImageIcon background;
+	private ImageIcon background;
+		
+	private JLabel picLabel;
 	
-	JPanel panel;
-	
-	JLabel picLabel;
-	JLabel picTitle;
-	
-	JButton play;
-	JButton levelBuilder;
-	JButton exit;
+	private JButton play;
+	private JButton levelBuilder;
+	private JButton exit;
 	
 	public mainMenu(gameController frame) {
 		this.setLayout(null);
